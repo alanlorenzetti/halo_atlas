@@ -1,0 +1,188 @@
+<div id="igvDiv" style="height: auto"></div>
+  <script type="module">
+    
+    import igv from "https://cdn.jsdelivr.net/npm/igv@2.6.8/dist/igv.esm.js"
+  
+  var options =
+    {
+      
+      locus: "NC_002607.1:1000-2000",
+      flanking: 1000,
+      
+      reference: {
+        id: "Halobacterium salinarum NRC-1",
+        fastaURL: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/Hsalinarum.fa",
+        indexURL: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/Hsalinarum.fa.fai",
+        aliasURL: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/aliases.txt"
+      },
+      
+      tracks: [
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP1-fwd.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP1 (+)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP2-fwd.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP2 (+)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP3-fwd.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP3 (+)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP4-fwd.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP4 (+)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP1-fwd.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP1 (+)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP2-fwd.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP2 (+)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP3-fwd.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP3 (+)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP4-fwd.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP4 (+)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/Hsalinarum-gene-annotation-pfeiffer2019.gff3",
+          type: "annotation",
+          format: "gff3",
+          name: "Genes (Pfeiffer et. al 2019)",
+          color: "#4E79A7",
+          displayMode: "EXPANDED"
+        },
+        
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP1-rev.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP1 (-)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP2-rev.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP2 (-)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP3-rev.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP3 (-)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/ribosomal_RNA_TP4-rev.bedgraph.gz",
+          type: "wig",
+          name: "Ribo-Seq TP4 (-)",
+          autoscaleGroup: "ribo",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP1-rev.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP1 (-)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP2-rev.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP2 (-)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP3-rev.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP3 (-)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        },
+        {
+          url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/total-RNA-TP4-rev.bedgraph.gz",
+          type: "wig",
+          name: "RNA-Seq TP4 (-)",
+          autoscaleGroup: "tot",
+          min: 0,
+          max: 65536,
+          color: "#4E79A7"
+        }
+      ]
+    };
+  
+  var igvDiv = document.getElementById("igvDiv");
+  
+  igv.createBrowser(igvDiv, options)
+  .then(function (browser) {
+    console.log("Created IGV browser");
+    window.igvBrowser = browser;
+  })
+  
+  </script>
