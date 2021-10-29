@@ -9,6 +9,80 @@
 # creating an output directory
 if(!dir.exists("results/supp_tables")){dir.create("results/supp_tables", recursive = T)}
 
+# summary of post-transcriptional related elements ####
+# table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
+summaryTPelements = list()
+
+# 1503 mutant
+summaryTPelements$`1503`$up = res1503 %>% 
+  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+summaryTPelements$`1503`$down = res1503 %>% 
+  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+# 2647 mutant
+summaryTPelements$`2647`$up = res2647 %>% 
+  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+summaryTPelements$`2647`$down = res2647 %>% 
+  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+# 2099 mutant
+summaryTPelements$`2099`$up = res2099 %>% 
+  filter(logFC >= lfcthr & adj.P.Val < padjthreshold) %>% 
+  pull(representative)
+
+summaryTPelements$`2099`$down = res2099 %>% 
+  filter(logFC <= -lfcthr & adj.P.Val < padjthreshold) %>% 
+  pull(representative)
+
+summaryTPelements$SmAP1 = dictFunCat %>% 
+  filter(lsmSense == "yes") %>% 
+  pull(pfeiLocusTag)
+
+summaryTPelements$asRNA = dictFunCat %>% 
+  filter(asRNA == "yes") %>% 
+  pull(pfeiLocusTag)
+
+summaryTPelements$tps$tps1 = tpscount %>%
+  filter(tps == 1) %>% 
+  pull(representative)
+
+summaryTPelements$tps$tps2to5 = tpscount %>%
+  filter(tps > 1 & tps <= 5) %>% 
+  pull(representative)
+
+summaryTPelements$tps$tps5 = tpscount %>%
+  filter(tps > 5) %>% 
+  pull(representative)
+
+tablePTelements = tibble(feature = c("1503 Upregulated",
+                                     "1503 Downregulated",
+                                     "2647 Upregulated",
+                                     "2647 Downregulated",
+                                     "2099 Upregulated",
+                                     "2099 Downregulated",
+                                     "SmAP1",
+                                     "asRNA",
+                                     "TPS (1)",
+                                     "TPS (2-5)",
+                                     "TPS (>5)"),
+                         count = c(summaryTPelements$`1503`$up %>% length(),
+                                   summaryTPelements$`1503`$down %>% length(),
+                                   summaryTPelements$`2647`$up %>% length(),
+                                   summaryTPelements$`2647`$down %>% length(),
+                                   summaryTPelements$`2099`$up %>% length(),
+                                   summaryTPelements$`2099`$down %>% length(),
+                                   summaryTPelements$SmAP1 %>% length(),
+                                   summaryTPelements$asRNA %>% length(),
+                                   summaryTPelements$tps$tps1 %>% length(),
+                                   summaryTPelements$tps$tps2to5 %>% length(),
+                                   summaryTPelements$tps$tps5 %>% length()))
+
 # all the atlas data as a supplemental table ####
 # also with nrtx table
 atlasdata = list("atlas" = hmaFuncat,

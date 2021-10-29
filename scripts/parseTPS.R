@@ -11,23 +11,25 @@
 
 # getting locus_tag of genes with associated TPS
 tpsoritbl = read_tsv(file = "data/Table_S1___TPS_to_cds_Hsal.tsv")
-tpsncbilt = tpsoritbl %>% 
-  pull(Common.Name) %>% 
-  unique()
+tpsncbilt = tpsoritbl %>%
+  group_by(Common.Name) %>%
+  summarise(count = n())
 
 # creating tibble to store data
-tpsncbi = tibble(ncbi_locus_tag = tpsncbilt,
-                 tps = 1)
+tpsncbi = tibble(ncbi_locus_tag = tpsncbilt$Common.Name,
+                 tps = tpsncbilt$count)
 
 # translating locus_tag
-tps = left_join(x = nrtx %>%
-                  separate_rows(sep = ",", locus_tag),
-                y = tpsncbi,
-                by = c("locus_tag" = "ncbi_locus_tag")) %>% 
-  mutate(tps = case_when(is.na(tps) ~ 0,
+tpscount = left_join(x = nrtx %>%
+                       separate_rows(sep = ",", locus_tag),
+                     y = tpsncbi,
+                     by = c("locus_tag" = "ncbi_locus_tag")) %>% 
+  mutate(tps = case_when(is.na(tps) ~ as.integer(0),
                          TRUE ~ tps)) %>% 
   group_by(representative) %>% 
-  summarise(tps = sum(tps)) %>% 
+  summarise(tps = max(tps))
+
+tps = tpscount %>% 
   mutate(tps = case_when(tps > 0 ~ "yes",
                          TRUE ~ "no"))
 

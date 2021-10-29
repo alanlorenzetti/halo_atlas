@@ -11,15 +11,11 @@ if(!dir.exists("results")){dir.create("results")}
 # loading libs
 source("scripts/loadingLibs.R")
 
-# ~/gdrive/runKallisto/plotKmerTests.R
-#source("scripts/locusTagDictGbk2Tpa.R") # about to get deprecated; replaced by https://alanlorenzetti.github.io/halo_nr_tx/
+# parsers of misc features
 source("scripts/parseHalfLives.R")
-source("scripts/codonUsage.R") # check why there are a few proteins (<10) out of o frame
+source("scripts/codonUsage.R") # check why there are a few proteins (<10) out of oF frame
 source("scripts/parseMicrobesOnlinePredOperons.R")
 source("scripts/parseAntisenseRNAs.R")
-#source("scripts/getAndParseKEGG.R") # about to get deprecated
-#source("scripts/getAndParseUniprotInfo.R") # about to get deprecated
-#source("scripts/getAndParseArCOGs.R") # about to get deprecated
 source("scripts/parseTFChipSeq.R")
 source("scripts/parseTFChipChip.R")
 source("scripts/parseLocation.R")
@@ -31,35 +27,32 @@ source("scripts/parseAndProcess2099.R")
 source("scripts/getAndParseMiscFeatures.R")
 source("scripts/combineAndWrangleFunCat.R")
 
-# this version is using unnormalized new version of spectronaut data
-# I think we should get back to the previous version
+# proteome parser and analysis
 source("scripts/parseProteomicsSpectronaut.R")
-#source("scripts/parseProteomicsOneOmics.R") # about to get deprecated
 source("scripts/DEanalysisProtein.R")
 
+# transcriptome parser and analysis
 source("scripts/parseRNAtpms.R")
 source("scripts/DEanalysisRNA.R")
 
-source("scripts/exploratoryAnalysis.R") # exploratory analysis plots
+# exploratory analysis plots
+source("scripts/exploratoryAnalysis.R") 
 
+# models and functions to work with fold change data
 source("scripts/models.R")
-# source("scripts/proteinRegRules.R") # about to get deprecated
-# source("scripts/timecourseAnalysis.R") # about to get deprecated
 
-# source("scripts/heatmaps.R") about to get deprecated
+# working with abundance 
 source("scripts/unifyAbundance.R")
-# source("scripts/heatmapsAllRelativeChanges.R") # about to get deprecated
-# source("scripts/heatmapsAllAbsolute.R") # about to get deprecated
-#source("scripts/heatmapsAllAbsolute_v2_tese.R")
+
+# heatmap generation
 source("scripts/heatmapsAllAbsolute_v2_english.R")
+
+# enrichment functions and analyses
 source("scripts/enrichment.R")
-#source("scripts/clusterEnrichmentAnalysis.R") # about to get deprecated
-# source("scripts/computeAnglesAndMag.R") # about to get deprecated
-#source("scripts/globalFCanalysis.R")
-#source("scripts/analysesAndFigures.R")
-#source("scripts/analysisAndFiguresRequested20201009.R") # correlation plots
-source("scripts/analysesAndFigures_v3.R") # correlation plots
-source("scripts/outputSupMaterial.R") # correlation plots
-#source("scripts/findPutativeRegulatedTx.R")
-# source("scripts/norm_issues_tmp.R") # accessory and not essential
-# source("scripts/bepeReportFigures.R")
+
+# other figures and analyses
+# including abundance correlation plots
+source("scripts/analysesAndFigures_v3.R") 
+
+# supplementary material
+source("scripts/outputSupMaterial.R")
