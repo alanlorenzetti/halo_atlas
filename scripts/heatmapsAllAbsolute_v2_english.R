@@ -214,7 +214,7 @@ heatLegs = list(
   # ir = Legend(title = "# IRs",
   #             col_fun = heatCols$irCol,
   #             border="black"),
-  GCdev = Legend(title = "GC Residue",
+  GCdev = Legend(title = "GC Content",
                  col_fun = heatCols$GCdevcol,
                  border = "black")
 )
@@ -276,7 +276,7 @@ row_ha = HeatmapAnnotation(which = "row",
                                                 "Half-life",
                                                 "CAI",
                                                 # "IRs",
-                                                "GC Residue"
+                                                "GC Content"
                            )
 )
 

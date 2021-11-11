@@ -17,7 +17,6 @@ abundDerLongFuncat = left_join(abundDerLong,
                                dictFunCat,
                                by = c("locus_tag" = "pfeiLocusTag"))
 
-
 abundNormLongFuncat = left_join(abundNormLong,
                                 dictFunCat,
                                 by = c("locus_tag" = "pfeiLocusTag"))
@@ -67,7 +66,7 @@ plotpvsm = function(df, tpprot, tpmrna){
     geom_smooth(aes(y = get(protcol),
                     x = get(mrnacol)),
                 method = "lm",
-                color = tab10$value[1]) +
+                color = "black") +
     stat_cor(aes(y = get(protcol),
                  x = get(mrnacol)),
              inherit.aes = F,
@@ -85,7 +84,7 @@ plotpvsm = function(df, tpprot, tpmrna){
     annotation_logticks() +
     scale_color_manual(values = c("prot_top_mrna_bot" = "#F28E2B",
                                   "prot_bot_mrna_top" = "#59A14F",
-                                  "regular" = "black")) +
+                                  "regular" = "grey")) +
     ggtitle(tptitle)
   
   return(plot)
@@ -254,7 +253,82 @@ ggsave(filename = "plots/16_prod_down_mrna_up_venn.png",
        width = 6.5,
        height = 6.5)
 
-# inspecting gvp1 trajectories
+# plotting venn diagrams for post-transcriptional ####
+# related features
+# table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
+summaryTPelements = list()
+
+# 1503 mutant
+summaryTPelements$`1503`$up = res1503 %>% 
+  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+summaryTPelements$`1503`$down = res1503 %>% 
+  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+# 2647 mutant
+summaryTPelements$`2647`$up = res2647 %>% 
+  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+summaryTPelements$`2647`$down = res2647 %>% 
+  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
+  pull(target_id)
+
+# 2099 mutant
+summaryTPelements$`2099`$up = res2099 %>% 
+  filter(logFC >= lfcthr & adj.P.Val < padjthreshold) %>% 
+  pull(representative)
+
+summaryTPelements$`2099`$down = res2099 %>% 
+  filter(logFC <= -lfcthr & adj.P.Val < padjthreshold) %>% 
+  pull(representative)
+
+summaryTPelements$SmAP1 = dictFunCat %>% 
+  filter(lsmSense == "yes") %>% 
+  pull(pfeiLocusTag)
+
+summaryTPelements$asRNA = dictFunCat %>% 
+  filter(asRNA == "yes") %>% 
+  pull(pfeiLocusTag)
+
+summaryTPelements$tps$tps1 = tpscount %>%
+  filter(tps == 1) %>% 
+  pull(representative)
+
+summaryTPelements$tps$tps2to5 = tpscount %>%
+  filter(tps > 1 & tps <= 5) %>% 
+  pull(representative)
+
+summaryTPelements$tps$tps5 = tpscount %>%
+  filter(tps > 5) %>% 
+  pull(representative)
+
+ptgsFeaturesVenn = plot(venn(combinations = list("SmAP1" = summaryTPelements$SmAP1,
+                                                 "asRNA" = summaryTPelements$asRNA,
+                                                 "TPS" = c(summaryTPelements$tps$tps1,
+                                                           summaryTPelements$tps$tps2to5,
+                                                           summaryTPelements$tps$tps5) %>% 
+                                                   unique(),
+                                                 "RNases" = c(summaryTPelements$`1503`$up,
+                                                              summaryTPelements$`1503`$down,
+                                                              summaryTPelements$`2647`$up,
+                                                              summaryTPelements$`2647`$down,
+                                                              summaryTPelements$`2099`$up,
+                                                              summaryTPelements$`2099`$down) %>% 
+                                                   unique())),
+                        fills = "white",
+                        edges = list(lex = 2))
+
+ggsave(filename = "plots/17_ptgsFeatures_venn.png",
+       plot = ptgsFeaturesVenn,
+       units = "in",
+       dpi = 300,
+       width = 6.5,
+       height = 6.5)
+
+# inspecting gvp1 trajectories ####
 # protein abundance in function of mRNA
 # no colorspace
 breaksbase2 = 2^(-32:32)

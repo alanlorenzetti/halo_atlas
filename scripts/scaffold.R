@@ -13,7 +13,7 @@ source("scripts/loadingLibs.R")
 
 # parsers of misc features
 source("scripts/parseHalfLives.R")
-source("scripts/codonUsage.R") # check why there are a few proteins (<10) out of oF frame
+source("scripts/codonUsage.R") # check why there are a few proteins (<10) out of frame
 source("scripts/parseMicrobesOnlinePredOperons.R")
 source("scripts/parseAntisenseRNAs.R")
 source("scripts/parseTFChipSeq.R")

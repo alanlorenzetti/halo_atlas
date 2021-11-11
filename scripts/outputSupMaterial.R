@@ -182,7 +182,7 @@ criteria = c("prot_bot_mrna_top", "prot_non_mrna_top", "prot_bot_prot_non_mrna_t
 testVars = c("lsmSense", "asRNA", "tps")
 testLevels = c("yes")
 minCount = 3
-pvalthr = 0.01
+pvalthr = 0.05
 
 for(tp in names(ptgsAbund)){
   for(crit in criteria){
@@ -232,7 +232,7 @@ for(tp in names(ptgsAbund)){
 # abundStats$qvalue = p.adjust(p = abundStats$pvalue, method = "BH")
 
 # quantitative variables
-testVars = c("HL", "cai", "lfc2647", "lfc2099")
+testVars = c("HL", "cai", "lfc2647", "lfc2099", "lfc1503")
 
 for(tp in names(ptgsAbund)){
   for(crit in criteria){
@@ -266,7 +266,13 @@ for(tp in names(ptgsAbund)){
           unname()
         
         if(is.na(mean(xtest, na.rm = T)) | is.na(mean(ytest, na.rm = T))){next}
-        if(mean(xtest, na.rm = T) > mean(ytest, na.rm = T)){lvl = "higher"}else{lvl = "lower"}
+        meanx = mean(xtest, na.rm = T)
+        meany = mean(ytest, na.rm = T)
+        if(meanx > meany){
+          lvl = paste0("higher", ":", round(meanx, digits = 4), ":", round(meany, digits = 4))
+        }else{
+          lvl = paste0("lower", ":", round(meanx, digits = 4), ":", round(meany, digits = 4))
+        }
         
         wstat = wilcox.test(x = xtest,
                             y = ytest,
@@ -367,7 +373,7 @@ for(tp in names(ptgs)){
 }
 
 # quantitative variables
-testVars = c("HL", "cai", "lfc2647", "lfc2099")
+testVars = c("HL", "cai", "lfc2647", "lfc2099", "lfc1503")
 
 for(tp in names(ptgs)){
   for(crit in criteria){
@@ -401,7 +407,13 @@ for(tp in names(ptgs)){
           unname()
         
         if(is.na(mean(xtest, na.rm = T)) | is.na(mean(ytest, na.rm = T))){next}
-        if(mean(xtest, na.rm = T) > mean(ytest, na.rm = T)){lvl = "higher"}else{lvl = "lower"}
+        meanx = mean(xtest, na.rm = T)
+        meany = mean(ytest, na.rm = T)
+        if(meanx > meany){
+          lvl = paste0("higher", ":", round(meanx, digits = 4), ":", round(meany, digits = 4))
+        }else{
+          lvl = paste0("lower", ":", round(meanx, digits = 4), ":", round(meany, digits = 4))
+        }
         
         wstat = wilcox.test(x = xtest,
                             y = ytest,

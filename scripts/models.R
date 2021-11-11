@@ -24,6 +24,19 @@ tab10col = c(
   "core"="#EDC948", # yellow
   "center"="grey80") # grey
 
+tab10labs = c("Protein Up mRNA Up",
+              "Protein Up mRNA Down",
+              "Protein Down mRNA Down",
+              "Protein Down mRNA Up",
+              "Protein Up mRNA Flat",
+              "Protein Flat mRNA Up",
+              "Protein Flat mRNA Down",
+              "Protein Down mRNA Flat",
+              "Protein Flat mRNA Flat",
+              "Buffer Zone")
+
+names(tab10labs) = names(tab10col)
+
 # mod to allow black lines using fill aes
 tab10colmod = tab10col
 tab10colmod["Q1"] = "black"
@@ -326,7 +339,7 @@ plotLM = function(df, type, xLim, yLim){
   }
   
   plot = ggplot(data = df, aes(x=get(x), y=get(y), colour=get(color))) +
-    geom_point(aes(alpha=get(alpha)), size = sz, show.legend = F, stroke = 0) +
+    geom_point(aes(alpha=get(alpha)), size = sz, show.legend = T, stroke = 0) +
     xlim(xLim) + ylim(yLim) + xlab(xlabtxt) + ylab(ylabtxt) +
     # geom_vline(xintercept = 0, size = 0.3) +
     # geom_hline(yintercept = 0, size = 0.3) +
@@ -343,9 +356,12 @@ plotLM = function(df, type, xLim, yLim){
     #             size=0.5,
     #             method="lm",
     #             show.legend = F) +
-    scale_colour_manual(values = tab10col) +
-    scale_fill_manual(values = tab10col) +
-    scale_alpha_manual(values = c("bold"=0.8, "mid"= 0.3, "faint"=0.1)) +
+    scale_colour_manual(name = NULL,
+                        values = tab10col,
+                        labels = tab10labs,
+                        guide = guide_legend(override.aes = list(size = 3))) +
+    scale_alpha_manual(guide = "none",
+                       values = c("bold"=0.8, "mid"= 0.3, "faint"=0.1)) +
     theme(axis.title.x = element_markdown(),
           axis.title.y = element_markdown())
 #    scale_shape_manual(values = c("bold"=4, "mid"=5, "faint"=1))
@@ -389,20 +405,21 @@ for(i in names(alldfs)){
 #creating list of plots
 plotlabels = names(p_prot_mRNA) %>% str_replace_all(., "_vs_", " vs. ")
 
-p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[1]),
-                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle(plotlabels[2]),
-                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle(plotlabels[3]),
-                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[4]),
-                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[5]))
+p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[1]) + theme(legend.position="none"),
+                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle(plotlabels[2]) + theme(legend.position="none"),
+                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle(plotlabels[3]) + theme(legend.position="none"),
+                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[4]) + theme(legend.position="none"),
+                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[5]) + theme(legend.position="none"),
+                   get_legend(lmplots$TP4_vs_TP1$`protein-mRNA`))
 
 prot_mRNA_panel = ggarrange(plotlist = p_prot_mRNA,
                             nrow = 2, ncol = 3,
-                            labels = "AUTO")
+                            labels = c(LETTERS[1:5]))
 
 ggsave(filename = "plots/ptgs_lfc_panel.png",
        plot = prot_mRNA_panel,
-       width = 7.5,
-       height = 5,
+       width = 8,
+       height = 5.5,
        units = "in",
        dpi = 300)
 
