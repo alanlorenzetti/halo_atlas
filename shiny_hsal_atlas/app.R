@@ -39,7 +39,7 @@ file.copy(from = "../plots/abundanceHeatmap_expanded_en.pdf",
           to = "data")
 
 # creating header
-header = dashboardHeader(title = "Hsal Atlas")
+header = dashboardHeader(title = "Halo Atlas")
 
 # creating sidebar
 sidebar = dashboardSidebar(
@@ -111,7 +111,7 @@ body = dashboardBody(
                     var options =
                     {
                     
-                        locus: "NC_002607.1:54,856-61,307",
+                        locus: "NC_001869.1:17,638-27,205",
                     
                         reference: {
                             id: "Halobacterium salinarum NRC-1",

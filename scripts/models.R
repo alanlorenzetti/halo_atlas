@@ -24,16 +24,16 @@ tab10col = c(
   "core"="#EDC948", # yellow
   "center"="grey80") # grey
 
-tab10labs = c("Protein Up mRNA Up",
-              "Protein Up mRNA Down",
-              "Protein Down mRNA Down",
-              "Protein Down mRNA Up",
-              "Protein Up mRNA Flat",
-              "Protein Flat mRNA Up",
-              "Protein Flat mRNA Down",
-              "Protein Down mRNA Flat",
-              "Protein Flat mRNA Flat",
-              "Buffer Zone")
+tab10labs = c("Protein Up & mRNA Up",
+              "Protein Up & mRNA Down",
+              "Protein Down & mRNA Down",
+              "Protein Down & mRNA Up",
+              "Protein Up & mRNA Flat",
+              "Protein Flat & mRNA Up",
+              "Protein Flat & mRNA Down",
+              "Protein Down & mRNA Flat",
+              "Protein Flat & mRNA Flat",
+              "None of the categories above")
 
 names(tab10labs) = names(tab10col)
 
@@ -427,7 +427,9 @@ ggsave(filename = "plots/ptgs_lfc_panel.png",
 # individually
 for(i in names(lmplots)){
   ggsave(filename = paste0("plots/ptgs", i, ".png"),
-         plot = lmplots[[i]]$`protein-mRNA` + ggtitle(gsub(i, pattern = "_vs_", replacement = " vs. ")),
+         plot = lmplots[[i]]$`protein-mRNA` +
+           ggtitle(gsub(i, pattern = "_vs_", replacement = " vs. ")) +
+           theme(legend.position = "none"),
          width = 2.5,
          height = 2.5,
          units = "in",

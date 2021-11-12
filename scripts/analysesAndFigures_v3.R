@@ -258,24 +258,6 @@ ggsave(filename = "plots/16_prod_down_mrna_up_venn.png",
 # table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
 summaryTPelements = list()
 
-# 1503 mutant
-summaryTPelements$`1503`$up = res1503 %>% 
-  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-summaryTPelements$`1503`$down = res1503 %>% 
-  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-# 2647 mutant
-summaryTPelements$`2647`$up = res2647 %>% 
-  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-summaryTPelements$`2647`$down = res2647 %>% 
-  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
 # 2099 mutant
 summaryTPelements$`2099`$up = res2099 %>% 
   filter(logFC >= lfcthr & adj.P.Val < padjthreshold) %>% 
@@ -311,11 +293,7 @@ ptgsFeaturesVenn = plot(venn(combinations = list("SmAP1" = summaryTPelements$SmA
                                                            summaryTPelements$tps$tps2to5,
                                                            summaryTPelements$tps$tps5) %>% 
                                                    unique(),
-                                                 "RNases" = c(summaryTPelements$`1503`$up,
-                                                              summaryTPelements$`1503`$down,
-                                                              summaryTPelements$`2647`$up,
-                                                              summaryTPelements$`2647`$down,
-                                                              summaryTPelements$`2099`$up,
+                                                 "RNase" = c(summaryTPelements$`2099`$up,
                                                               summaryTPelements$`2099`$down) %>% 
                                                    unique())),
                         fills = "white",

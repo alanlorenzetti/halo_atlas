@@ -13,24 +13,6 @@ if(!dir.exists("results/supp_tables")){dir.create("results/supp_tables", recursi
 # table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
 summaryTPelements = list()
 
-# 1503 mutant
-summaryTPelements$`1503`$up = res1503 %>% 
-  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-summaryTPelements$`1503`$down = res1503 %>% 
-  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-# 2647 mutant
-summaryTPelements$`2647`$up = res2647 %>% 
-  filter(log2FoldChange >= lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
-summaryTPelements$`2647`$down = res2647 %>% 
-  filter(log2FoldChange <= -lfcthr & padj < padjthreshold) %>% 
-  pull(target_id)
-
 # 2099 mutant
 summaryTPelements$`2099`$up = res2099 %>% 
   filter(logFC >= lfcthr & adj.P.Val < padjthreshold) %>% 
@@ -60,22 +42,14 @@ summaryTPelements$tps$tps5 = tpscount %>%
   filter(tps > 5) %>% 
   pull(representative)
 
-tablePTelements = tibble(feature = c("1503 Upregulated",
-                                     "1503 Downregulated",
-                                     "2647 Upregulated",
-                                     "2647 Downregulated",
-                                     "2099 Upregulated",
+tablePTelements = tibble(feature = c("2099 Upregulated",
                                      "2099 Downregulated",
                                      "SmAP1",
                                      "asRNA",
                                      "TPS (1)",
                                      "TPS (2-5)",
                                      "TPS (>5)"),
-                         count = c(summaryTPelements$`1503`$up %>% length(),
-                                   summaryTPelements$`1503`$down %>% length(),
-                                   summaryTPelements$`2647`$up %>% length(),
-                                   summaryTPelements$`2647`$down %>% length(),
-                                   summaryTPelements$`2099`$up %>% length(),
+                         count = c(summaryTPelements$`2099`$up %>% length(),
                                    summaryTPelements$`2099`$down %>% length(),
                                    summaryTPelements$SmAP1 %>% length(),
                                    summaryTPelements$asRNA %>% length(),
@@ -232,7 +206,7 @@ for(tp in names(ptgsAbund)){
 # abundStats$qvalue = p.adjust(p = abundStats$pvalue, method = "BH")
 
 # quantitative variables
-testVars = c("HL", "cai", "lfc2647", "lfc2099", "lfc1503")
+testVars = c("HL", "cai", "lfc2099")
 
 for(tp in names(ptgsAbund)){
   for(crit in criteria){
@@ -373,7 +347,7 @@ for(tp in names(ptgs)){
 }
 
 # quantitative variables
-testVars = c("HL", "cai", "lfc2647", "lfc2099", "lfc1503")
+testVars = c("HL", "cai", "lfc2099")
 
 for(tp in names(ptgs)){
   for(crit in criteria){
