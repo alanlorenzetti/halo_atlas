@@ -20,6 +20,7 @@ source("scripts/parseTFChipSeq.R")
 source("scripts/parseTFChipChip.R")
 source("scripts/parseLocation.R")
 source("scripts/parseTPS.R")
+source("scripts/parseiTSS.R")
 source("scripts/genAndParseIRs.R")
 # source("scripts/parseAndProcess2647.R")
 # source("scripts/parseAndProcess1503.R")
@@ -36,7 +37,7 @@ source("scripts/parseRNAtpms.R")
 source("scripts/DEanalysisRNA.R")
 
 # exploratory analysis plots
-source("scripts/exploratoryAnalysis.R") 
+source("scripts/exploratoryAnalysis.R")
 
 # models and functions to work with fold change data
 source("scripts/models.R")

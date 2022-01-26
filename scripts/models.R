@@ -33,7 +33,7 @@ tab10labs = c("Protein Up & mRNA Up",
               "Protein Flat & mRNA Down",
               "Protein Down & mRNA Flat",
               "Protein Flat & mRNA Flat",
-              "None of the categories above")
+              "None of the previous categories")
 
 names(tab10labs) = names(tab10col)
 
@@ -98,8 +98,7 @@ for(i in names(unifiedFin)){
   # 
   # alldfs[[i]][,c("lfcse_mRNA","lfcse_RPF","lfcse_protein")] = quantileNorm[[i]][,c("lfcse_mRNA","lfcse_RPF","lfcse_protein")]
   
-  # finding significant and borderline status again
-  # after quantile normalization
+  # finding significant and borderline status
   for(type in c("totrna", "ribo", "protein")){
     var1 = paste0("sig_",type)
     var2 = paste0("borderlineZero_",type)
@@ -403,14 +402,12 @@ for(i in names(alldfs)){
 
 # arranging plots (only protein vs mRNA)
 #creating list of plots
-plotlabels = names(p_prot_mRNA) %>% str_replace_all(., "_vs_", " vs. ")
-
-p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[1]) + theme(legend.position="none"),
-                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle(plotlabels[2]) + theme(legend.position="none"),
-                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle(plotlabels[3]) + theme(legend.position="none"),
-                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[4]) + theme(legend.position="none"),
-                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle(plotlabels[5]) + theme(legend.position="none"),
-                   get_legend(lmplots$TP4_vs_TP1$`protein-mRNA`))
+p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle("TP2_vs_TP1") + theme(legend.position="none"),
+                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle("TP3_vs_TP2") + theme(legend.position="none"),
+                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle("TP4_vs_TP3") + theme(legend.position="none"),
+                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle("TP3_vs_TP1") + theme(legend.position="none"),
+                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle("TP4_vs_TP1") + theme(legend.position="none"),
+                   "LEGEND" = get_legend(lmplots$TP4_vs_TP1$`protein-mRNA`, position = "bottom"))
 
 prot_mRNA_panel = ggarrange(plotlist = p_prot_mRNA,
                             nrow = 2, ncol = 3,

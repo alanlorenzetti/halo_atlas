@@ -9,37 +9,44 @@
 # creating an output directory
 if(!dir.exists("results/supp_tables")){dir.create("results/supp_tables", recursive = T)}
 
-# summary of post-transcriptional related elements ####
+# summary of post-transcriptional related elements for coding genes ####
 # table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
 summaryTPelements = list()
 
 # 2099 mutant
 summaryTPelements$`2099`$up = res2099 %>% 
-  filter(logFC >= lfcthr & adj.P.Val < padjthreshold) %>% 
+  filter(logFC >= log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$`2099`$down = res2099 %>% 
-  filter(logFC <= -lfcthr & adj.P.Val < padjthreshold) %>% 
+  filter(logFC <= -log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$SmAP1 = dictFunCat %>% 
   filter(lsmSense == "yes") %>% 
+  filter(str_detect(pfeiLocusTag, "VNG_[0-9]")) %>% 
   pull(pfeiLocusTag)
 
 summaryTPelements$asRNA = dictFunCat %>% 
   filter(asRNA == "yes") %>% 
+  filter(str_detect(pfeiLocusTag, "VNG_[0-9]")) %>% 
   pull(pfeiLocusTag)
 
 summaryTPelements$tps$tps1 = tpscount %>%
   filter(tps == 1) %>% 
+  filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$tps$tps2to5 = tpscount %>%
   filter(tps > 1 & tps <= 5) %>% 
+  filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$tps$tps5 = tpscount %>%
   filter(tps > 5) %>% 
+  filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 tablePTelements = tibble(feature = c("2099 Upregulated",

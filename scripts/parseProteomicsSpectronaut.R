@@ -6,13 +6,32 @@
 
 # loading files ####
 
+# sent by Ulli on 20211223
+# manuscript v11
+# v4 SN C4 layout relaxed (10% FDR at peptide lvl / 1% FDR at protein lvl)
+file = "data/20211213_HaloLys_C4_pepFDR0_1_normalized_SN15_Protein_Report.xls"
+# v4 SN C4 layout strict (1% FDR at peptide lvl / 1% FDR at protein lvl)
+#file = "data/20211214_221333_20211213_HaloLys_C4_normalized_SN15_Protein_Report.xls"
+
+# v4 SN C12 layout relaxed (10% FDR at peptide lvl / 1% FDR at protein lvl)
+#file = "data/20211213_HaloLys_C12_pepFDR0_1_normalized_SN15_Protein_Report.xls"
+# v4 SN C12 layout strict (1% FDR at peptide lvl / 1% FDR at protein lvl)
+#file = "data/20211214_224836_20211213_HaloLys_C12_normalized_SN15_Protein_Report.xls"
+
+# sent by Ulli on 20211123
+#v3 SN C4 layout relaxed (10% FDR at peptide lvl / 1% FDR at protein lvl)
+#file = "data/20211122_Halo_WholeLysate_normalized_C4_PeptideFDR-0_1_SN15_Report.xls"
+#v3 SN C4 layout strict (1% FDR at peptide lvl / 1% FDR at protein lvl)
+#file = "data/20211122_Halo_WholeLysate_normalized_C4_SN15_Report.xls"
+
 #v2 SN C4 layout normalized
 #file = "data/Halo_WholeLysate_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_normalized_Protein_Report_C4.xls"
 #v2 SN C4 layout unnormalized
 #file = "data/Halo_WholeLysate_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_unnormalized_Protein_Report_C4.xls"
 
 #v1 SN lysate fraction normalized
-file = "data/Halo_WholeLysate_analysis_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_Protein_Report_20200731.xls"
+# manuscript v10 was using the following file
+#file = "data/Halo_WholeLysate_analysis_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_Protein_Report_20200731.xls"
 #v1 SN ribo fraction normalized
 #file2 = "data/Halo_Ribo_analysis_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_Protein_Report.xls"
 

@@ -179,6 +179,16 @@ body = dashboardBody(
                                 color: "#B07AA1",
                                 displayMode: "EXPANDED"
                             },
+                            
+                         {
+                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/iTSS_gff_fwd.gff3",
+                                type: "annotation",
+                                format: "gff3",
+                                name: "iTSS (+)",
+                                height: 30,
+                                color: "black",
+                                displayMode: "SQUISHED"
+                            },
                         
                             {
                                 url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/Hsalinarum-gene-annotation-pfeiffer2019-adjusted-names.gff3",
@@ -198,6 +208,16 @@ body = dashboardBody(
                                 name: "IS annotation",
                                 color: "#59A14F",
                                 displayMode: "COLLAPSED"
+                            },
+                            
+                         {
+                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/iTSS_gff_rev.gff3",
+                                type: "annotation",
+                                format: "gff3",
+                                name: "iTSS (-)",
+                                height: 30,
+                                color: "black",
+                                displayMode: "SQUISHED"
                             },
                             
                             {
@@ -378,6 +398,6 @@ server <- function(input, output, session) {
 shinyApp(ui = ui, server = server)
 
 # deploying
-#library(rsconnect)
-#deployApp()
+# library(rsconnect)
+# deployApp()
 

@@ -31,7 +31,7 @@ gset = gset[[1]]
 # first I've got to find the genes
 # intersecting each one of the probes
 
-# adjusting data from gset to transfor into
+# adjusting data from gset to transform into
 # a gr object; also adjusting probes
 # spanning the end and beginning of a replicon
 gsetfeat = fData(gset) %>%

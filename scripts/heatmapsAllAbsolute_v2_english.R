@@ -11,6 +11,20 @@
 
 # preparing main abundance dataset ####
 # dataset will be normalized within each timepoint
+# establishing a function that will convert pseudocounts
+# to NA before normalization
+one2NA = function(x) {
+  x[x == 1] = NA_integer_
+  return(x)
+}
+
+# afterwards, we will also convert NA
+# back to 1
+NA2one = function(x) {
+  x[is.na(x)] = 1
+  return(x)
+}
+
 hma = abundAlt %>% 
   dplyr::select(locus_tag,
                 starts_with("mean_abundance_protein_lysate"),
@@ -21,7 +35,8 @@ hma = abundAlt %>%
                 ends_with("TP2"),
                 ends_with("TP3"),
                 ends_with("TP4")) %>% 
-  drop_na()
+  dplyr::mutate(across(.cols = where(is.numeric),
+                       .fns = ~ one2NA(.x)))
 
 # normalizing TP1
 hmaM1 = hma %>% 
@@ -56,6 +71,11 @@ hmaM = base::cbind(hmaM1, hmaM2, hmaM3, hmaM4)
 colnames(hmaM) = colnames(hma)[-1]
 rownames(hmaM) = hma$locus_tag
 
+# assigning a pseudocount to NA values
+# in order to avoid misrepresentation in
+# the heat map
+hmaM[is.na(hmaM)] = 1
+
 # reordering cols
 cols = paste0(c(rep("mean_abundance_protein_lysate", 4),
                 rep("mean_abundance_rna_total", 4),
@@ -64,11 +84,6 @@ cols = paste0(c(rep("mean_abundance_protein_lysate", 4),
 
 hmaM = hmaM[,cols] %>%
   as.matrix()
-
-# creating object with functional categories
-hmaFuncat = left_join(hma, dictFunCat,
-                      by = c("locus_tag" = "pfeiLocusTag")) %>% 
-  dplyr::select(-locus_tag.y)
 
 # preparing datasets for additional matrices ####
 # translational efficiency and
@@ -101,6 +116,11 @@ hmaRO = hma %>%
   as.matrix()
 rownames(hmaRO) = rownames(hmaM)
 
+# creating object with functional categories
+hmaFuncat = left_join(hma, dictFunCat,
+                      by = c("locus_tag" = "pfeiLocusTag")) %>% 
+  dplyr::select(-locus_tag.y)
+
 # defining colors and color functions ####
 # 24 manual colors;
 # mostly extracted from
@@ -117,9 +137,9 @@ arCOGcols = c(
   "Defense mechanisms" = "#B6992D", # yellow green
   "Energy production and conversion" = "#F1CE63", # yellow
   "Extracellular structures" = "blue", # 
+  "Function unknown" = "#79706E", # dark grey
   "General function prediction only" = "grey70", 
   "Inorganic ion transport and metabolism" = "#86BCB6", # light teal
-  "Function unknown" = "#79706E", # dark grey
   "Intracellular trafficking, secretion, and vesicular transport" = "#E15759", # red
   "Lipid transport and metabolism" = "#FF9D9A", # pink
   "Mobilome: prophages, transposons" = "#D37295", # pink
@@ -409,10 +429,10 @@ htRO = Heatmap(log2(hmaRO),
                col = colors2,
                show_heatmap_legend = F,
                row_names_side = "right",
-               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product) %>% 
-                 str_sub(start = 1, end = 52),
+               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product),
                show_row_names = T,
                row_names_gp = gpar(fontsize = 6),
+               row_names_max_width = unit(10, "cm"),
                column_order = colnames(hmaRO),
                column_labels = c("TP1", "TP2", "TP3", "TP4"),
                column_title = "RO",
@@ -427,9 +447,21 @@ htRO = Heatmap(log2(hmaRO),
 htComplete = htProt + htmRNA + htRPF + htTE + htRO
 
 pdf(file = "plots/abundanceHeatmap_expanded_en.pdf",
-    width = 13.75,
+    width = 15,
     height = 175)
 draw(htComplete,
+     annotation_legend_list = heatLegs,
+     main_heatmap = "Protein")
+dev.off()
+
+# saving the expanded version for 269 putative
+# post-transcriptionally regulated genes
+pdf(file = "plots/abundanceHeatmap_expanded_269_genes_en.pdf",
+    width = 15,
+    height = 40)
+draw(htComplete[hmaFuncat$locus_tag %in%
+                  unique(c(ptgs$union$Q4$locus_tag,
+                           ptgsAbund$union$prot_bot_prot_non_mrna_top))],
      annotation_legend_list = heatLegs,
      main_heatmap = "Protein")
 dev.off()
@@ -441,7 +473,9 @@ htRO = Heatmap(log2(hmaRO),
                show_heatmap_legend = F,
                row_names_side = "right",
                show_row_names = F,
-               row_names_gp = gpar(fontsize = 4),
+               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product),
+               row_names_gp = gpar(fontsize = 10),
+               row_names_max_width = unit(10, "cm"),
                column_order = colnames(hmaRO),
                column_labels = c("TP1", "TP2", "TP3", "TP4"),
                column_title = "RO",
@@ -476,10 +510,10 @@ htRO = Heatmap(log2(hmaRO),
                col = colors2,
                show_heatmap_legend = F,
                row_names_side = "right",
-               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product) %>% 
-                 str_sub(start = 1, end = 52),
+               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product),
                show_row_names = T,
                row_names_gp = gpar(fontsize = 6),
+               row_names_max_width = unit(8, "cm"),
                column_order = colnames(hmaRO),
                column_labels = c("TP1", "TP2", "TP3", "TP4"),
                column_title = "RO",
@@ -504,7 +538,7 @@ for(i in names(ptgs)){
       fight = 1 + length(ptgs[[i]][[j]]$locus_tag)/3
       
       png(file = paste0("plots/abundanceHeatmap_ptgs/", i, "_", j, ".png"),
-           width = 10,
+           width = 12,
            height = fight,
            units = "in",
            res = 300)
@@ -528,7 +562,6 @@ png(file = paste0("plots/gvp_heat.png"),
 draw(htgvp,
      show_heatmap_legend = F)
 dev.off()
-
 
 # # arranging and saving a version ordered by GC ####
 # htProt = Heatmap(log10(hmaM[,1:4]),
@@ -789,8 +822,3 @@ ggsave(filename = "plots/mobileElPanelFeatures_en.png",
        width = 8.5,
        height = 10,
        dpi = 300)
-
-# saving hmaFuncat object
-# for posterior use
-# write_tsv(x = hmaFuncat, 
-#           file = "results/hmaFuncat.tsv")

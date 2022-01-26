@@ -208,6 +208,6 @@ ptgsAbund$union$prot_bot_prot_non_mrna_top = c(ptgsAbund$union$prot_bot_mrna_top
 
 # getting the union of abundance and fold change approaches
 # for putative post-transcriptionally repressed transcripts
-ptgsAbundFcQ4 = c(vennplot$prot_non_prot_bot_mrna_top_union_set,
+ptgsAbundFcQ4 = c(ptgsAbund$union$prot_bot_prot_non_mrna_top,
                   ptgs$union$Q4$short_and_long_transition_locus_tag) %>% 
   unique()

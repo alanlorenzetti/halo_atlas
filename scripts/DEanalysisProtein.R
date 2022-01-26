@@ -10,8 +10,16 @@ padjthreshold = 0.05
 log2fcthreshold = 1
 borderlinezero = 0.25
 
-# loading required SN file file ####
-spectro = read_tsv("data/Halo_WholeLysate_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_unnormalized_Protein_Report_C4.xls")
+# loading required SN file ####
+#spectro = read_tsv("data/Halo_WholeLysate_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_unnormalized_Protein_Report_C4.xls")
+
+#v1 
+# manuscript v10
+#spectro = read_tsv("data/Halo_WholeLysate_analysis_HaloIonLibraryVNG_merged_final_2018-04-07_SW100_Protein_Report_20200731.xls")
+
+# manuscript v11
+# v4 SN C4 layout relaxed (10% FDR at peptide lvl / 1% FDR at protein lvl)
+file = "data/20211213_HaloLys_C4_pepFDR0_1_normalized_SN15_Protein_Report.xls"
 
 # repeating protein group filtering 
 # from parseProteomicsSpectronaut script
@@ -154,7 +162,7 @@ normalized_abundance_matrix = median_normalization(snv2M)
 # 
 # # 95% conf interval is approx `sd * 1.96`
 # uncertainty = matrix(paste0(" ± ",round(as.matrix(da$sd * 1.96)[sel, sel], 1)), nrow=36)
-# pheatmap::pheatmap(plot_mat, 
+# pheatmap::pheatmap(plot_mat,
 #                    cluster_rows = FALSE, cluster_cols = FALSE,
 #                    display_numbers= uncertainty,
 #                    number_color = "black")

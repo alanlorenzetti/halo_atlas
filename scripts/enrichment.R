@@ -48,6 +48,8 @@ enrichAnalysis = function(df, subvec, testcol, lev){
 }
 
 # testing enrichment gvp cluster
+gvp1a = paste0("VNG_", 7015:7028)
+
 gvpenrich = list()
 testcols = c("lsmSense", "asRNA", "tps")
 
@@ -63,11 +65,4 @@ mobilome = hmaFuncat %>%
 
 for(i in testcols){
   mobenrich[[i]] = enrichAnalysis(hmaFuncat, mobilome, i, "yes")
-}
-
-# testing green cluster tp2 vs tp1
-greenclusterenrich = list()
-
-for(i in testcols){
-  greenclusterenrich[[i]] = enrichAnalysis(hmaFuncat, ptgs$TP2_vs_TP1$Q4$locus_tag, i, "yes")
 }

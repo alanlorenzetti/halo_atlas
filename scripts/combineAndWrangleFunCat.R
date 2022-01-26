@@ -73,22 +73,23 @@ dictFunCat = left_join(dictFunCat, irs, by = c("pfeiLocusTag" = "representative"
                          TRUE ~ as.numeric(IRs)))
 
 # adding delta2647 fold changes
-dictFunCat = left_join(dictFunCat, lfc2647, by = c("pfeiLocusTag" = "representative"))
+# dictFunCat = left_join(dictFunCat, lfc2647, by = c("pfeiLocusTag" = "representative"))
 
 # adding delta1503 fold changes 
-dictFunCat = left_join(dictFunCat, lfc1503, by = c("pfeiLocusTag" = "representative"))
+# dictFunCat = left_join(dictFunCat, lfc1503, by = c("pfeiLocusTag" = "representative"))
 
 # adding delta2099 fold changes 
 dictFunCat = left_join(dictFunCat, lfc2099, by = c("pfeiLocusTag" = "representative"))
 
 # adjusting missing values for delta 2647, 1503, and 2099 fold changes
 dictFunCat = dictFunCat %>% 
-  mutate(lfc2647 = case_when(is.na(lfc2647) ~ 0,
-                             TRUE ~ lfc2647),
-         lfc1503 = case_when(is.na(lfc1503) ~ 0,
-                             TRUE ~ lfc1503),
-         lfc2099 = case_when(is.na(lfc2099) ~ 0,
-                             TRUE ~ lfc2099))
+  mutate(
+    # lfc2647 = case_when(is.na(lfc2647) ~ 0,
+    #                     TRUE ~ lfc2647),
+    # lfc1503 = case_when(is.na(lfc1503) ~ 0,
+    #                     TRUE ~ lfc1503),
+    lfc2099 = case_when(is.na(lfc2099) ~ 0,
+                        TRUE ~ lfc2099))
 
 # adding IS family information for representative CDS loci
 # within insertion sequences
@@ -105,6 +106,15 @@ dictFunCat = dictFunCat %>%
   mutate(cog_category = case_when(str_detect(product, pattern = "ISH2|transposase") &
                                     str_detect(product, pattern = "nonfunc", negate = T) ~ "Mobilome: prophages, transposons",
                                   TRUE ~ as.character(cog_category)))
+
+# adding information if a gene
+# encodes a protein or not
+dictFunCat = dictFunCat %>% 
+  mutate(protein_coding = case_when(str_detect(pfeiLocusTag,
+                                               pattern = "VNG_r|VNG_t|VNG_s",
+                                               negate = T) ~ "yes",
+                                    TRUE ~ "no"))
+  
 
 ########## VISUALIZATION ###############
 # funcat visualization

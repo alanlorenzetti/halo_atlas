@@ -504,7 +504,7 @@ cumuvarplot = expVar %>%
   geom_point() +
   geom_line() +
   facet_wrap(~key, scales = "free_y") +
-  lims(y = c(0, 1)) +
+  lims(y = c(0, 1.0001)) +
   labs(y = "Variance",
        x = "Principal Components") +
   theme(axis.text.x = element_text(angle = 90))
