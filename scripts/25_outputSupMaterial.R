@@ -65,8 +65,42 @@ tablePTelements = tibble(feature = c("2099 Upregulated",
                                    summaryTPelements$tps$tps5 %>% length()))
 
 # all the atlas data as a supplemental table ####
+# description of whole halo atlas dataset columns
+atlasDesc = tibble(column_name = colnames(atlasdata$atlas),
+                   description = c("locus_tag" = "Locus tag of a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                   structure(names = paste0("mean_abundance_protein_lysate_", paste0("TP", 1:4)), .Data = paste0("Proteome quantitative measure for ", paste0("TP", 1:4), ".")),
+                                   structure(names = paste0("mean_abundance_rna_total_", paste0("TP", 1:4)), .Data = paste0("Transcriptome quantitative measure for ", paste0("TP", 1:4), ".")),
+                                   structure(names = paste0("mean_abundance_rna_ribofraction_", paste0("TP", 1:4)), .Data = paste0("Ribo-Seq quantitative measure for ", paste0("TP", 1:4), ".")),
+                                   structure(names = paste0("TE_", paste0("TP", 1:4)), .Data = paste0("Translational efficiency for ", paste0("TP", 1:4), ". Given by mean_abundance_protein_lysate divided by mean_abundance_rna_total for each time point sample.")),
+                                   structure(names = paste0("RO_", paste0("TP", 1:4)), .Data = paste0("Ribosome occupancy for ", paste0("TP", 1:4), ". Given by mean_abundance_rna_ribofraction divided by mean_abundance_rna_total for each time point sample.")),
+                                   "product" = "Protein product given by Pfeiffer et al. (2019).",
+                                   "gene_symbol" = "Gene symbol according to COG 2020.",
+                                   "cog_id" = "ID according to COG 2020.",
+                                   "cog_name" = "Protein product according to COG 2020.",
+                                   "cog_category" = "Category according to COG 2020.",
+                                   "functional_pathway" = "Functional pathway according to COG 2020.",
+                                   "lsmSense" = "Whether there is at least one SmAP1 (formerly known as LSm) binding site on the same strand of a given gene.",
+                                   "lsmAntiSense" = "Whether there is at least one SmAP1 (formerly known as LSm) binding site on the opposite strand of a given gene.",
+                                   "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
+                                   "GC" = "GC content of a given gene.",
+                                   "GCdev" = "Difference between GC content of a given gene and the mean GC content considering all the genes.",
+                                   "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
+                                   "cai" = "Codon adaptation index computed using as reference set the 5% most abundant proteins in this study.",
+                                   structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
+                                   structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                                   structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                                   "Chromosome" = "The represented instance is located within the chromosome (NC_002607.1).",
+                                   "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
+                                   "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
+                                   "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand of a given gene.",
+                                   "IRs" = "Number of inverted repeats found within a given gene.",
+                                   "lfc2099" = "Log2-transformed fold change of RNase VNG2099 knockout vs. the control strain.",
+                                   "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family.",
+                                   "protein_coding" = "Whether the representative instance encodes a protein."))
+
 # also with nrtx table
 atlasdata = list("atlas" = hmaFuncat,
+                 "atlasColumnDescription" = atlasDesc,
                  "non_redundant_tx_dictionary" = nrtx,
                  "non_normalized_atlas_tidy_data" = abundDerLongFuncat)
 
@@ -445,3 +479,4 @@ ptgsEnrich = list("Abundance_based_analysis" = ptgsAbundRepTib,
 write.xlsx(ptgsEnrich,
            file = "results/supp_tables/Table_S_ptgsEnrich.xlsx",
            overwrite = T)
+

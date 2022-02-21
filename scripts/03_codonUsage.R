@@ -22,9 +22,9 @@ CT = codonTable(nrtxseqscds)
 
 # now that we have protein abundance measures
 # I am using the 5% most abundant proteins
-# across all timepoints; it was generated
+# across all time points; it was generated
 # in one of the last scripts in this series
-# so for pragmatic reasons it is going to be
+# but for pragmatic reasons it is going to be
 # input right here
 mostAbundProtsLysate = c("VNG_0161G", "VNG_0166G", "VNG_0234C", "VNG_0258H", "VNG_0259G", 
                          "VNG_0287a", "VNG_0321G", "VNG_0330G", "VNG_0394C", "VNG_0457G", 

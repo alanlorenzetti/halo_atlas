@@ -63,7 +63,8 @@ packs = c("BiocManager",
           "GEOquery",
           "limma",
           "openxlsx",
-          "ggbreak")
+          "ggbreak",
+          "cocor")
 
 # loading and installing missing packages
 p_load(char = packs)

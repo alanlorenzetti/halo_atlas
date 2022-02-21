@@ -402,11 +402,11 @@ for(i in names(alldfs)){
 
 # arranging plots (only protein vs mRNA)
 #creating list of plots
-p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle("TP2_vs_TP1") + theme(legend.position="none"),
-                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle("TP3_vs_TP2") + theme(legend.position="none"),
-                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle("TP4_vs_TP3") + theme(legend.position="none"),
-                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle("TP3_vs_TP1") + theme(legend.position="none"),
-                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle("TP4_vs_TP1") + theme(legend.position="none"),
+p_prot_mRNA = list("TP2_vs_TP1" = lmplots$TP2_vs_TP1$`protein-mRNA` + ggtitle("TP2 vs. TP1") + theme(legend.position="none"),
+                   "TP3_vs_TP2" = lmplots$TP3_vs_TP2$`protein-mRNA` + ggtitle("TP3 vs. TP2") + theme(legend.position="none"),
+                   "TP4_vs_TP3" = lmplots$TP4_vs_TP3$`protein-mRNA` + ggtitle("TP4 vs. TP3") + theme(legend.position="none"),
+                   "TP3_vs_TP1" = lmplots$TP3_vs_TP1$`protein-mRNA` + ggtitle("TP3 vs. TP1") + theme(legend.position="none"),
+                   "TP4_vs_TP1" = lmplots$TP4_vs_TP1$`protein-mRNA` + ggtitle("TP4 vs. TP1") + theme(legend.position="none"),
                    "LEGEND" = get_legend(lmplots$TP4_vs_TP1$`protein-mRNA`, position = "bottom"))
 
 prot_mRNA_panel = ggarrange(plotlist = p_prot_mRNA,

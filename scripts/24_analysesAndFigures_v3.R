@@ -211,6 +211,35 @@ ggsave(filename = "plots/18_abund_fc_prot_mrna_panel.png",
        width = 12,
        height = 8)
 
+# comparing pearson correlations ####
+comparisons = list("RTP1 vs. RTP2" = c("TP1", "TP1", "TP2", "TP2"),
+                   "RTP2 vs. RTP3" = c("TP2", "TP2", "TP3", "TP3"),
+                   "RTP3 vs. RTP4" = c("TP3", "TP3", "TP4", "TP4"),
+                   "RTP1 vs. RTP3" = c("TP1", "TP1", "TP3", "TP3"),
+                   "RTP1 vs. RTP4" = c("TP1", "TP1", "TP4", "TP4"),
+                   "RTP2 vs. RTP4" = c("TP2", "TP2", "TP4", "TP4"),
+                   "RTP21 vs. RTP2" = c("TP2", "TP1", "TP2", "TP2"),
+                   "RTP32 vs. RTP3" = c("TP3", "TP2", "TP3", "TP3"),
+                   "RTP43 vs. RTP4" = c("TP4", "TP3", "TP4", "TP4"))
+
+corcompRes = list()
+
+for(i in names(comparisons)){
+  form = paste0("~", "mean_abundance_protein_lysate_", comparisons[[i]][1], "+",
+                "mean_abundance_rna_total_", comparisons[[i]][2], "|",
+                "mean_abundance_protein_lysate_", comparisons[[i]][3], "+",
+                "mean_abundance_rna_total_", comparisons[[i]][4])
+  
+  form = as.formula(form)
+  
+  # cocor does not work with tibbles
+  corcompRes[[i]] = cocor(formula = form,
+                          data = abund %>%
+                            mutate(across(.cols = starts_with("mean_abundance"),
+                                          .fns = ~ log10(.x))) %>% 
+                            as.data.frame())
+}
+
 # plotting venn diagrams ####
 # containing intersections of prot_bot_mrna_top
 # for each time point
