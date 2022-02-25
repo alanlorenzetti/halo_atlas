@@ -31,7 +31,7 @@ dictFunCat = left_join(nrtx, COG, by = "representative") %>%
   rename(pfeiLocusTag = "representative")
 
 # adding lsm data
-dictFunCat = left_join(dictFunCat, lsmGenes, by = c("pfeiLocusTag" = "name"))
+dictFunCat = left_join(dictFunCat, smap1InteractionDF, by = c("pfeiLocusTag" = "representative"))
 
 # adding UTR info
 #dictFunCat = left_join(dictFunCat, utr, by = c("locus_tag" = "locus_tag"))

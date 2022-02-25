@@ -14,14 +14,14 @@
 # if LSm binding sites are detected
 # in genes or 5UTRs, sense or antisense,
 # that will be taken into consideration
-lsmGenes = read_tsv(file = "data/interactionListNRTX.tsv") %>% 
-  select(name = representative,
-         lsmSense = LSmInteraction,
-         lsmAntiSense = LSmInteractionAS) %>% 
-  mutate(lsmSense = case_when(lsmSense == "Sim" ~ "yes",
-                              TRUE ~ "no"),
-         lsmAntiSense = case_when(lsmAntiSense == "Sim" ~ "yes",
-                                  TRUE ~ "no"))
+# lsmGenes = read_tsv(file = "data/interactionListNRTX.tsv") %>% 
+#   select(name = representative,
+#          lsmSense = LSmInteraction,
+#          lsmAntiSense = LSmInteractionAS) %>% 
+#   mutate(lsmSense = case_when(lsmSense == "Sim" ~ "yes",
+#                               TRUE ~ "no"),
+#          lsmAntiSense = case_when(lsmAntiSense == "Sim" ~ "yes",
+#                                   TRUE ~ "no"))
 
 # # getting and parsing info about UTRs
 # utr = read_delim(file = "data/5UTR.txt",

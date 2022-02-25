@@ -1,13 +1,9 @@
 # alorenzetti 20210429
 
 # description ####
-# this script will plot a heatmap
-# based on absolute counts
+# this script will plot heat maps
+# based on normalized absolute counts
 # for proteins, mRNAs and RPFs
-# functional categorization
-# here I am trying to integrate
-# the time series into a single heatmap
-# english version #
 
 # preparing main abundance dataset ####
 # dataset will be normalized within each timepoint

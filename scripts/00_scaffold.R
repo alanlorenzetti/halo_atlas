@@ -15,45 +15,46 @@ source("scripts/01_loadingLibs.R")
 source("scripts/02_parseHalfLives.R")
 source("scripts/03_codonUsage.R") # check why there are a few proteins (<10) out of frame
 source("scripts/04_parseMicrobesOnlinePredOperons.R")
-source("scripts/05_parseAntisenseRNAs.R")
-source("scripts/06_parseTFChipSeq.R")
-source("scripts/07_parseTFChipChip.R")
-source("scripts/08_parseLocation.R")
-source("scripts/09_parseTPS.R")
-source("scripts/10_parseiTSS.R")
-source("scripts/11_genAndParseIRs.R")
+source("scripts/05_parseSmAP1.R")
+source("scripts/06_parseAntisenseRNAs.R")
+source("scripts/07_parseTFChipSeq.R")
+source("scripts/08_parseTFChipChip.R")
+source("scripts/09_parseLocation.R")
+source("scripts/10_parseTPS.R")
+source("scripts/11_parseiTSS.R")
+source("scripts/12_genAndParseIRs.R")
 # source("scripts/parseAndProcess2647.R")
 # source("scripts/parseAndProcess1503.R")
-source("scripts/12_parseAndProcess2099.R")
-source("scripts/13_getAndParseMiscFeatures.R")
-source("scripts/14_combineAndWrangleFunCat.R")
+source("scripts/13_parseAndProcess2099.R")
+source("scripts/14_getAndParseMiscFeatures.R")
+source("scripts/15_combineAndWrangleFunCat.R")
 
 # proteome parser and analysis
-source("scripts/15_parseProteomicsSpectronaut.R")
-source("scripts/16_DEanalysisProtein.R")
+source("scripts/16_parseProteomicsSpectronaut.R")
+source("scripts/17_DEanalysisProtein.R")
 
 # transcriptome parser and analysis
-source("scripts/17_parseRNAtpms.R")
-source("scripts/18_DEanalysisRNA.R")
+source("scripts/18_parseRNAtpms.R")
+source("scripts/19_DEanalysisRNA.R")
 
 # exploratory analysis plots
-source("scripts/19_exploratoryAnalysis.R")
+source("scripts/20_exploratoryAnalysis.R")
 
 # models and functions to work with fold change data
-source("scripts/20_models.R")
+source("scripts/21_models.R")
 
 # working with abundance 
-source("scripts/21_unifyAbundance.R")
+source("scripts/22_unifyAbundance.R")
 
 # heatmap generation
-source("scripts/22_heatmapsAllAbsolute_v2_english.R")
+source("scripts/23_heatmapsAllAbsolute_v2_english.R")
 
 # enrichment functions and analyses
-source("scripts/23_enrichment.R")
+source("scripts/24_enrichment.R")
 
 # other figures and analyses
 # including abundance correlation plots
-source("scripts/24_analysesAndFigures_v3.R") 
+source("scripts/25_analysesAndFigures_v3.R") 
 
 # supplementary material
-source("scripts/25_outputSupMaterial.R")
+source("scripts/26_outputSupMaterial.R")

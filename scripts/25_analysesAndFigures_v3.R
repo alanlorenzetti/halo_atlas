@@ -655,8 +655,8 @@ cogEnrichPlot = hmaFuncat %>%
   mutate(enrichStatus = case_when(is.na(qval) ~ NA_character_,
                                   TRUE ~ "*"),
          cog_category = factor(cog_category, levels = rev(cog_category)),
-         size = case_when(count < 25 ~ "< 25 SmAP1-bound transcripts",
-                          TRUE ~ "> 25 SmAP1-bound transcripts")) %>% 
+         size = case_when(count < 25 ~ "< 25 genes",
+                          TRUE ~ "> 25 genes")) %>% 
   mutate(size = factor(size, levels = size %>% unique())) %>% 
   ggplot(aes(x = count,
              y = cog_category)) +
@@ -693,6 +693,182 @@ ggsave(filename = "plots/smap1_panel.png",
        height = 7,
        unit = "in",
        dpi = 300)
+
+# DNA-Seq mobilization plots ####
+dfins = read_tsv(file = "data/dfins.txt")
+dfdel = read_tsv(file = "data/dfdel.txt")
+
+# getting aligned reads per lib
+resCounts = read_tsv(file = "data/resCounts.tsv")
+
+# adjusting ISnames and their levels levels of factor ISname
+lvs = mixedsort(levels(as.factor(dfins$ISName)))
+dfins$ISName = factor(dfins$ISName, levels=rev(lvs))
+
+lvs = mixedsort(levels(as.factor(dfdel$ISName)))
+dfdel$ISName = factor(dfdel$ISName, levels=rev(lvs))
+
+# plots
+# how many IS per barcode
+# insertions
+isCountPerLib = list()
+isCountPerLib$ins = ggplot(dfins, (aes(ISName, fill = ISFamily))) +
+  geom_bar(show.legend = F) +
+  ylim(c(0, 30)) +
+  xlab(label = "") +
+  ylab(label = "Observed events") +
+  facet_wrap(strain ~ .) +
+  coord_flip() +
+  scale_fill_viridis(discrete = T,
+                     name = "Family:") +
+  theme(legend.position = "bottom",
+        strip.text = element_markdown(),
+        axis.text.y = element_markdown(),
+        legend.text = element_markdown())
+
+# deletions
+isCountPerLib$del = ggplot(dfdel, (aes(ISName, fill = ISFamily))) +
+  geom_bar() +
+  ylim(c(0, 3)) +
+  facet_wrap(strain ~ .) +
+  coord_flip() +
+  ylab("Observed events") +
+  xlab(label = "") +
+  scale_fill_viridis(discrete = T,
+                     name = "Family:",
+                     labels = c("IS*4*" = "IS*4*",
+                                "IS*H3*" = "IS*H3*",
+                                "Outras famílias" = "Other families")) +
+  theme(legend.position = "bottom",
+        strip.text = element_markdown(),
+        axis.text.y = element_markdown(),
+        legend.text = element_markdown())
+
+isCountPerLibPanel = ggarrange(plotlist = isCountPerLib,
+                               labels = "AUTO",
+                               ncol = 1,
+                               nrow = 2,
+                               heights = c(1.5, 1))
+
+ggsave(filename = "plots/mob_observed_events_panel.png",
+       plot = isCountPerLibPanel,
+       dpi = 600,
+       width = 6,
+       height = 7.25)
+
+# merging dfins and dfdel to observe frequency status
+dfins$svType = "insertion"
+dfdel$svType = "excision"
+dfinsdel = bind_rows(dfins, dfdel)
+
+dfinsdel = dfinsdel %>%
+  mutate(status = case_when(status == "predominant" ~ "Predominant",
+                            status == "common" ~ "Common",
+                            status == "rare" ~ "Rare",
+                            TRUE ~ as.character(status)),
+         svType = case_when(svType == "insertion" ~ "Insertion",
+                            svType == "excision" ~ "Excision",
+                            TRUE ~ as.character(status)))
+
+lvs = mixedsort(levels(as.factor(dfinsdel$ISName)), decreasing = T)
+dfinsdel$ISName = factor(dfinsdel$ISName, levels=lvs)
+dfinsdel$status = factor(dfinsdel$status, levels=c("Predominant", "Common", "Rare"))
+dfinsdel$svType = factor(dfinsdel$svType, levels=c("Insertion", "Excision"))
+
+isCountPerStatus = ggplot(dfinsdel, (aes(ISName, fill=ISFamily))) +
+  geom_bar() +
+  facet_grid(status ~ svType, scales = "free_x") +
+  ylab("Observed events") +
+  coord_flip() +
+  xlab(label="") +
+  scale_fill_viridis(discrete = T,
+                     name = "Family:",
+                     labels = c("IS*4*" = "IS*4*",
+                                "IS*H3*" = "IS*H3*",
+                                "Outras famílias" = "Other families")) +
+  theme(legend.position = "bottom",
+        strip.text = element_markdown(),
+        axis.text.y = element_markdown(),
+        legend.text = element_markdown())
+
+# creating a tibble containing the sum of insertions and deletions
+# and normalizing it by read depth
+# all cases
+insDelCounts = dfinsdel %>%
+  dplyr::group_by(strain) %>%
+  dplyr::summarise(count = n()) %>% 
+  dplyr::mutate(readCount = resCounts$counts) %>% 
+  dplyr::mutate(norm = (max(readCount)/readCount)*count) %>% 
+  dplyr::mutate(strain = str_replace(strain, " .$", "")) %>% 
+  dplyr::group_by(strain) %>% 
+  dplyr::summarise(mean = mean(norm),
+                   sd = sd(norm),
+                   n = n())
+
+insDelCounts$margin = 1.96*(insDelCounts$sd/sqrt(insDelCounts$n))
+insDelCounts$lower95ci = insDelCounts$mean - insDelCounts$margin
+insDelCounts$upper95ci = insDelCounts$mean + insDelCounts$margin
+
+# plotting
+comparisonPlot = insDelCounts %>% 
+  ggplot(aes(x = strain, y = mean)) +
+  geom_point() +
+  geom_pointrange(aes(ymin = lower95ci,
+                      ymax = upper95ci)) +
+  coord_flip() +
+  xlab("Strain") +
+  ylab("Average number of observed mobilizations") +
+  ggtitle("Total") +
+  theme(axis.text.y = element_markdown())
+
+# separated by family
+fams = dfinsdel$ISFamily %>% 
+  unique() %>% 
+  as.character() 
+
+isfamdf = list()
+isfamplot = list()
+isfamplot[["Todas"]] = comparisonPlot
+for(i in fams){
+  if(i != "Outras famílias"){plottitle = i}else{plottitle = "Other families"}
+  
+  isfamdf[[i]] = dfinsdel %>%
+    dplyr::filter(ISFamily == i) %>% 
+    dplyr::group_by(strain) %>%
+    dplyr::summarise(count = n()) %>% 
+    dplyr::mutate(readCount = resCounts$counts) %>% 
+    dplyr::mutate(norm = (max(readCount)/readCount)*count) %>% 
+    dplyr::mutate(strain = str_replace(strain, " .$", "")) %>% 
+    dplyr::group_by(strain) %>% 
+    dplyr::summarise(mean = mean(norm),
+                     sd = sd(norm),
+                     n = n())
+  
+  isfamdf[[i]]$margin = 1.96*(isfamdf[[i]]$sd/sqrt(isfamdf[[i]]$n))
+  isfamdf[[i]]$lower95ci = isfamdf[[i]]$mean - isfamdf[[i]]$margin
+  isfamdf[[i]]$upper95ci = isfamdf[[i]]$mean + isfamdf[[i]]$margin
+  
+  isfamplot[[i]] = isfamdf[[i]] %>% 
+    ggplot(aes(x = strain, y = mean)) +
+    geom_point() +
+    geom_pointrange(aes(ymin = lower95ci,
+                        ymax = upper95ci)) +
+    coord_flip() +
+    xlab("Strain") +
+    ylab("Average number of observed mobilizations") +
+    ggtitle(plottitle) +
+    theme(axis.text.y = element_markdown(),
+          plot.title = element_markdown())
+}
+
+ggsave(filename = "plots/mobilizationComparisonPerFamily_en.png",
+       plot = ggarrange(plotlist = isfamplot,
+                        nrow = isfamplot %>% length(),
+                        ncol = 1,
+                        labels = "AUTO"),
+       dpi = 600,
+       width = 7,
+       height = 8)
 
 # plotting all genes for manual inspection: abundance #####
 # allLocusTags = abundLongFuncat$locus_tag %>%

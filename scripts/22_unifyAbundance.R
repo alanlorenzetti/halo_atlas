@@ -1,9 +1,9 @@
 # alorenzetti 202008
 
 # description #####
-# this script is intended to build
-# linear models and figures
-# using abundance data
+# this script is intended to
+# unify and parse tables generated
+# on the previous scripts
 
 # unifying protein counts and rna counts ####
 # this includes transposase protein entries not having valid
