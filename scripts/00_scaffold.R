@@ -26,6 +26,7 @@ source("scripts/12_genAndParseIRs.R")
 # source("scripts/parseAndProcess2647.R")
 # source("scripts/parseAndProcess1503.R")
 source("scripts/13_parseAndProcess2099.R")
+source("scripts/parseMembraneProteins.R")
 source("scripts/14_getAndParseMiscFeatures.R")
 source("scripts/15_combineAndWrangleFunCat.R")
 

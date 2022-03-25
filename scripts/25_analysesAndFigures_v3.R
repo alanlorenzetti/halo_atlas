@@ -211,6 +211,58 @@ ggsave(filename = "plots/18_abund_fc_prot_mrna_panel.png",
        width = 12,
        height = 8)
 
+# finding significance of overlap SmAP1 BRs####
+# computing significance of overlap for SmAP1
+# biological replicates using the rationale
+# availabe at
+# http://nemates.org/MA/progs/representation.stats.html
+# or in data folder overlap_stats.v0.011.tgz
+x = overlaps[["biorep1_nr"]] %in% overlaps[["biorep2_nr"]] %>% sum()
+n = overlaps[["biorep1_nr"]] %>% length()
+D = overlaps[["biorep2_nr"]] %>% length()
+N = dim(nrtx)[1]
+
+p = D / N
+q = 1-p
+
+# computing representation factor
+RF = x / ((n * D) / N) 
+
+# computing probability
+Prob = NULL
+
+# it is hard to get the exact hypergeometric prob
+# if the following conditions is satisfied
+if((p + 2*sqrt(p*q/n) > 0) & (n * 10 < N) ){
+  Z = abs(((x-.5) - n * p) / sqrt(n * p * q))
+  
+  Prob = 1 - (gsl::erf(Z / sqrt(2)) + 1) / 2
+}else{
+  # get the exact hypergeometric prob
+  if(RF < 1){
+    for(i in 0:as.integer(x)){
+      Prob[i] = exp(lnchoose(D,i) + lnchoose(N-D, n-i) - lnchoose(N, n))
+    }
+    Prob = sum(Prob)
+  }else{
+    for(i in 0:(as.integer(x)-1)){
+      Prob[i] = exp(lnchoose(D,i) + lnchoose(N-D, n-i) - lnchoose(N, n))
+    }
+    Prob = 1 - sum(Prob)
+  }
+}
+
+# p for the overlap set
+Prob
+
+# zero due to lack of precision
+# the webserver reported
+# Representation Factor 5.3 and p < 3.171e-83 for
+# Set1: 190 
+# Set2: 348 
+# Overlap: 134 
+# Total number of genes: 2631 
+
 # comparing pearson correlations ####
 comparisons = list("RTP1 vs. RTP2" = c("TP1", "TP1", "TP2", "TP2"),
                    "RTP2 vs. RTP3" = c("TP2", "TP2", "TP3", "TP3"),
@@ -401,16 +453,16 @@ ggsave(filename = "plots/17_ptgsFeatures_venn.png",
 # checking enrichment of TPS within mechanisms
 # of post transcriptional regulation
 
-# first question: do SmAP1 genes are enriched for TPS? Yes
+# first question: are SmAP1-bound genes enriched for TPS? Yes
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$SmAP1,
                testcol = "tps", lev =  "yes")
 
-# second question: do asRNA genes are enriched for TPS? Yes
+# second question: are asRNA cognate genes enriched for TPS? Yes
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$asRNA,
                testcol = "tps", lev =  "yes")
 
-# third question: do delta2099 differentially expressed
-# genes are enriched for TPS? 
+# third question: are delta2099 differentially expressed
+# genes enriched for TPS? 
 # upregulated: Yes
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$up,
                testcol = "tps", lev =  "yes")
@@ -424,7 +476,17 @@ enrichAnalysis(df = hmaFuncat, subvec = c(summaryTPelements$`2099`$up,
                                           summaryTPelements$`2099`$down),
                testcol = "tps", lev =  "yes")
 
-# fourth question: do intersection of SmAP1, asRNA,
+# extra questions:
+# are delta2099 differentially expressed genes
+# enriched for SmAP1? no
+enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
+               testcol = "lsmSense", lev =  "yes")
+
+# enriched for asRNA? no
+enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
+               testcol = "asRNA", lev =  "yes")
+
+# fourth question: does the intersection of SmAP1, asRNA,
 # and delta2099 DE genes is enriched for TPS? No
 # for that we are going to use a function
 subvectIntersectionEnrich = function(list = list){
@@ -447,24 +509,43 @@ subvectIntersectionEnrich(list = list("SmAP1" = summaryTPelements$SmAP1,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
 
-# fifth question: do intersection of SmAP1 and asRNA 
+# fifth question: does the intersection of SmAP1 and asRNA 
 # is enriched for TPS? Yes
 subvectIntersectionEnrich(list = list("SmAP1" = summaryTPelements$SmAP1,
                                       "asRNA" = summaryTPelements$asRNA))
 
-# sixth question: do intersection of SmAP1 and 2099 DE genes 
+# sixth question: does the intersection of SmAP1 and 2099 DE genes 
 # is enriched for TPS? Yes
 subvectIntersectionEnrich(list = list("SmAP1" = summaryTPelements$SmAP1,
                                       "RNase" = c(summaryTPelements$`2099`$up,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
 
-# seventh question: do intersection of asRNA and 2099 DE genes 
+# seventh question: does the intersection of asRNA and 2099 DE genes 
 # is enriched for TPS? Yes
 subvectIntersectionEnrich(list = list("asRNA" = summaryTPelements$asRNA,
                                       "RNase" = c(summaryTPelements$`2099`$up,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
+
+# testing enrichment of functions in abundance-based ####
+# genes
+ptgsAbundEnrich = tibble()
+for(i in hmaFuncat$cog_category %>% unique()){
+  
+  curTib = tibble(cog_category = i,
+                  pvalue = enrichAnalysis(df = hmaFuncat,
+                                          subvec = ptgsAbund$union$prot_bot_prot_non_mrna_top,
+                                          testcol = "cog_category",
+                                          lev = i))
+  
+  ptgsAbundEnrich = bind_rows(ptgsAbundEnrich,
+                              curTib)
+}
+
+# filtering results
+ptgsAbundEnrich = ptgsAbundEnrich %>%
+  filter(pvalue < 0.05)
 
 # inspecting gvp1 trajectories ####
 # protein abundance in function of mRNA
@@ -490,28 +571,35 @@ names(labs) = gvp1a
 # for those proteins with at
 # least one missing value (for label drawing)
 mp = abund %>%
-  mutate(missingprot = case_when(is.na(mean_abundance_protein_lysate_TP1) |
-                                   is.na(mean_abundance_protein_lysate_TP2) |
-                                   is.na(mean_abundance_protein_lysate_TP3) |
+  mutate(missingprot = case_when(is.na(mean_abundance_protein_lysate_TP1) &
+                                   is.na(mean_abundance_protein_lysate_TP2) &
+                                   is.na(mean_abundance_protein_lysate_TP3) &
                                    is.na(mean_abundance_protein_lysate_TP4) ~ TRUE,
                                  TRUE ~ FALSE)) %>%
   pull(missingprot)
 
 mp = abund$locus_tag[mp] %>% unique()
 
+mp = mp[mp %in% gvp1a]
+
 p_gvp_traj = abundLongFuncat %>% 
   dplyr::select(-se) %>% 
   filter(locus_tag %in% gvp1a) %>%
+  filter(!locus_tag %in% mp) %>% 
   filter(timepoint != "TP0") %>% 
   pivot_wider(names_from = libtype,
               values_from = mean) %>% 
-  mutate(repellabs = case_when(locus_tag == "VNG_7025" ~ timepoint,
-                               #                               locus_tag %in% mp ~ timepoint,
+  mutate(repellabs = case_when(locus_tag == "VNG_7024" |
+                                 locus_tag == "VNG_7023" ~ str_replace(timepoint, "TP", ""),
                                TRUE ~ NA_character_)) %>% 
+  mutate(genelab = case_when(timepoint == "TP4" & locus_tag == "VNG_7023" ~ str_match(product, "Gvp.*$"),
+                             timepoint == "TP1" & locus_tag == "VNG_7024" ~ str_match(product, "Gvp.*$"),
+                             TRUE ~ NA_character_)) %>% 
   ggplot(aes(y = protein_lysate,
              x = rna_total,
              group = locus_tag,
              color = locus_tag)) +
+  geom_point(size = 1) +
   geom_path(arrow = arrow(ends = "last",
                           type = "closed",
                           length = unit(0.1, "inches"),
@@ -519,14 +607,24 @@ p_gvp_traj = abundLongFuncat %>%
             size = 1.25,
             alpha = 1,
             show.legend = T) +
-  geom_point(size = 1) +
-  geom_label_repel(aes(label = str_replace(timepoint, "TP", "")),
+  geom_label_repel(aes(label = repellabs),
                    show.legend = F,
                    size = 2.5,
                    label.padding = 0.125,
                    label.r = 0.18,
                    min.segment.length = 0,
-                   segment.colour = "black") +
+                   segment.colour = "black",
+                   color = "black") + 
+  geom_label(aes(label = genelab),
+             show.legend = F,
+             size = 3,
+             nudge_x = 1.5) +
+  # geom_label_repel(aes(label = genelab),
+  #                  show.legend = F,
+  #                  size = 3,
+  #                  label.padding = 0.125,
+  #                  label.r = 0.18,
+  #                  force_pull = 0.5) +
   ylab(paste0("Log<sub>2</sub> ", yname)) +
   xlab(paste0("Log<sub>2</sub> ", xname))  +
   scale_x_continuous(breaks = breaksbase2,
@@ -541,13 +639,21 @@ p_gvp_traj = abundLongFuncat %>%
                      limits = (c(2^5,2^16))) +
   annotation_logticks(base = 2) +
   scale_color_manual("Locus tag",
-                     labels = labs,
-                     values = cols) +
+                     labels = labs[!names(labs) %in% mp],
+                     values = cols[!names(cols) %in% mp]) +
   theme(axis.title.x = element_markdown(),
         axis.title.y = element_markdown())
 
 # saving
 ggsave(filename = "plots/gvp_traj.png",
+       plot = p_gvp_traj,
+       width = 5.5,
+       height = 4,
+       units = "in",
+       dpi = 300)
+
+# saving
+ggsave(filename = "plots/gvp_traj.svg",
        plot = p_gvp_traj,
        width = 5.5,
        height = 4,
@@ -712,7 +818,8 @@ dfdel$ISName = factor(dfdel$ISName, levels=rev(lvs))
 # how many IS per barcode
 # insertions
 isCountPerLib = list()
-isCountPerLib$ins = ggplot(dfins, (aes(ISName, fill = ISFamily))) +
+isCountPerLib$ins = ggplot(dfins,
+                           (aes(ISName, fill = ISFamily))) +
   geom_bar(show.legend = F) +
   ylim(c(0, 30)) +
   xlab(label = "") +
@@ -727,7 +834,8 @@ isCountPerLib$ins = ggplot(dfins, (aes(ISName, fill = ISFamily))) +
         legend.text = element_markdown())
 
 # deletions
-isCountPerLib$del = ggplot(dfdel, (aes(ISName, fill = ISFamily))) +
+isCountPerLib$del = ggplot(dfdel,
+                           (aes(ISName, fill = ISFamily))) +
   geom_bar() +
   ylim(c(0, 3)) +
   facet_wrap(strain ~ .) +

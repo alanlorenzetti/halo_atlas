@@ -27,6 +27,10 @@ int[["biorep2"]] = c(
   rtracklayer::import("data/igv/br2biorep2-interaction-regions-entire-genome-rev.gff3")
 ) 
 
+# unifying br1 and br2 tracks for fwd and rev
+# that is going to be used in our browser app
+
+
 # getting what genes intersect with interaction regions
 overlaps = list()
 
@@ -116,12 +120,29 @@ df[["locus_tags_representative_as"]] = df[["only_representative_as"]] %>%
   unlist(use.names = F)
 
 # nonredundant list per biorep
-overlaps[["biorep1_nr"]] = overlaps[["biorep1"]][overlaps[["biorep1"]] %in% df[["locus_tags_representative"]]]
-overlaps[["biorep2_nr"]] = overlaps[["biorep2"]][overlaps[["biorep2"]] %in% df[["locus_tags_representative"]]]
+overlaps[["biorep1_nr"]] = tibble(locus_tag = overlaps[["biorep1"]],
+                                  smap1_interaction = "yes") %>% 
+  left_join(x = nrtxsep,
+            y = .,
+            by = "locus_tag") %>% 
+  drop_na() %>% 
+  select(-locus_tag) %>% 
+  distinct() %>% 
+  pull(representative)
 
-# nonredundant list per biorep
-overlaps[["biorep1_nr_as"]] = overlaps[["biorep1_as"]][overlaps[["biorep1_as"]] %in% df[["locus_tags_representative_as"]]]
-overlaps[["biorep2_nr_as"]] = overlaps[["biorep2_as"]][overlaps[["biorep2_as"]] %in% df[["locus_tags_representative_as"]]]
+overlaps[["biorep2_nr"]] = tibble(locus_tag = overlaps[["biorep2"]],
+                                  smap1_interaction = "yes") %>% 
+  left_join(x = nrtxsep,
+            y = .,
+            by = "locus_tag") %>% 
+  drop_na() %>% 
+  select(-locus_tag) %>% 
+  distinct() %>% 
+  pull(representative)
+
+# venn diagram of bioreps gene-wise
+# plot(eulerr::venn(combinations = list("BR1" = overlaps[["biorep1_nr"]],
+#                                       "BR2" = overlaps[["biorep2_nr"]])))
 
 # getting an alias for df$representative
 smap1InteractionDF = nrtx %>% 

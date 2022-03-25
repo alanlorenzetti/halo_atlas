@@ -151,21 +151,11 @@ body = dashboardBody(
                                 displayMode: "SQUISHED"
                             },
                             
-                            {
-                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/br1biorep1-interaction-regions-entire-genome-fwd.gff3",
+                         {
+                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/mergedBRs_interaction-regions-entire-genome-fwd.gff3",
                                 type: "annotation",
                                 format: "gff3",
-                                name: "SmAP1 interaction (+) Rep 1",
-                                height: 30,
-                                color: "#E15759",
-                                displayMode: "SQUISHED"
-                            },
-                            
-                            {
-                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/br2biorep2-interaction-regions-entire-genome-fwd.gff3",
-                                type: "annotation",
-                                format: "gff3",
-                                name: "SmAP1 interaction (+) Rep 2",
+                                name: "SmAP1 interaction (+)",
                                 height: 30,
                                 color: "#E15759",
                                 displayMode: "SQUISHED"
@@ -210,7 +200,7 @@ body = dashboardBody(
                                 displayMode: "COLLAPSED"
                             },
                             
-                         {
+                            {
                                 url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/iTSS_gff_rev.gff3",
                                 type: "annotation",
                                 format: "gff3",
@@ -221,20 +211,10 @@ body = dashboardBody(
                             },
                             
                             {
-                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/br1biorep1-interaction-regions-entire-genome-rev.gff3",
+                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/mergedBRs_interaction-regions-entire-genome-rev.gff3",
                                 type: "annotation",
                                 format: "gff3",
-                                name: "SmAP1 interaction (-) Rep 1",
-                                height: 30,
-                                color: "#E15759",
-                                displayMode: "SQUISHED"
-                            },
-                            
-                            {
-                                url: "https://alanlorenzetti.github.io/miscfiles/igv_tlr/br2biorep2-interaction-regions-entire-genome-rev.gff3",
-                                type: "annotation",
-                                format: "gff3",
-                                name: "SmAP1 interaction (-) Rep 2",
+                                name: "SmAP1 interaction (-)",
                                 height: 30,
                                 color: "#E15759",
                                 displayMode: "SQUISHED"

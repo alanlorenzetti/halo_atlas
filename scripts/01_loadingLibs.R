@@ -64,7 +64,8 @@ packs = c("BiocManager",
           "limma",
           "openxlsx",
           "ggbreak",
-          "cocor")
+          "cocor",
+          "gsl")
 
 # loading and installing missing packages
 p_load(char = packs)
@@ -82,6 +83,23 @@ seqblues = ggthemes_data$tableau$`color-palettes`$`ordered-sequential`$Blue$valu
 # https://alanlorenzetti.github.io/halo_nr_tx/
 # downloading the list of non-redundant locus_tags
 # with alternative names
-nrtx = read_tsv("https://alanlorenzetti.github.io/halo_nr_tx/data/dictionary.tsv")
-nrtxseqs = readDNAStringSet(filepath = "https://alanlorenzetti.github.io/halo_nr_tx/data/Hsalinarum_nrtx.fa",
-                            format = "fasta")
+if(!file.exists("data/halo_nrtx_dict.tsv")){
+  nrtx = read_tsv("https://alanlorenzetti.github.io/halo_nr_tx/data/dictionary.tsv")
+  write_tsv(x = nrtx,
+            file = "data/halo_nrtx_dict.tsv")
+} else {
+  nrtx = read_tsv("data/halo_nrtx_dict.tsv")
+}
+
+if(!file.exists("data/halo_nrtx_seq.fa")){
+  nrtxseqs = readDNAStringSet(filepath = "https://alanlorenzetti.github.io/halo_nr_tx/data/Hsalinarum_nrtx.fa",
+                              format = "fasta")
+  writeXStringSet(x = nrtxseqs,
+                  file = "data/halo_nrtx_seq.fa")
+} else {
+  nrtxseqs = readDNAStringSet(filepath = "data/halo_nrtx_seq.fa",
+                              format = "fasta")
+}
+
+nrtxsep = nrtx %>% 
+  separate_rows(locus_tag, sep = ",")

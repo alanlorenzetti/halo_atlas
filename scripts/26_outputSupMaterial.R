@@ -13,7 +13,9 @@ if(!dir.exists("results/supp_tables")){dir.create("results/supp_tables", recursi
 if(!dir.exists("results/figures")){dir.create("results/figures", recursive = T)}
 
 # summary of post-transcriptional related elements for coding genes ####
-# table containing general counts of asRNAs, TPS, SmAP1 binding, RNase differential expression
+# table containing general counts of asRNAs, TPS, SmAP1 binding,
+# RNase differential expression
+# main-text table
 summaryTPelements = list()
 
 # 2099 mutant
@@ -69,7 +71,7 @@ tablePTelements = tibble(feature = c("2099 Upregulated",
 
 # all the atlas data as a supplemental table ####
 # description of whole halo atlas dataset columns
-atlasColDescription = c("locus_tag" = "Locus tag of a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+atlasColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                 structure(names = paste0("mean_abundance_protein_lysate_", paste0("TP", 1:4)), .Data = paste0("Proteome quantitative measure for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("mean_abundance_rna_total_", paste0("TP", 1:4)), .Data = paste0("Transcriptome quantitative measure for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("mean_abundance_rna_ribofraction_", paste0("TP", 1:4)), .Data = paste0("Ribo-Seq quantitative measure for ", paste0("TP", 1:4), ".")),
@@ -81,11 +83,11 @@ atlasColDescription = c("locus_tag" = "Locus tag of a given instance according t
                 "cog_name" = "Protein product according to COG 2020.",
                 "cog_category" = "Category according to COG 2020.",
                 "functional_pathway" = "Functional pathway according to COG 2020.",
-                "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand of a given gene.",
-                "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand of a given gene.",
+                "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
+                "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
                 "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
-                "GC" = "GC content of a given gene.",
-                "GCdev" = "Difference between GC content of a given gene and the mean GC content considering all the genes.",
+                "GC" = "GC content for a given gene.",
+                "GCdev" = "Difference between GC content for a given gene and the mean GC content considering all the genes.",
                 "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
                 "cai" = "Codon adaptation index computed using as reference set the 5% most abundant proteins in this study.",
                 structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
@@ -94,7 +96,7 @@ atlasColDescription = c("locus_tag" = "Locus tag of a given instance according t
                 "Chromosome" = "The represented instance is located within the chromosome (NC_002607.1).",
                 "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
                 "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
-                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand of a given gene.",
+                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
                 "IRs" = "Number of inverted repeats found within a given gene.",
                 "lfc2099" = "Log2-transformed fold change of RNase VNG2099 knockout vs. the control strain.",
                 "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family.",
@@ -103,27 +105,78 @@ atlasColDescription = c("locus_tag" = "Locus tag of a given instance according t
 atlasDesc = tibble(column_name = names(atlasColDescription),
                    description = atlasColDescription)
 
+
+atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                            "libtype" = "Measured variable. rna_total: mRNA level measured by RNA-Seq; rna_ribo: ribosome protected mRNA fragments (RPF) measured by Ribo-Seq; protein_lysate: protein abundance measured by SWATH-MS.",
+                            "timepoint" = "Time point for which libtype variables were measured (TP1, TP2, TP3, and TP4).",
+                            "mean" = "Mean values for libtype variables. RNA-Seq: n = 3; Ribo-Seq: n = 3; SWATH-MS: n ≥ 6.",
+                            "se" = "Standard error of the mean (SEM) for mean values",
+                            "product" = "Protein product given by Pfeiffer et al. (2019).",
+                            "gene_symbol" = "Gene symbol according to COG 2020.",
+                            "cog_id" = "ID according to COG 2020.",
+                            "cog_name" = "Protein product according to COG 2020.",
+                            "cog_category" = "Category according to COG 2020.",
+                            "functional_pathway" = "Functional pathway according to COG 2020.",
+                            "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
+                            "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
+                            "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
+                            "GC" = "GC content for a given gene.",
+                            "GCdev" = "Difference between GC content for a given gene and the mean GC content considering all the genes.",
+                            "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
+                            "cai" = "Codon adaptation index computed using as reference set the 5% most abundant proteins in this study.",
+                            structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
+                            structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                            structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                            "Chromosome" = "The represented instance is located within the chromosome (NC_002607.1).",
+                            "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
+                            "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
+                            "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
+                            "IRs" = "Number of inverted repeats found within a given gene.",
+                            "lfc2099" = "Log2-transformed fold change of RNase VNG2099 knockout vs. the control strain.",
+                            "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family.",
+                            "protein_coding" = "Whether the representative instance encodes a protein.")
+  
+atlasTidyDesc = tibble(column_name = names(atlasTidyColDescription),
+                       description = atlasTidyColDescription)
+
+nrtxDesc = tibble(column_name = c("representative",
+                                  "product",
+                                  "locus_tag"),
+                  description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                  "Gene product given by Pfeiffer et al. (2019).",
+                                  "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
+
 # creating a tab description object
 atlasTabDesc = tibble(tab_name = c("atlas_normalized_wide_data",
-                                   "atlas_column_description",
+                                   "atlas_column_description_wide",
                                    "atlas_non_normalized_tidy_data",
-                                   "non_redundant_tx_dictionary"),
+                                   "atlas_column_description_tidy",
+                                   "non_redundant_tx_dictionary",
+                                   "nrtx_column_description"),
                       description = c("Wide data table used to generate the interactive heat maps for this study.",
-                                      "Column description for atlas_normalized_wide_data tab.",
+                                      "Column description for the atlas_normalized_wide_data tab.",
                                       "A tidy data table used to generate atlas_normalized_wide_data. This table contains the most essential (non-normalized) data for this study.",
-                                      "The non-redundant transcriptome dictionary generated for this study. Source code and further info at: https://github.com/alanlorenzetti/halo_nr_tx ."))
+                                      "Column description for the atlas_non_normalized_tidy_data tab.",
+                                      "The non-redundant transcriptome dictionary generated for this study. Source code and further info at: https://github.com/alanlorenzetti/halo_nr_tx .",
+                                      "Column description for the non_redundant_tx_dictionary tab."))
 
 # also with nrtx table
 atlasdata = list("tab_guide_readme" = atlasTabDesc,
                  "atlas_normalized_wide_data" = hmaFuncat %>% 
                    dplyr::rename(smap1Sense = "lsmSense",
-                                 smap1AntiSense = "lsmAntiSense"),
-                 "atlas_column_description" = atlasDesc,
+                                 smap1AntiSense = "lsmAntiSense") %>% 
+                   mutate(across(.cols = where(is.numeric),
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))),
+                 "atlas_column_description_wide" = atlasDesc,
                  "atlas_non_normalized_tidy_data" = abundLongFuncat %>% 
                    dplyr::rename(locus_tag_synonyms = "locus_tag.y",
                                  smap1Sense = "lsmSense",
-                                 smap1AntiSense = "lsmAntiSense"),
-                 "non_redundant_tx_dictionary" = nrtx
+                                 smap1AntiSense = "lsmAntiSense") %>% 
+                   mutate(across(.cols = where(is.numeric),
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))),
+                 "atlas_column_description_tidy" = atlasTidyDesc,
+                 "non_redundant_tx_dictionary" = nrtx,
+                 "nrtx_column_description" = nrtxDesc
 )
 
 write.xlsx(atlasdata,
@@ -140,6 +193,7 @@ for(i in names(ptgs)){
   
   for(j in names(ptgs[[i]])){
     line = tibble(cluster = j,
+                  count = ptgs[[i]][[j]]$locus_tag %>% length(),
                   locus_tag = paste0(ptgs[[i]][[j]]$locus_tag, collapse = ","))
     spdsheet = bind_rows(spdsheet, line)
   }
@@ -152,66 +206,168 @@ for(i in names(ptgs)){
                              cluster == "BL12" ~ "Pink",
                              cluster == "BL23" ~ "Light teal",
                              cluster == "BL34" ~ "Brown",
-                             cluster == "BL41" ~ "Purple")) %>% 
+                             cluster == "BL41" ~ "Purple"),
+           change_status = case_when(cluster == "Q1" ~ "Protein Up & mRNA Up",
+                                     cluster == "Q2" ~ "Protein Up & mRNA Down",
+                                     cluster == "Q3" ~ "Protein Down & mRNA Down",
+                                     cluster == "Q4" ~ "Protein Down & mRNA Up",
+                                     cluster == "BL12" ~ "Protein Up & mRNA Flat",
+                                     cluster == "BL23" ~ "Protein Flat & mRNA Down",
+                                     cluster == "BL34" ~ "Protein Down & mRNA Flat",
+                                     cluster == "BL41" ~ "Protein Flat & mRNA Up")
+    ) %>% 
     select(cluster,
            color,
+           change_status,
+           count,
            locus_tag)
 }
 
+# setting up a tab description tab
+outfcclusters$tab_guide_readme = tibble(tab_name = c("TP2_vs_TP1",
+                                                     "TP3_vs_TP2",
+                                                     "TP4_vs_TP3",
+                                                     "TP3_vs_TP1",
+                                                     "TP4_vs_TP1",
+                                                     "column_description"),
+                                        description = c("Clusters identified in the transition from early exponential (TP1) to mid-exponential (TP2) growth phase.",
+                                                        "Clusters identified in the transition from mid-exponential (TP2) to late exponential (TP3) growth phase.",
+                                                        "Clusters identified in the transition from late exponential growth (TP3) to stationary (TP4) phase.",
+                                                        "Clusters identified in the transition from early exponential (TP1) to late exponential (TP3) growth phase.",
+                                                        "Clusters identified in the transition from early exponential (TP1) to stationary (TP4) phase.",
+                                                        "Column description for the mentioned tabs."))
+
+# setting up a column description tab
+outfcclusters$column_description = tibble(column_name = c("cluster",
+                                                          "color",
+                                                          "change_status",
+                                                          "count",
+                                                          "locus_tag"),
+                                          description = c("Cluster identifier according to the quadrant nomenclature convention using the Cartesian coordinate system. E.g., Q1: quadrant I; BL14: Border line between quadrant I and quadrant IV.",
+                                                          "Color used in our figures to highlight the cluster.",
+                                                          "Change status considering the transition from a physiological state to another. Take as an example the transition from TP1 to TP2: if the protein is upregulated and the mRNA is upregulate, the change status is Protein Up & mRNA Up. We use the term *Flat* to represent unchanging protein or mRNA levels.",
+                                                          "Number of instances (locus tags) within a given cluster.",
+                                                          "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
+
 # ordering according to panel of plots
-outfcclusters = outfcclusters[c("TP2_vs_TP1",
+outfcclusters = outfcclusters[c("tab_guide_readme",
+                                "TP2_vs_TP1",
                                 "TP3_vs_TP2",
                                 "TP4_vs_TP3",
                                 "TP3_vs_TP1",
-                                "TP4_vs_TP1")]
+                                "TP4_vs_TP1",
+                                "column_description")]
 
-# writing table with multi sheets
+# writing table containing multiple sheets
 write.xlsx(outfcclusters,
            file = "results/supp_tables/Table_S_clusters.xlsx",
            overwrite = T)
 
-# creating a table of potentially post-transcriptionally repressed genes ####
-# with enrichment p-values
-# abundance-based
-timepoints = names(ptgsAbund)
-modus = c("prot_bot_mrna_top", "prot_non_mrna_top", "prot_bot_prot_non_mrna_top")
-testcols = c("lsmSense", "asRNA", "tps")
+# generating the table containing clusters extracted from abundance analysis ####
+# creating a list of data frames to store locus tags
+outabundclusters = list()
 
-ptgsAbundRepTib = tibble()
-for(i in timepoints){
-  for(j in modus){
-    ptgsAbundRepTib = bind_rows(ptgsAbundRepTib,
-                                tibble(criteria = j,
-                                       timepoint = i,
-                                       count = ptgsAbund[[i]][[j]] %>% length(),
-                                       smap1_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "lsmSense", "yes"),
-                                       asrna_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "asRNA", "yes"),
-                                       tps_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "tps", "yes"),
-                                       locus_tag = ptgsAbund[[i]][[j]] %>% paste0(collapse= ",")))
+# getting data
+for(i in names(ptgsAbund)){
+  spdsheet = tibble()
+  
+  for(j in c("prot_bot_mrna_top", "prot_non_mrna_top", "prot_bot_prot_non_mrna_top")){
+    line = tibble(cluster = j,
+                  count = ptgsAbund[[i]][[j]] %>% length(),
+                  locus_tag = paste0(ptgsAbund[[i]][[j]], collapse = ","))
+    spdsheet = bind_rows(spdsheet, line)
   }
+  
+  outabundclusters[[i]] = spdsheet %>% 
+    mutate(status = case_when(cluster == "prot_bot_mrna_top" ~ "Protein low level & mRNA high level",
+                                     cluster == "prot_non_mrna_top" ~ "Protein undetected & mRNA high level",
+                                     cluster == "prot_bot_prot_non_mrna_top" ~ "Protein low level or undetected & mRNA high level")
+    ) %>% 
+    select(cluster,
+           status,
+           count,
+           locus_tag)
 }
 
-ptgsAbundRepTib = ptgsAbundRepTib %>% 
-  arrange(criteria)
+# setting up a tab description tab
+outabundclusters$tab_guide_readme = tibble(tab_name = c("TP1",
+                                                        "TP2",
+                                                        "TP3",
+                                                        "TP4",
+                                                        "union",
+                                                        "column_description"),
+                                           description = c("Clusters identified using protein and mRNA data obtained from early exponential (TP1) growth phase.",
+                                                           "Clusters identified using protein and mRNA data obtained from mid-exponential (TP2) growth phase.",
+                                                           "Clusters identified using protein and mRNA data obtained from late exponential (TP3) growth phase.",
+                                                           "Clusters identified using protein and mRNA data obtained from stationary phase (TP4).",
+                                                           "Union of locus tags identified across the growth curve (TP1, TP2, TP3, and TP4).",
+                                                           "Column description for the mentioned tabs."))
 
-# fc-based
-timepoints = names(ptgs)
-modus = names(ptgs$union$Q4)
+# setting up a column description tab
+outabundclusters$column_description = tibble(column_name = c("cluster",
+                                                             "status",
+                                                             "count",
+                                                             "locus_tag"),
+                                             description = c("Cluster identifier according to the expression status of protein and mRNA. prot_bot: 20% lowest abundance proteins (bottom); prot_non: Undetected proteins; mrna_top: 20% greatest abundance mRNAs (top).",
+                                                             "A more intuitive description of the cluster field.",
+                                                             "Number of instances (locus tags) within a given cluster.",
+                                                             "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
 
-ptgsFcRepTib = tibble()
-for(i in timepoints){
-    ptgsFcRepTib = bind_rows(ptgsFcRepTib,
-                             tibble(criteria = "prot_downregulated_mrna_upregulated",
-                                    timepoint = i,
-                                    count = ptgs[[i]][["Q4"]][["locus_tag"]] %>% length(),
-                                    smap1_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "lsmSense", "yes"),
-                                    asrna_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "asRNA", "yes"),
-                                    tps_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "tps", "yes"),
-                                    locus_tag = ptgs[[i]][["Q4"]][["locus_tag"]] %>% paste0(collapse= ",")))
-}
+# ordering according to panel of plots
+outabundclusters = outabundclusters[c("tab_guide_readme",
+                                      "TP1",
+                                      "TP2",
+                                      "TP3",
+                                      "TP4",
+                                      "union",
+                                      "column_description")]
+
+# writing table containing multiple sheets
+write.xlsx(outabundclusters,
+           file = "results/supp_tables/Table_S_clustersAbund.xlsx",
+           overwrite = T)
+
+# # creating a table of potentially post-transcriptionally repressed genes ####
+# # with enrichment p-values
+# # abundance-based
+# timepoints = names(ptgsAbund)
+# modus = c("prot_bot_mrna_top", "prot_non_mrna_top", "prot_bot_prot_non_mrna_top")
+# testcols = c("lsmSense", "asRNA", "tps")
+# 
+# ptgsAbundRepTib = tibble()
+# for(i in timepoints){
+#   for(j in modus){
+#     ptgsAbundRepTib = bind_rows(ptgsAbundRepTib,
+#                                 tibble(criteria = j,
+#                                        timepoint = i,
+#                                        count = ptgsAbund[[i]][[j]] %>% length(),
+#                                        smap1_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "lsmSense", "yes"),
+#                                        asrna_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "asRNA", "yes"),
+#                                        tps_enrich_p = enrichAnalysis(hmaFuncat, ptgsAbund[[i]][[j]], "tps", "yes"),
+#                                        locus_tag = ptgsAbund[[i]][[j]] %>% paste0(collapse= ",")))
+#   }
+# }
+# 
+# ptgsAbundRepTib = ptgsAbundRepTib %>% 
+#   arrange(criteria)
+# 
+# # fc-based
+# timepoints = names(ptgs)
+# modus = names(ptgs$union$Q4)
+# 
+# ptgsFcRepTib = tibble()
+# for(i in timepoints){
+#     ptgsFcRepTib = bind_rows(ptgsFcRepTib,
+#                              tibble(criteria = "prot_downregulated_mrna_upregulated",
+#                                     timepoint = i,
+#                                     count = ptgs[[i]][["Q4"]][["locus_tag"]] %>% length(),
+#                                     smap1_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "lsmSense", "yes"),
+#                                     asrna_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "asRNA", "yes"),
+#                                     tps_enrich_p = enrichAnalysis(hmaFuncat, ptgs[[i]][["Q4"]][["locus_tag"]], "tps", "yes"),
+#                                     locus_tag = ptgs[[i]][["Q4"]][["locus_tag"]] %>% paste0(collapse= ",")))
+# }
 
 # finding potential mechanisms ruling the post-transcriptional regulation ####
-
 # abundance approach
 # categorical variables
 abundStats = tibble()
@@ -340,16 +496,19 @@ ptgsAbundRepTib = abundStats %>%
                                 tested_var == "tps" ~ "TPS",
                                 tested_var == "cai" ~ "CAI",
                                 TRUE ~ tested_var)) %>% 
+  mutate(functional_class = case_when(functional_class == "all" ~ "All",
+                                      TRUE ~ functional_class)) %>% 
   mutate(varlvl = paste0(tested_var, ":", tested_level)) %>% 
+  mutate(pvalue = paste0(tested_var, ":", format(pvalue, scientific = T, digits = 3))) %>% 
   group_by(criteria,timepoint,count,functional_class,locus_tag) %>%
   summarise(mechanism = paste0(varlvl, collapse = ","),
             pvalues = paste0(pvalue, collapse = ",")) %>% 
-  select(criteria,
+  select(cluster = criteria,
          timepoint,
-         count,
-         functional_class,
-         mechanism,
+         cog_category = functional_class,
+         significant_features = mechanism,
          pvalues,
+         count,
          locus_tag)
 
 # performing the same operations for fold change
@@ -481,22 +640,55 @@ ptgsFcRepTib = fcStats %>%
                                 tested_var == "tps" ~ "TPS",
                                 tested_var == "cai" ~ "CAI",
                                 TRUE ~ tested_var)) %>% 
+  mutate(functional_class = case_when(functional_class == "all" ~ "All",
+                                      TRUE ~ functional_class)) %>% 
   mutate(varlvl = paste0(tested_var, ":", tested_level)) %>% 
+  mutate(pvalue = paste0(tested_var, ":", format(pvalue, scientific = T, digits = 3))) %>% 
   group_by(criteria,timepoint,count,functional_class,locus_tag) %>%
   summarise(mechanism = paste0(varlvl, collapse = ","),
             pvalues = paste0(pvalue, collapse = ",")) %>% 
-  select(criteria,
+  select(cluster = criteria,
          timepoint,
-         count,
-         functional_class,
-         mechanism,
+         cog_category = functional_class,
+         significant_features = mechanism,
          pvalues,
+         count,
          locus_tag)
 
 # creating a list to store tables
-ptgsEnrich = list("Abundance_based_analysis" = ptgsAbundRepTib,
-                  "FC_based_analysis" = ptgsFcRepTib)
+ptgsEnrich = list("abundance_based_analysis" = ptgsAbundRepTib,
+                  "foldchange_based_analysis" = ptgsFcRepTib)
 
+# creating a tab guide
+ptgsEnrich$tab_guide_readme = tibble(tab_name = c("abundance_based_analysis",
+                                                  "foldchange_based_analysis",
+                                                  "column_description"),
+                                     description = c("Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the abundance-based approach.",
+                                                     "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the fold change-based approach.",
+                                                     "Column description for the mentioned tabs."))
+
+# setting up a column description tab
+ptgsEnrich$column_description = tibble(column_name = c("cluster",
+                                                       "timepoint",
+                                                       "cog_category",
+                                                       "significant_features",
+                                                       "pvalues",
+                                                       "count",
+                                                       "locus_tag"),
+                                       description = c("Cluster identifier according to the abundance- or fold change-based analysis. Please, refer to the supplemental tables for each one of the approaches for more information.",
+                                                       "Time point for the abundance-based approach and time point contrast for the fold change-based approach.",
+                                                       "Category according to COG 2020. 'All' is an arbitrary category including all the categories.",
+                                                       "Significantly enriched/different features and levels (feature:level format) that could help us understand why protein and mRNA levels are incoherent for a given cluster. E.g., 'SmAP1:yes' indicates that the cluster is enriched for SmAP1 binding. E.g., 'CAI:higher:0.911:0.773' indicates that the CAI of the cluster (0.911) is significantly higher than the CAI of the backgroun genes (0.773). Different features are separated by commas.",
+                                                       "P-values for the significant features and levels. E.g., 'SmAP1:6.41e-03' means that SmAP1 binding is enriched in a given cluster with a p-value of 6.41e-03. Different p-values are separated by commas.",
+                                                       "Number of instances (locus tags) within a given cluster.",
+                                                       "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
+
+# ordering according to panel of plots
+ptgsEnrich = ptgsEnrich[c("tab_guide_readme",
+                          "abundance_based_analysis",
+                          "foldchange_based_analysis",
+                          "column_description")]
+  
 # writing table with multi sheets
 write.xlsx(ptgsEnrich,
            file = "results/supp_tables/Table_S_ptgsEnrich.xlsx",
@@ -524,7 +716,7 @@ mobSupp$mobilization_events = dfinsdel %>%
 mobSupp$column_description = tibble(column_name = colnames(mobSupp$mobilization_events),
                                    description = c("strain" = "Halobacterium salinarum NRC-1 strain and replicate (A, B, and C). dura3 is the parent Ura3 knockout strain (control). dura3dsmap1 is the SmAP1 knockout strain.",
                                                    "cluster" = "Structural variant cluster identifier. Unique within sample. I: insertion cluster. E: excision cluster.",
-                                                   "replicon" = "Replicon where the structural variant cluster was found.",
+                                                   "replicon" = "Replicon where the structural variant cluster was found. NC_002607.1: Chromosome; NC_001869.1: Plasmid pNRC100; NC_002608.1: Plasmid pNRC200.",
                                                    "ISName" = "Name of the insertion sequence matching the the structural variant cluster.",
                                                    "ISFamily" = "Insertion sequence family for a given insertion sequence.",
                                                    "meanStart" = "Position of the detected cluster. Mean is applied if a cluster is supported by many mobilization events. The position is relative to the coordinates of a modified reference genome that excludes long duplications. See methods for details.",
@@ -532,7 +724,7 @@ mobSupp$column_description = tibble(column_name = colnames(mobSupp$mobilization_
                                                    "meanLength" = "Length of the detected cluster. Mean is applied if a cluster is supported by many mobilization events.",
                                                    "sdLength" = "Length of the detected cluster. Standard deviation is applied if a cluster is supported by many mobilization events.",
                                                    "count" = "Number of reads supporting the mobilization cluster, that is, number of mobilization events observed within a cluster.",
-                                                   "rnames" = "Name of the reads supporting the mobilization events of a given cluster.",
+                                                   "rnames" = "Name of the reads supporting the mobilization events for a given cluster.",
                                                    "status" = "Occurency status of a mobilization cluster inferred by *count* divided by the local sequencing depth (events by coverage; e/c). e/c ≤ 0.1: Rare; 0.1 < e/c ≤ 0.5: Common; e/c > 0.5: Predominant.",
                                                    "svType" = "Type of structural variant cluster: Insertion or Excision."))
 
@@ -541,6 +733,35 @@ write.xlsx(mobSupp,
            file = "results/supp_tables/Table_S_mob_events.xlsx",
            overwrite = T)
   
+# membrane proteins that are likely undetected ####
+# due to their transmembrane nature
+transmembSupp = list()
+
+transmembSupp$transmembrane_proteins = undetectedRemovDF %>% 
+  left_join(x = .,
+            y = topsconRes,
+            by = c("representative" = "locus_tag")) %>% 
+  select(-c(Length, SignalPeptide)) %>% 
+  mutate(experimental_evidence = case_when(representative %in% membProtsFinal ~ "yes",
+                                           TRUE ~ "no")) %>% 
+  relocate(locus_tag,
+           .after = experimental_evidence)
+  
+transmembSupp$column_description =  tibble(column_name = c("representative",
+                                                           "product",
+                                                           "numTM",
+                                                           "experimental_evidence",
+                                                           "locus_tag"),
+                                           description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                           "Gene product given by Pfeiffer et al. (2019).",
+                                                           "Number of transmembrane domains predicted by TOPCONS webserver.",
+                                                           "Whether there is proteome experimental evidence for membrane samples in Goo et al. (2003) or Klein et al. (2005).",
+                                                           "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
+
+write.xlsx(transmembSupp,
+           file = "results/supp_tables/Table_S_transmemb.xlsx",
+           overwrite = T)
+
 # copying figures ####
 # made for this paper to the 
 # appropriate directory
@@ -549,6 +770,7 @@ figFiles = c(
 "plots/abundanceHeatmap_en.tiff" = "M_An atlas of transcriptome, ribosome profile, and proteome for Halobacterium salinarum NRC-1",
 "plots/18_abund_fc_prot_mrna_panel.png" = "M_Genes following patterns compatible with post-transcriptional regulation",
 "plots/gvp_traj.png" = "dependencyFig_Post-transcriptional_regulation_of_gvp1_operons",
+"plots/gvp_traj.svg" = "dependencyFig_Post-transcriptional_regulation_of_gvp1_operons",
 "plots/mobileElPanelFeatures_en.png" = "M_Protein and mRNA levels of mobile elements",
 "plots/mobilizationComparisonPerFamily_en.png" = "M_Detected mobilizations for decomposed insertion sequence families",
 "plots/13_prot_vs_gc_tpwise.png" = "S_Protein levels are associated with transcript GC content",
