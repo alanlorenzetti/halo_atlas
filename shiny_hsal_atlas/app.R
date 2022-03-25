@@ -22,24 +22,9 @@ library(InteractiveComplexHeatmap)
 # igvShiny
 # library(igvShiny)
 
-# creating dir to store copied objx and files
-if(!dir.exists("data")){dir.create("data")}
-
-# copying and loading heatmap
-file.copy(from = "../results/ht_with_names_for_shiny.RData",
-          to = "data/",
-          overwrite = T)
+# loading heatmap
 load(file = "data/ht_with_names_for_shiny.RData")
-
-# copying legend img
-file.copy(from = "../plots/heatmap_legends.png",
-          to = "data",
-          overwrite = T)
-
-# copying static version
-file.copy(from = "../plots/abundanceHeatmap_expanded_en.pdf",
-          to = "data",
-          overwrite = T)
+htComplete = draw(htComplete)
 
 # creating header
 header = dashboardHeader(title = "Halo Atlas")
@@ -355,10 +340,5 @@ server <- function(input, output, session) {
 }
 
 # Run the application 
-#shinyApp(ui = ui, server = server)
-
-# deploying
-# library(rsconnect)
-# rsconnect::setAccountInfo(name='alorenzetti', token='7080306C3625803FDA453437CEC051E3', secret='')
-# deployApp()
+shinyApp(ui = ui, server = server)
 
