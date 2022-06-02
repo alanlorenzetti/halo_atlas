@@ -54,12 +54,12 @@ dictFunCat = left_join(dictFunCat, halfLives, by = c("pfeiLocusTag" = "locus_tag
 # adding codon index usage
 dictFunCat = left_join(dictFunCat, cai, by = c("pfeiLocusTag" = "locus_tag"))
 
-# adding transcription factor information obtained
-# from chip-seq
-dictFunCat = left_join(dictFunCat, chipSeqTFs, by = c("pfeiLocusTag" = "representative"))
-
-# chip-chip experiments
-dictFunCat = left_join(dictFunCat, chipChipTFs, by = c("pfeiLocusTag" = "representative"))
+# # adding transcription factor information obtained
+# # from chip-seq
+# dictFunCat = left_join(dictFunCat, chipSeqTFs, by = c("pfeiLocusTag" = "representative"))
+# 
+# # chip-chip experiments
+# dictFunCat = left_join(dictFunCat, chipChipTFs, by = c("pfeiLocusTag" = "representative"))
 
 # adding location from where tx come from (chromosome, plasmids)
 dictFunCat = left_join(dictFunCat, location, by = c("pfeiLocusTag" = "representative"))
@@ -67,10 +67,10 @@ dictFunCat = left_join(dictFunCat, location, by = c("pfeiLocusTag" = "representa
 # adding TPS info
 dictFunCat = left_join(dictFunCat, tps, by = c("pfeiLocusTag" = "representative"))
 
-# adding IRs info
-dictFunCat = left_join(dictFunCat, irs, by = c("pfeiLocusTag" = "representative")) %>% 
-  mutate(IRs = case_when(is.na(IRs) ~ 0,
-                         TRUE ~ as.numeric(IRs)))
+# # adding IRs info
+# dictFunCat = left_join(dictFunCat, irs, by = c("pfeiLocusTag" = "representative")) %>% 
+#   mutate(IRs = case_when(is.na(IRs) ~ 0,
+#                          TRUE ~ as.numeric(IRs)))
 
 # adding delta2647 fold changes
 # dictFunCat = left_join(dictFunCat, lfc2647, by = c("pfeiLocusTag" = "representative"))

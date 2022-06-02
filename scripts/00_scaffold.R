@@ -11,18 +11,18 @@ if(!dir.exists("results")){dir.create("results")}
 # loading libs
 source("scripts/01_loadingLibs.R")
 
-# parsers of misc features
+# parsers for misc features
 source("scripts/02_parseHalfLives.R")
-source("scripts/03_codonUsage.R") # check why there are a few proteins (<10) out of frame
-source("scripts/04_parseMicrobesOnlinePredOperons.R")
+source("scripts/03_codonUsage.R") # check why there are a few proteins (<10) out of frame; possibly pseudogenes
+# source("scripts/04_parseMicrobesOnlinePredOperons.R")
 source("scripts/05_parseSmAP1.R")
 source("scripts/06_parseAntisenseRNAs.R")
-source("scripts/07_parseTFChipSeq.R")
-source("scripts/08_parseTFChipChip.R")
+# source("scripts/07_parseTFChipSeq.R")
+# source("scripts/08_parseTFChipChip.R")
 source("scripts/09_parseLocation.R")
 source("scripts/10_parseTPS.R")
-source("scripts/11_parseiTSS.R")
-source("scripts/12_genAndParseIRs.R")
+# source("scripts/11_parseiTSS.R")
+# source("scripts/12_genAndParseIRs.R")
 # source("scripts/parseAndProcess2647.R")
 # source("scripts/parseAndProcess1503.R")
 source("scripts/13_parseAndProcess2099.R")

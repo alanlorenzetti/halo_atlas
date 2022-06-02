@@ -72,26 +72,15 @@ topsconMemb$two = topsconRes %>%
   filter(numTM > 1) %>% 
   pull(locus_tag)
 
-# checking the proteins
-undetectedRemovDF = nrtx %>%
-  filter(representative %in%
-           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
-                                               c(membProtsFinal, topsconMemb$two)])
-
 # the following proteins should be removed
 # since they were likely false positives
 # for membrane proteins according to our
 # manual inspection
 membFP = c("VNG_0551G",
            "VNG_1801G",
-           
            "VNG_0052H",
            "VNG_0059H",
            "VNG_0420H",
            "VNG_0767H",
            "VNG_1653H",
            "VNG_2089H")
-           
-# updating our final dataframe
-undetectedRemovDF = undetectedRemovDF %>% 
-  filter(!representative %in% membFP)

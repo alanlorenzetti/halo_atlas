@@ -65,7 +65,8 @@ packs = c("BiocManager",
           "openxlsx",
           "ggbreak",
           "cocor",
-          "gsl")
+          "gsl",
+          "SuperExactTest")
 
 # loading and installing missing packages
 p_load(char = packs)

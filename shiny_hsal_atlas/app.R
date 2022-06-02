@@ -48,7 +48,8 @@ body = dashboardBody(
                 box(
                     title = "Interactive heatmap",
                     width = 12, solidHeader = TRUE, status = "primary",
-                    InteractiveComplexHeatmapOutput("ht_atlas",
+                    InteractiveComplexHeatmapOutput(heatmap_id = "ht_atlas",
+                                                    action = "click",
                                                     layout = "1|2|3",
                                                     output_ui = NULL,
                                                     title3 = NULL,

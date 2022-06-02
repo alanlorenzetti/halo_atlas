@@ -20,12 +20,12 @@ summaryTPelements = list()
 
 # 2099 mutant
 summaryTPelements$`2099`$up = res2099 %>% 
-  filter(logFC >= log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(logFC >= log2fcthreshold & P.Value < padjthreshold) %>% 
   filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$`2099`$down = res2099 %>% 
-  filter(logFC <= -log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(logFC <= -log2fcthreshold & P.Value < padjthreshold) %>% 
   filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
@@ -84,23 +84,24 @@ atlasColDescription = c("locus_tag" = "Locus tag for a given instance according 
                 "cog_category" = "Category according to COG 2020.",
                 "functional_pathway" = "Functional pathway according to COG 2020.",
                 "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
-                "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
+                # "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
                 "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
+                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
                 "GC" = "GC content for a given gene.",
                 "GCdev" = "Difference between GC content for a given gene and the mean GC content considering all the genes.",
                 "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
                 "cai" = "Codon adaptation index computed using as reference set the 5% most abundant proteins in this study.",
-                structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
-                structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
-                structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                # structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
+                # structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                # structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
                 "Chromosome" = "The represented instance is located within the chromosome (NC_002607.1).",
                 "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
                 "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
-                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
-                "IRs" = "Number of inverted repeats found within a given gene.",
+                # "IRs" = "Number of inverted repeats found within a given gene.",
                 "lfc2099" = "Log2-transformed fold change of RNase VNG2099 knockout vs. the control strain.",
-                "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family.",
-                "protein_coding" = "Whether the representative instance encodes a protein.")
+                "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family."
+                # "protein_coding" = "Whether the representative instance encodes a protein."
+                )
                 
 atlasDesc = tibble(column_name = names(atlasColDescription),
                    description = atlasColDescription)
@@ -118,23 +119,24 @@ atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance accord
                             "cog_category" = "Category according to COG 2020.",
                             "functional_pathway" = "Functional pathway according to COG 2020.",
                             "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
-                            "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
+                            # "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
                             "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
+                            "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
                             "GC" = "GC content for a given gene.",
                             "GCdev" = "Difference between GC content for a given gene and the mean GC content considering all the genes.",
                             "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
                             "cai" = "Codon adaptation index computed using as reference set the 5% most abundant proteins in this study.",
-                            structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
-                            structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
-                            structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                            # structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
+                            # structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
+                            # structure(names = paste0("ChIPChip_", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("A", "B", "C", "D", "E", "F", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
                             "Chromosome" = "The represented instance is located within the chromosome (NC_002607.1).",
                             "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
                             "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
-                            "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene.",
-                            "IRs" = "Number of inverted repeats found within a given gene.",
+                            # "IRs" = "Number of inverted repeats found within a given gene.",
                             "lfc2099" = "Log2-transformed fold change of RNase VNG2099 knockout vs. the control strain.",
-                            "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family.",
-                            "protein_coding" = "Whether the representative instance encodes a protein.")
+                            "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family."
+                            # "protein_coding" = "Whether the representative instance encodes a protein."
+                            )
   
 atlasTidyDesc = tibble(column_name = names(atlasTidyColDescription),
                        description = atlasTidyColDescription)
@@ -147,37 +149,51 @@ nrtxDesc = tibble(column_name = c("representative",
                                   "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
 
 # creating a tab description object
-atlasTabDesc = tibble(tab_name = c("atlas_normalized_wide_data",
+atlasTabDesc = tibble(tab_name = c("non_redundant_tx_dictionary",
+                                   "nrtx_column_description",
+                                   "atlas_normalized_wide_data",
                                    "atlas_column_description_wide",
                                    "atlas_non_normalized_tidy_data",
-                                   "atlas_column_description_tidy",
-                                   "non_redundant_tx_dictionary",
-                                   "nrtx_column_description"),
-                      description = c("Wide data table used to generate the interactive heat maps for this study.",
+                                   "atlas_column_description_tidy"),
+                      description = c("The non-redundant transcriptome dictionary generated for this study. Source code and further info at: https://github.com/alanlorenzetti/halo_nr_tx .",
+                                      "Column description for the non_redundant_tx_dictionary tab.",
+                                      "Wide data table used to generate the interactive heat maps for this study.",
                                       "Column description for the atlas_normalized_wide_data tab.",
                                       "A tidy data table used to generate atlas_normalized_wide_data. This table contains the most essential (non-normalized) data for this study.",
-                                      "Column description for the atlas_non_normalized_tidy_data tab.",
-                                      "The non-redundant transcriptome dictionary generated for this study. Source code and further info at: https://github.com/alanlorenzetti/halo_nr_tx .",
-                                      "Column description for the non_redundant_tx_dictionary tab."))
+                                      "Column description for the atlas_non_normalized_tidy_data tab."))
 
 # also with nrtx table
 atlasdata = list("tab_guide_readme" = atlasTabDesc,
+                 "non_redundant_tx_dictionary" = nrtx,
+                 "nrtx_column_description" = nrtxDesc,
                  "atlas_normalized_wide_data" = hmaFuncat %>% 
                    dplyr::rename(smap1Sense = "lsmSense",
                                  smap1AntiSense = "lsmAntiSense") %>% 
                    mutate(across(.cols = where(is.numeric),
-                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))),
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))) %>% 
+                   select(-starts_with("ChIP")) %>% 
+                   select(-c(smap1AntiSense, IRs, protein_coding)) %>% 
+                   mutate(gene_symbol = case_when(gene_symbol == "Undefined" ~ NA_character_,
+                                                  TRUE ~ gene_symbol),
+                          functional_pathway = case_when(functional_pathway == "Undefined" ~ NA_character_,
+                                                  TRUE ~ functional_pathway)) %>% 
+                   relocate(tps, .after = asRNA),
                  "atlas_column_description_wide" = atlasDesc,
                  "atlas_non_normalized_tidy_data" = abundLongFuncat %>% 
                    dplyr::rename(locus_tag_synonyms = "locus_tag.y",
                                  smap1Sense = "lsmSense",
                                  smap1AntiSense = "lsmAntiSense") %>% 
                    mutate(across(.cols = where(is.numeric),
-                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))),
-                 "atlas_column_description_tidy" = atlasTidyDesc,
-                 "non_redundant_tx_dictionary" = nrtx,
-                 "nrtx_column_description" = nrtxDesc
-)
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))) %>% 
+                   select(-starts_with("ChIP")) %>% 
+                   select(-c(smap1AntiSense, IRs, protein_coding)) %>% 
+                   mutate(gene_symbol = case_when(gene_symbol == "Undefined" ~ NA_character_,
+                                                  TRUE ~ gene_symbol),
+                          functional_pathway = case_when(functional_pathway == "Undefined" ~ NA_character_,
+                                                         TRUE ~ functional_pathway)) %>% 
+                   relocate(tps, .after = asRNA),
+                 "atlas_column_description_tidy" = atlasTidyDesc
+                 )
 
 write.xlsx(atlasdata,
            file = "results/supp_tables/Table_S_atlasData.xlsx",
@@ -734,6 +750,18 @@ write.xlsx(mobSupp,
            overwrite = T)
   
 # membrane proteins that are likely undetected ####
+# checking the proteins
+undetectedRemovDF = nrtx %>%
+  filter(representative %in%
+           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
+                                               c(membProtsFinal, topsconMemb$two)])
+
+# updating our final dataframe
+# removing proteins 
+# that are likely transmembrane
+undetectedRemovDF = undetectedRemovDF %>% 
+  filter(!representative %in% membFP)
+
 # due to their transmembrane nature
 transmembSupp = list()
 
@@ -762,12 +790,46 @@ write.xlsx(transmembSupp,
            file = "results/supp_tables/Table_S_transmemb.xlsx",
            overwrite = T)
 
+# saving 2099 differential expression analysis ####
+DE2099 = list()
+
+DE2099$DE_analysis_2099 = res2099 %>% 
+  mutate(differentially_expressed = case_when(abs(logFC) >= log2fcthreshold & P.Value < padjthreshold ~ "yes",
+                                              TRUE ~ "no"),
+         direction_of_change = case_when(logFC >= log2fcthreshold & differentially_expressed == "yes" ~ "upregulated",
+                                         logFC <= log2fcthreshold & differentially_expressed == "yes" ~ "downregulated",
+                                         TRUE ~ "non-differentially_expressed")) %>% 
+  arrange(desc(differentially_expressed), logFC) %>% 
+  mutate(across(.cols = where(is.numeric),
+                .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "")))
+
+DE2099$column_description =  tibble(column_name = c("representative",
+                                                    "adj.P.Val",
+                                                    "P.Value",
+                                                    "t",
+                                                    "B",
+                                                    "logFC",
+                                                    "differentially_expressed",
+                                                    "direction_of_change"),
+                                    description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                    "limma::topTable output field: adjusted p-value or q-value (Benjamini-Hochberg procedure). ",
+                                                    "limma::topTable output field: raw p-value.",
+                                                    "limma::topTable output field: moderated t-statistic.",
+                                                    "limma::topTable output field: log-odds that the gene is differentially expressed.",
+                                                    "limma::topTable output field: estimate of the log2-fold-change corresponding to the contrast (mutant/control).",
+                                                    "Whether the gene is differentially expressed according to our criteria.",
+                                                    "Direction of change for differentially expressed genes (upregulated or downregulated)."))
+
+write.xlsx(DE2099,
+           file = "results/supp_tables/Table_S_2099.xlsx",
+           overwrite = T)
+
 # copying figures ####
 # made for this paper to the 
 # appropriate directory
 figFiles = c(
 "plots/17_ptgsFeatures_venn.png" = "M_Genes potentially subject to post-transcriptional regulation",
-"plots/abundanceHeatmap_en.tiff" = "M_An atlas of transcriptome, ribosome profile, and proteome for Halobacterium salinarum NRC-1",
+"plots/abundanceHeatmap_en.png" = "M_An atlas of transcriptome, ribosome profile, and proteome for Halobacterium salinarum NRC-1",
 "plots/18_abund_fc_prot_mrna_panel.png" = "M_Genes following patterns compatible with post-transcriptional regulation",
 "plots/gvp_traj.png" = "dependencyFig_Post-transcriptional_regulation_of_gvp1_operons",
 "plots/gvp_traj.svg" = "dependencyFig_Post-transcriptional_regulation_of_gvp1_operons",
@@ -779,10 +841,13 @@ figFiles = c(
 "plots/upset_plot_fcbased.png" = "S_UpSet plot of potentially post-transcriptionally regulated genes shared among different physiological states transitions",
 "plots/gvp_heat.png" = "S_Protein-mRNA dynamics and various features of genes encoding gas vesicle biogenesis proteins",
 "plots/smap1_panel.png" = "S_SmAP1 descriptive features",
-"plots/mob_observed_events_panel.png" = "S_Detected insertion and excision events")
+"plots/mob_observed_events_panel.png" = "S_Detected insertion and excision events",
+"plots/smap1_ura3_growth_curve.png" = "S_Growth_curve_of_ura3_and_ura3smap1_strains_v2",
+"plots/abundanceHeatmap_expanded_en.pdf" = "S_Atlas heat map expanded")
 
 extensions = names(figFiles) %>% str_replace(".*(\\..*)$", "\\1")
 orifile = names(figFiles)
 destfile = paste0("results/figures/", figFiles %>% str_replace_all(" ", "_"), extensions)
 
 file.copy(from = orifile, to = destfile, overwrite = T)
+file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/Figure_S_heatmap_expanded.pdf", overwrite = T)

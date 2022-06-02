@@ -9,6 +9,21 @@
 # parseTFChipSeq script
 
 # getting started ####
+# creating CDS annotation object from pfeiffer et al 2019 annot CDS ####
+# using pfeiffer et al 2019 annotation
+pfeiAnnotCDS = rtracklayer::import("data/Hsalinarum-gene-annotation-pfeiffer2019.gff3") %>% 
+  as_tibble() %>% 
+  filter(type == "CDS")
+
+# creating granges obj
+pfeiCDSgr = GRanges(seqnames = pfeiAnnotCDS$seqnames,
+                    IRanges(start = pfeiAnnotCDS$start,
+                            end = pfeiAnnotCDS$end),
+                    strand = pfeiAnnotCDS$strand)
+
+names(pfeiCDSgr) = pfeiAnnotCDS$locus_tag
+pfeiCDSgr$locus_tag = pfeiAnnotCDS$locus_tag
+
 loc = pfeiAnnotCDS %>% 
   mutate(seqnames = case_when(seqnames == "NC_002607.1" ~ "Chromosome",
                               seqnames == "NC_001869.1" ~ "pNRC100",

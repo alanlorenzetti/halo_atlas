@@ -56,7 +56,7 @@ ovlpsRes = GenomicRanges::findOverlaps(gsetgr, pfeiCDSgr,
                                        type = "within") %>% 
   as_tibble()
 
-ovlps = tibble(locus_tag = names(pfeiCDSpromoterGr)[ovlpsRes$subjectHits],
+ovlps = tibble(locus_tag = names(pfeiCDSgr)[ovlpsRes$subjectHits],
                probes = names(gsetgr)[ovlpsRes$queryHits])
 
 # use all tiling array time points or
@@ -118,7 +118,7 @@ fit2 = contrasts.fit(fit, cont.matrix)
 
 # compute statistics and table of top significant genes
 fit2 = eBayes(fit2, 0.01)
-tT = topTable(fit2, adjust="fdr", sort.by="B", number = dim(gset)[1])
+tT = topTable(fit2, number = dim(gset)[1])
 tT$representative = rownames(tT)
 
 # arranging table

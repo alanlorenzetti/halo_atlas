@@ -179,7 +179,7 @@ protvsmrnatpwisetimelag = ggarrange(plotlist = list(protvsmrna$TP1,
 ggsave(filename = "plots/14_prot_vs_mrna_panel.png",
        plot = protvsmrnatpwisetimelag,
        units = "in",
-       dpi = 300,
+       dpi = 600,
        width = 5.5,
        height = 10)
 
@@ -207,14 +207,14 @@ abundFcProtRNApanel = ggarrange(plotlist = list(ggarrange(plotlist = list(protvs
 ggsave(filename = "plots/18_abund_fc_prot_mrna_panel.png",
        plot = abundFcProtRNApanel,
        units = "in",
-       dpi = 300,
+       dpi = 600,
        width = 12,
        height = 8)
 
 # finding significance of overlap SmAP1 BRs####
 # computing significance of overlap for SmAP1
 # biological replicates using the rationale
-# availabe at
+# available at
 # http://nemates.org/MA/progs/representation.stats.html
 # or in data folder overlap_stats.v0.011.tgz
 x = overlaps[["biorep1_nr"]] %in% overlaps[["biorep2_nr"]] %>% sum()
@@ -262,6 +262,44 @@ Prob
 # Set2: 348 
 # Overlap: 134 
 # Total number of genes: 2631 
+
+# an alternative approach to compute
+# the fold enrichment with an associated
+# probability taken from
+# https://cran.r-project.org/web/packages/SuperExactTest/vignettes/set_html.html
+smap1PerBrList = list(BR1 = overlaps$biorep1,
+                      BR2 = overlaps$biorep2)
+
+length.gene.sets = sapply(smap1PerBrList,length)
+
+total = dim(nrtx)[1]
+
+num.expcted.overlap = total * do.call(prod, as.list(length.gene.sets/total))
+
+p = sapply(0:232,function(i) dpsets(i, length.gene.sets, n=total))
+
+common.genes = intersect(smap1PerBrList$BR1, smap1PerBrList$BR2)
+
+num.observed.overlap = length(common.genes)
+
+# fold enrichment of the overlap over expected
+FE = num.observed.overlap/num.expcted.overlap
+
+# probability density of the observed intersection size
+dpsets(num.observed.overlap, length.gene.sets, n=total)
+
+# probability of observing an intersection of 157 or more genes
+# using the cumulative probability function
+cpsets(num.observed.overlap-1, length.gene.sets, n=total, lower.tail=FALSE)
+
+# same operations done using a more succing approach
+fit=MSET(smap1PerBrList, n=total, lower.tail=FALSE)
+
+# fold enrichment
+fit$FE
+
+# probability
+fit$p.value
 
 # comparing pearson correlations ####
 comparisons = list("RTP1 vs. RTP2" = c("TP1", "TP1", "TP2", "TP2"),
@@ -338,7 +376,7 @@ vennplot$panel_abund = ggarrange(plotlist = list(vennplot$venn_prot_bot_mrna_top
 ggsave(filename = "plots/15_prot_botOrNon_mrna_top_venn.png",
        plot = vennplot$panel_abund,
        units = "in",
-       dpi = 300,
+       dpi = 600,
        width = 11,
        height = 4)
 
@@ -357,7 +395,7 @@ vennplot$venn_fc_q4$plot = plot(vennplot$venn_fc_q4$preplot,
 ggsave(filename = "plots/16_prod_down_mrna_up_venn.png",
        plot = vennplot$venn_fc_q4$plot,
        units = "in",
-       dpi = 300,
+       dpi = 600,
        width = 6.5,
        height = 6.5)
 
@@ -385,7 +423,7 @@ usplotfc = grid.grabExpr(draw(UpSet(m = cm1,
 
 ggsave(filename = "plots/upset_plot_fcbased.png",
        plot = usplotfc,
-       dpi = 300,
+       dpi = 600,
        units = "in",
        height = 3.5,
        width = 5)
@@ -397,12 +435,12 @@ summaryTPelements = list()
 
 # 2099 mutant
 summaryTPelements$`2099`$up = res2099 %>% 
-  filter(logFC >= log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(logFC >= log2fcthreshold & P.Value < padjthreshold) %>% 
   filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
 summaryTPelements$`2099`$down = res2099 %>% 
-  filter(logFC <= -log2fcthreshold & adj.P.Val < padjthreshold) %>% 
+  filter(logFC <= -log2fcthreshold & P.Value < padjthreshold) %>% 
   filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
@@ -431,24 +469,32 @@ summaryTPelements$tps$tps5 = tpscount %>%
   filter(str_detect(representative, "VNG_[0-9]")) %>% 
   pull(representative)
 
-ptgsFeaturesVenn = plot(venn(combinations = list("SmAP1" = summaryTPelements$SmAP1,
-                                                 "asRNA" = summaryTPelements$asRNA,
-                                                 "TPS" = c(summaryTPelements$tps$tps1,
-                                                           summaryTPelements$tps$tps2to5,
-                                                           summaryTPelements$tps$tps5) %>% 
-                                                   unique(),
-                                                 "RNase" = c(summaryTPelements$`2099`$up,
-                                                              summaryTPelements$`2099`$down) %>% 
-                                                   unique())),
+lt = list("SmAP1" = summaryTPelements$SmAP1,
+          "asRNA" = summaryTPelements$asRNA,
+          "TPS" = c(summaryTPelements$tps$tps1,
+                    summaryTPelements$tps$tps2to5,
+                    summaryTPelements$tps$tps5) %>% 
+            unique(),
+          "RNase_2099C" = c(summaryTPelements$`2099`$up,
+                            summaryTPelements$`2099`$down) %>% 
+            unique())
+
+ptgsFeaturesVenn = plot(venn(combinations = lt),
                         fills = "white",
-                        edges = list(lex = 2))
+                        edges = list(lex = 2),
+                        quantities = list(cex = 1.5))
 
 ggsave(filename = "plots/17_ptgsFeatures_venn.png",
        plot = ptgsFeaturesVenn,
        units = "in",
-       dpi = 300,
-       width = 6.5,
+       dpi = 600,
+       width = 7.5,
        height = 6.5)
+
+# genes being intersected by all those features
+# making the combination matrix
+cm9 = make_comb_mat(lt, mode = "distinct")
+# dictFunCat %>% dplyr::select(pfeiLocusTag, product) %>% filter(pfeiLocusTag %in% extract_comb(m = cm9, comb_name = "1111")) %>% clipr::write_clip()
 
 # checking enrichment of TPS within mechanisms
 # of post transcriptional regulation
@@ -479,10 +525,16 @@ enrichAnalysis(df = hmaFuncat, subvec = c(summaryTPelements$`2099`$up,
 # extra questions:
 # are delta2099 differentially expressed genes
 # enriched for SmAP1? no
+enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$up,
+               testcol = "lsmSense", lev =  "yes")
+
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
                testcol = "lsmSense", lev =  "yes")
 
 # enriched for asRNA? no
+enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$up,
+               testcol = "asRNA", lev =  "yes")
+
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
                testcol = "asRNA", lev =  "yes")
 
@@ -490,6 +542,7 @@ enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
 # and delta2099 DE genes is enriched for TPS? No
 # for that we are going to use a function
 subvectIntersectionEnrich = function(list = list){
+  subvectIntersection = list()
   subvectIntersection$list = list
   subvectIntersection$matrix = list_to_matrix(subvectIntersection$list)
   subvectIntersection$vector = subvectIntersection$matrix %>%
@@ -527,6 +580,24 @@ subvectIntersectionEnrich(list = list("asRNA" = summaryTPelements$asRNA,
                                       "RNase" = c(summaryTPelements$`2099`$up,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
+
+# out of abund post-transcriptionally regulated genes
+# how many are within the set targeted by features
+# smap1, asrna, tps, and 2099ko
+# testing for enrichment
+myset = ptgsAbund$union$prot_bot_prot_non_mrna_top[
+  ptgsAbund$union$prot_bot_prot_non_mrna_top %in%
+    (lt %>% unlist() %>% unique())
+  ]
+
+enrichAnalysis(df = hmaFuncat, subvec = myset,
+               testcol = "lsmSense", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = myset,
+               testcol = "asRNA", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = myset,
+               testcol = "tps", lev =  "yes")
 
 # testing enrichment of functions in abundance-based ####
 # genes
@@ -650,7 +721,7 @@ ggsave(filename = "plots/gvp_traj.png",
        width = 5.5,
        height = 4,
        units = "in",
-       dpi = 300)
+       dpi = 600)
 
 # saving
 ggsave(filename = "plots/gvp_traj.svg",
@@ -658,7 +729,7 @@ ggsave(filename = "plots/gvp_traj.svg",
        width = 5.5,
        height = 4,
        units = "in",
-       dpi = 300)
+       dpi = 600)
 
 # trajectories of SmAP1 ####
 # raw variables
@@ -697,7 +768,7 @@ ggsave(filename = "plots/smap1_traj.png",
        width = 4,
        height = 3,
        units = "in",
-       dpi = 300)
+       dpi = 600)
 
 # comparing GC of SmAP1-bound transcripts ####
 # getting GC distributions for those
@@ -721,13 +792,16 @@ ggsave(filename = "plots/smap1_gc_comparison.png",
        height = 4,
        width = 3,
        unit = "in",
-       dpi = 300)
+       dpi = 600)
 
 # plotting enrichment of COG for smap1 ####
 # binding transcripts
 # testing each category for enrichment
 # using the protein coding transcripts
 # bound to SmAP1
+proteinCodingDf = hmaFuncat %>%
+  filter(protein_coding == "yes") 
+
 categories = proteinCodingDf$cog_category %>% 
   unique()
 
@@ -748,7 +822,7 @@ for(category in categories){
 # correcting pvalues using BH method
 # filtering by pval
 smap1EnrichRes$qval = p.adjust(smap1EnrichRes$pval, method = "BH")
-smap1EnrichRes = smap1EnrichRes[smap1EnrichRes$qval < 0.05,]
+smap1EnrichRes = smap1EnrichRes[smap1EnrichRes$pval < 0.05,]
 
 # plotting counts of categories with enrichment score
 cogEnrichPlot = hmaFuncat %>%
@@ -758,7 +832,7 @@ cogEnrichPlot = hmaFuncat %>%
   left_join(x = .,
             y = smap1EnrichRes,
             by = c("cog_category")) %>%
-  mutate(enrichStatus = case_when(is.na(qval) ~ NA_character_,
+  mutate(enrichStatus = case_when(is.na(pval) ~ NA_character_,
                                   TRUE ~ "*"),
          cog_category = factor(cog_category, levels = rev(cog_category)),
          size = case_when(count < 25 ~ "< 25 genes",
@@ -780,10 +854,10 @@ ggsave(filename = "plots/smap1_cogcategory_enrich.png",
        width = 7.5,
        height = 4,
        unit = "in",
-       dpi = 300)
+       dpi = 600)
 
 # unifying the previous three plots ####
-# to form a SmAP1 panel
+# to make a SmAP1 panel
 smap1FeaturesGCcats = ggarrange(plotlist = list(ggarrange(plotlist = list(gcComparisonPlot,
                                                                           smap1Traj),
                                                           ncol = 2, nrow = 1,
@@ -798,7 +872,7 @@ ggsave(filename = "plots/smap1_panel.png",
        width = 7.5,
        height = 7,
        unit = "in",
-       dpi = 300)
+       dpi = 600)
 
 # DNA-Seq mobilization plots ####
 dfins = read_tsv(file = "data/dfins.txt")
@@ -913,7 +987,7 @@ insDelCounts = dfinsdel %>%
                    sd = sd(norm),
                    n = n())
 
-insDelCounts$margin = 1.96*(insDelCounts$sd/sqrt(insDelCounts$n))
+insDelCounts$margin = 0.9945*(insDelCounts$sd/sqrt(insDelCounts$n))
 insDelCounts$lower95ci = insDelCounts$mean - insDelCounts$margin
 insDelCounts$upper95ci = insDelCounts$mean + insDelCounts$margin
 
@@ -927,7 +1001,8 @@ comparisonPlot = insDelCounts %>%
   xlab("Strain") +
   ylab("Average number of observed mobilizations") +
   ggtitle("Total") +
-  theme(axis.text.y = element_markdown())
+  theme(axis.text.y.left = ggtext::element_markdown(),
+        plot.title = ggtext::element_markdown())
 
 # separated by family
 fams = dfinsdel$ISFamily %>% 
@@ -952,7 +1027,7 @@ for(i in fams){
                      sd = sd(norm),
                      n = n())
   
-  isfamdf[[i]]$margin = 1.96*(isfamdf[[i]]$sd/sqrt(isfamdf[[i]]$n))
+  isfamdf[[i]]$margin = 0.9945*(isfamdf[[i]]$sd/sqrt(isfamdf[[i]]$n))
   isfamdf[[i]]$lower95ci = isfamdf[[i]]$mean - isfamdf[[i]]$margin
   isfamdf[[i]]$upper95ci = isfamdf[[i]]$mean + isfamdf[[i]]$margin
   
@@ -965,8 +1040,9 @@ for(i in fams){
     xlab("Strain") +
     ylab("Average number of observed mobilizations") +
     ggtitle(plottitle) +
-    theme(axis.text.y = element_markdown(),
-          plot.title = element_markdown())
+    theme(axis.text.x = ggtext::element_markdown(),
+          axis.text.y = ggtext::element_markdown(),
+          plot.title = ggtext::element_markdown())
 }
 
 ggsave(filename = "plots/mobilizationComparisonPerFamily_en.png",
@@ -977,6 +1053,49 @@ ggsave(filename = "plots/mobilizationComparisonPerFamily_en.png",
        dpi = 600,
        width = 7,
        height = 8)
+
+# growth curve of SmAP1 knockout strain ####
+# loading data
+dsmap1_I = c(0.05, 0.21, 0.29, 0.41, 0.54, 0.60, 0.62, 0.60, 0.60, 0.61, 0.64, 0.70, 0.73, 0.74, 0.76, 0.82, 0.83, 0.83, 0.82, 0.85, 0.87, 0.85, 0.83, 0.93, 0.91)
+dsmap1_II = c(0.05, 0.21, 0.28, 0.39, 0.53, 0.58, 0.63, 0.58, 0.58, 0.58, 0.60, 0.71, 0.69, 0.70, 0.72, 0.78, 0.79, 0.80, 0.79, 0.78, 0.79, 0.81, 0.83, 0.89, 0.85)
+dsmap1_III = c(0.05, 0.22, 0.32, 0.42, 0.53, 0.57, 0.59, 0.57, 0.58, 0.57, 0.61, 0.70, 0.71, 0.73, 0.75, 0.81, 0.83, 0.83, 0.84, 0.82, 0.85, 0.86, 0.86, 0.94, 0.91)
+dura3_I = c(0.05, 0.26, 0.38, 0.51, 0.59, 0.60, 0.58, 0.58, 0.60, 0.61, 0.64, 0.76, 0.80, 0.80, 0.82, 0.86, 0.92, 0.92, 0.93, 0.93, 0.94, 0.95, 0.95, 1.04, 1.02)
+dura3_II = c(0.05, 0.25, 0.33, 0.45, 0.55, 0.53, 0.58, 0.58, 0.57, 0.58, 0.60, 0.74, 0.77, 0.78, 0.80, 0.83, 0.91, 0.92, 0.92, 0.93, 0.95, 0.96, 0.96, 1.05, 1.05)
+dura3_III = c(0.05, 0.28, 0.39, 0.51, 0.60, 0.61, 0.60, 0.61, 0.63, 0.64, 0.64, 0.81, 0.83, 0.86, 0.88, 0.93, 0.98, 0.99, 1.01, 0.99, 1.03, 1.02, 1.01, 1.10, 1.07)
+
+time = c(0,13,17,20,23,27,37,40,43,45,48,61,64,67,69,70,83,86,89,91,96,112,136,155,159)
+
+# creating a tibble
+growthCurveTib = tibble(od = c(dsmap1_I,dsmap1_II,dsmap1_III,dura3_I,dura3_II,dura3_III),
+                        Strain = c(rep("&Delta;*ura3* &Delta;*smap1*", length(dsmap1_I) * 3),
+                                   rep("&Delta;*ura3*", length(dsmap1_I) * 3)),
+                        Replicate = rep(c(rep("BR1", length(dsmap1_I)),
+                                   rep("BR2", length(dsmap1_I)),
+                                   rep("BR3", length(dsmap1_I))),
+                                 2),
+                        time = rep(time, 6))
+
+# plotting a time series
+growthCurvePlot = growthCurveTib %>% 
+  ggplot(aes(x = time,
+             y = od,
+             color = Strain,
+             shape = Strain)) +
+  geom_point() +
+  geom_line(aes(linetype = Replicate)) +
+  scale_color_tableau() +
+  ylab("OD<sub>600nm</sub>") +
+  xlab("Time (hours)") +
+  ylim(c(0, 1.2)) +
+  theme(legend.text = element_markdown(),
+        axis.title.y = element_markdown())
+
+# saving
+ggsave(filename = "plots/smap1_ura3_growth_curve.png",
+       plot = growthCurvePlot,
+       dpi = 600,
+       width = 6,
+       height = 4)
 
 # plotting all genes for manual inspection: abundance #####
 # allLocusTags = abundLongFuncat$locus_tag %>%

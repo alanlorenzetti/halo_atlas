@@ -419,6 +419,16 @@ draw(htComplete,
      main_heatmap = "Protein")
 dev.off()
 
+tiff(file = "plots/abundanceHeatmap_en.png",
+     width = 12.5,
+     height = 7,
+     units = "in",
+     res = 600)
+draw(htComplete,
+     annotation_legend_list = heatLegs,
+     main_heatmap = "Protein")
+dev.off()
+
 # saving the expanded version of figure with gene names and products ####
 htRO = Heatmap(log2(hmaRO),
                name = "RO",
@@ -469,7 +479,7 @@ htRO = Heatmap(log2(hmaRO),
                show_heatmap_legend = F,
                row_names_side = "right",
                show_row_names = F,
-               row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product),
+               row_labels = hmaFuncat$locus_tag,
                row_names_gp = gpar(fontsize = 10),
                row_names_max_width = unit(10, "cm"),
                column_order = colnames(hmaRO),
@@ -494,7 +504,7 @@ png(file = paste0("plots/heatmap_legends.png"),
     width = 25,
     height = 12.5,
     units = "cm",
-    res = 300)
+    res = 600)
 draw(packLegend(list = heatLegs,
                 max_height = unit(10, "cm"),
                 column_gap = unit(1, "cm")))
@@ -537,7 +547,7 @@ for(i in names(ptgs)){
            width = 12,
            height = fight,
            units = "in",
-           res = 300)
+           res = 600)
       draw(htptgs[[i]][[j]],
            show_heatmap_legend = F,
            column_title = paste(i, j))
@@ -547,14 +557,13 @@ for(i in names(ptgs)){
 }
 
 # checking out gvp1 cluster (VNG_7015-7028)
-htgvp = draw(htComplete[hmaFuncat$locus_tag %in% paste0("VNG_", 7015:7028)],
-             show_heatmap_legend = F)
+htgvp = htComplete[hmaFuncat$locus_tag %in% paste0("VNG_", 7015:7028)]
 
 png(file = paste0("plots/gvp_heat.png"),
     width = 10,
     height = 4,
     units = "in",
-    res = 300)
+    res = 600)
 draw(htgvp,
      show_heatmap_legend = F)
 dev.off()
@@ -721,7 +730,7 @@ pcomp[["prot"]] = hmaFuncat %>%
   geom_quasirandom(size = sz, alpha = al) +
   stat_compare_means(aes(label = ..p.signif..),method = "wilcox.test") +
   theme_pubr() +
-  ylab("Log<sub>10</sub>(Protein level)") +
+  ylab("Log<sub>10</sub>(Protein abundance)") +
   xlab(NULL) +
   ylim(c(0.001,6)) +
   #  ggtitle("B") +
@@ -742,7 +751,7 @@ pcomp[["mrna"]] = hmaFuncat %>%
   geom_quasirandom(size = sz, alpha = al) +
   stat_compare_means(aes(label = ..p.signif..),method = "wilcox.test") +
   theme_pubr() +
-  ylab("Log<sub>10</sub>(mRNA level)") +
+  ylab("Log<sub>10</sub>(mRNA abundance)") +
   xlab(NULL) +
   #  ggtitle("C") +
   theme(axis.text.x = element_markdown(angle = 90, vjust = 0.5, hjust=1),
@@ -802,10 +811,13 @@ pcomp[["GC"]] = hmaFuncat %>%
 panelHeatmap = ggarrange(plotlist = list(htComplete),
                          labels = "AUTO")
 
-panelBoxplots = ggarrange(plotlist = pcomp,
+panelBoxplots = ggarrange(plotlist = list(pcomp$GC,
+                                          pcomp$prot,
+                                          pcomp$CAI,
+                                          pcomp$mrna),
                           nrow = 1,
-                          ncol = 5,
-                          labels = LETTERS[2:6])
+                          ncol = 4,
+                          labels = LETTERS[2:5])
 
 finalPanel = ggarrange(plotlist = list(panelHeatmap,
                                        panelBoxplots),

@@ -13,7 +13,7 @@ abund = left_join(tpm, spectroWide, by = "locus_tag") %>%
                     pattern = "VNG_t|VNG_s|VNG_r",
                     negate = T))
 
-# these object are going to be used by the heat map script
+# these objects are going to be used by the heat map script
 # we've got to provide a pseudocount for proteins not
 # detected by the proteome survey
 mobilome = dictFunCat %>% 
