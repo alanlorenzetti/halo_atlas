@@ -54,7 +54,7 @@ body = dashboardBody(
           width = 12,
           collapsible = TRUE,
           collapsed = TRUE,
-          status = "primary",
+          # status = "primary",
           div(class = "my-class",
               HTML("<p><b>asRNA</b>: antisense RNA</p>"),
               HTML("<p><b>TPS</b>: transcript processing site</p>"),
@@ -71,7 +71,8 @@ body = dashboardBody(
         ),
         box(
           title = "Interactive heatmap",
-          width = 12, solidHeader = TRUE, status = "primary",
+          width = 12, solidHeader = TRUE,
+          # status = "primary",
           InteractiveComplexHeatmapOutput(heatmap_id = "ht_atlas",
                                           action = "click",
                                           layout = "1|2|3",
