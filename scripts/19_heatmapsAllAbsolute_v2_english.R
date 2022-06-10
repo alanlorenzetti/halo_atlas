@@ -500,6 +500,9 @@ save(htComplete,
      file = "results/ht_with_names_for_shiny.RData")
 
 # saving legends to use in shiny
+save(heatLegs,
+     file = "results/heat_legs_for_shiny.RData")
+
 png(file = paste0("plots/heatmap_legends.png"),
     width = 25,
     height = 12.5,

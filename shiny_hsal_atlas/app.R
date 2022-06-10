@@ -24,73 +24,97 @@ library(InteractiveComplexHeatmap)
 
 # loading heatmap
 load(file = "data/ht_with_names_for_shiny.RData")
-htComplete = draw(htComplete)
+load(file = "data/heat_legs_for_shiny.RData")
+htComplete = draw(htComplete,
+                  annotation_legend_list = heatLegs,
+                  main_heatmap = "Protein")
 
 # creating header
 header = dashboardHeader(title = "Halo Atlas")
 
 # creating sidebar
 sidebar = dashboardSidebar(
-    sidebarMenu(
-        menuItem("Interactive heatmap", tabName = "interactiveHeatMap"),
-        menuItem("Annotation legend", tabName = "heatmapLegend"),
-        menuItem("Genome browser", tabName = "igv"),
-        menuItem("About & Help", tabName = "help")
-    )
+  sidebarMenu(
+    menuItem("Interactive heatmap", tabName = "interactiveHeatMap"),
+    # menuItem("Annotation legend", tabName = "heatmapLegend"),
+    menuItem("Genome browser", tabName = "igv"),
+    menuItem("About & Help", tabName = "help")
+  )
 )
 
 # creating body
 body = dashboardBody(
-    tabItems(
-         tabItem(
-            tabName = "interactiveHeatMap",
-            fluidRow(
-                box(
-                    title = "Interactive heatmap",
-                    width = 12, solidHeader = TRUE, status = "primary",
-                    InteractiveComplexHeatmapOutput(heatmap_id = "ht_atlas",
-                                                    action = "click",
-                                                    layout = "1|2|3",
-                                                    output_ui = NULL,
-                                                    title3 = NULL,
-                                                    width1 = 1000,
-                                                    width2 = 1000,
-                                                    height1 = 650,
-                                                    height2 = 650)
-                )
-            )
+  tabItems(
+    tabItem(
+      tabName = "interactiveHeatMap",
+      fluidRow(
+        box(
+          title = "Acronyms", 
+          solidHeader = TRUE,
+          width = 12,
+          collapsible = TRUE,
+          collapsed = TRUE,
+          status = "primary",
+          div(class = "my-class",
+              HTML("<p><b>asRNA</b>: antisense RNA</p>"),
+              HTML("<p><b>TPS</b>: transcript processing site</p>"),
+              HTML("<p><b>CAI</b>: codon adaptation index</p>"),
+              HTML("<p><b>TP1</b>: time point 1 (early exponential growth phase)</p>"),
+              HTML("<p><b>TP2</b>: time point 2 (mid-exponential growth phase)</p>"),
+              HTML("<p><b>TP3</b>: time point 3 (late exponential growth phase)</p>"),
+              HTML("<p><b>TP4</b>: time point 4 (stationary phase)</p>"),
+              HTML("<p><b>RPF</b>: ribosome-protected mRNA fragment</p>"),
+              HTML("<p><b>TE</b>: translational efficiency (protein:mRNA ratio)</p>"),
+              HTML("<p><b>RO</b>: ribosome occupancy (RPF:mRNA ratio)</p>"),
+              HTML("<p><b>LFC</b>: log<sub>2</sub> fold change</p>")
+          )
         ),
-        tabItem(
-            tabName = "heatmapLegend",
-            fluidRow(
-                box(
-                    title = "Annotation legend",
-                    width = 12, height = 650, solidHeader = TRUE, status = "primary",
-                    imageOutput("heatmapLegend")
-                )
-            )
-        ),
-        # tabItem(
-        #     tabName = "igv",
-        #     fluidRow(
-        #         box(
-        #             title = "Genome browser",
-        #             width = 12, solidHeader = TRUE, status = "primary",
-        #             igvShinyOutput("igvShiny_0")
-        #         )
-        #     )
-        # ),
-        
-        # taken and modified from one of Paul Shannon's example of igv.js
-        # https://github.com/alanlorenzetti/igvShiny/blob/master/igv.js.examples/arcs-bedpe.html
-        # 
-        tabItem(
-            tabName = "igv",
-            fluidRow(
-                box(
-                    title = "Genome browser (loading could take a few seconds)",
-                    width = 12, solidHeader = TRUE, status = "primary",
-                    HTML('
+        box(
+          title = "Interactive heatmap",
+          width = 12, solidHeader = TRUE, status = "primary",
+          InteractiveComplexHeatmapOutput(heatmap_id = "ht_atlas",
+                                          action = "click",
+                                          layout = "1|2|3",
+                                          output_ui = NULL,
+                                          title3 = NULL,
+                                          width1 = 1000,
+                                          width2 = 1000,
+                                          height1 = 650,
+                                          height2 = 650)
+        )
+      )
+    ),
+    # tabItem(
+    #     tabName = "heatmapLegend",
+    #     fluidRow(
+    #         box(
+    #             title = "Annotation legend",
+    #             width = 12, height = 650, solidHeader = TRUE, status = "primary",
+    #             imageOutput("heatmapLegend")
+    #         )
+    #     )
+    # ),
+    # tabItem(
+    #     tabName = "igv",
+    #     fluidRow(
+    #         box(
+    #             title = "Genome browser",
+    #             width = 12, solidHeader = TRUE, status = "primary",
+    #             igvShinyOutput("igvShiny_0")
+    #         )
+    #     )
+    # ),
+    
+    # taken and modified from one of Paul Shannon's example of igv.js
+    # https://github.com/alanlorenzetti/igvShiny/blob/master/igv.js.examples/arcs-bedpe.html
+    # 
+    tabItem(
+      tabName = "igv",
+      fluidRow(
+        box(
+          title = "Genome browser (loading could take a few seconds)",
+          width = 12, solidHeader = TRUE, status = "primary",
+          HTML('
                     <div id="igvDiv" style="height: auto"></div>
                     
                     <script type="module">
@@ -225,30 +249,30 @@ body = dashboardBody(
                            
                   </script>
                   '
-                  )
-                )
-            )
-        ),
-        tabItem(
-            tabName = "help",
-            fluidRow(
-                box(
-                    title = "Help",
-                    width = 6, solidHeader = TRUE, status = "primary",
-                    div(class = "my-class",
-                        HTML("<h2>About the <i>Halobacterium salinarum</i> NRC-1 atlas</h2>"),
-                        HTML("<p>
+          )
+        )
+      )
+    ),
+    tabItem(
+      tabName = "help",
+      fluidRow(
+        box(
+          title = "Help",
+          width = 6, solidHeader = TRUE, status = "primary",
+          div(class = "my-class",
+              HTML("<h2>About the <i>Halobacterium salinarum</i> NRC-1 atlas</h2>"),
+              HTML("<p>
                         This resource is intended to help scientists on the manual inspection of gene sets displaying features 
                         that could explain underlying post-transcriptional regulation mechanisms. We developed this ShinyApp using
                         <a href=https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html>ComplexHeatmap</a> and
                         <a href=http://www.bioconductor.org/packages/release/bioc/html/InteractiveComplexHeatmap.html>InteractiveComplexHeatmap</a>
                         packages.
                         </p>"),
-                        
-                        HTML("<h2>How to use the atlas?</h2>"),
-                        
-                        HTML("<h3>Basic usage</h3>"),
-                        HTML("<p>
+              
+              HTML("<h2>How to use the atlas?</h2>"),
+              
+              HTML("<h3>Basic usage</h3>"),
+              HTML("<p>
                         There are two major ways to use the atlas:
                         <ol>
                         <li>Drag and click over the original heatmap to select regions of interest.
@@ -265,9 +289,9 @@ body = dashboardBody(
                         Additionally, one can set up custom dimensions by clicking on the resize button
                         at the bottom of the panels and filling the fields.
                         </p>"),
-                        
-                        HTML("<h3>Intermediate usage</h3>"),
-                        HTML("<p>
+              
+              HTML("<h3>Intermediate usage</h3>"),
+              HTML("<p>
                         The user may perform gene selection using regular expressions as well. For that,
                         click on the magnifier button and tick the regular expression box. Type:
                         </p>
@@ -297,47 +321,47 @@ body = dashboardBody(
                         is even possible to customize the table by selecting the desired features in
                         the configure tab of the sub-heatmap (first tab).
                         </p>"),
-                        
-                        HTML("<h2>Static version</h2>"),
-                        HTML("<p>
+              
+              HTML("<h2>Static version</h2>"),
+              HTML("<p>
                         For those who are not familiar with interactive heatmaps or those who
                         are experiencing technical difficulties, we made available a static
                         version of this atlas in PDF. Click <a href=\"data/abundanceHeatmap_expanded_en.pdf\">here</a>
                         to open the file.
                         </p>")
-                    )
-                )
-            )
+          )
         )
+      )
     )
+  )
 )
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
-    header = header,
-    sidebar = sidebar,
-    body = body)
+  header = header,
+  sidebar = sidebar,
+  body = body)
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
-    makeInteractiveComplexHeatmap(input, output, session, htComplete, "ht_atlas")
-    
-    output$heatmapLegend = renderImage({
-        list(src = "data/heatmap_legends.png",
-             width = 1000,
-             height = 500)
-    }, deleteFile = F)
-    
-    # #getting igv shiny to work
-    # output$igvShiny_0 <- renderIgvShiny(
-    #     igvShiny(list(
-    #         genomeName="hsal",
-    #         initialLocus="VNG_1496G",
-    #         displayMode="SQUISHED")
-    #     )
-    # )
-    
-    addResourcePath("data", "data")
+  makeInteractiveComplexHeatmap(input, output, session, htComplete, "ht_atlas")
+  
+  output$heatmapLegend = renderImage({
+    list(src = "data/heatmap_legends.png",
+         width = 1000,
+         height = 500)
+  }, deleteFile = F)
+  
+  # #getting igv shiny to work
+  # output$igvShiny_0 <- renderIgvShiny(
+  #     igvShiny(list(
+  #         genomeName="hsal",
+  #         initialLocus="VNG_1496G",
+  #         displayMode="SQUISHED")
+  #     )
+  # )
+  
+  addResourcePath("data", "data")
 }
 
 # Run the application 

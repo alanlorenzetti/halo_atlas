@@ -170,9 +170,9 @@ atlasdata = list("tab_guide_readme" = atlasTabDesc,
                    dplyr::rename(smap1Sense = "lsmSense",
                                  smap1AntiSense = "lsmAntiSense") %>% 
                    mutate(across(.cols = where(is.numeric),
-                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))) %>% 
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "") %>% as.numeric())) %>% 
                    select(-starts_with("ChIP")) %>% 
-                   select(-c(smap1AntiSense, IRs, protein_coding)) %>% 
+                   select(-c(smap1AntiSense, protein_coding)) %>% 
                    mutate(gene_symbol = case_when(gene_symbol == "Undefined" ~ NA_character_,
                                                   TRUE ~ gene_symbol),
                           functional_pathway = case_when(functional_pathway == "Undefined" ~ NA_character_,
@@ -184,9 +184,9 @@ atlasdata = list("tab_guide_readme" = atlasTabDesc,
                                  smap1Sense = "lsmSense",
                                  smap1AntiSense = "lsmAntiSense") %>% 
                    mutate(across(.cols = where(is.numeric),
-                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", ""))) %>% 
+                                 .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "") %>% as.numeric())) %>% 
                    select(-starts_with("ChIP")) %>% 
-                   select(-c(smap1AntiSense, IRs, protein_coding)) %>% 
+                   select(-c(smap1AntiSense, protein_coding)) %>% 
                    mutate(gene_symbol = case_when(gene_symbol == "Undefined" ~ NA_character_,
                                                   TRUE ~ gene_symbol),
                           functional_pathway = case_when(functional_pathway == "Undefined" ~ NA_character_,
@@ -533,7 +533,7 @@ ptgsAbundRepTib = abundStats %>%
 # abundance approach
 # categorical variables
 fcStats = tibble()
-criteria = c("Q1", "Q2", "Q3", "Q4", "BL41")
+criteria = c("Q1", "Q2", "Q3", "Q4", "BL12", "BL23", "BL34", "BL41")
 testVars = c("lsmSense", "asRNA", "tps")
 testLevels = c("yes")
 minCount = 3
@@ -672,15 +672,15 @@ ptgsFcRepTib = fcStats %>%
          locus_tag)
 
 # creating a list to store tables
-ptgsEnrich = list("abundance_based_analysis" = ptgsAbundRepTib,
-                  "foldchange_based_analysis" = ptgsFcRepTib)
+ptgsEnrich = list("absolute_abundance_based_analysis" = ptgsAbundRepTib,
+                  "relative_abundance_based_analysis" = ptgsFcRepTib)
 
 # creating a tab guide
-ptgsEnrich$tab_guide_readme = tibble(tab_name = c("abundance_based_analysis",
-                                                  "foldchange_based_analysis",
+ptgsEnrich$tab_guide_readme = tibble(tab_name = c("absolute_abundance_based_analysis",
+                                                  "relative_abundance_based_analysis",
                                                   "column_description"),
-                                     description = c("Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the abundance-based approach.",
-                                                     "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the fold change-based approach.",
+                                     description = c("Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the absolute abundance-based approach.",
+                                                     "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the relative abundance-based approach.",
                                                      "Column description for the mentioned tabs."))
 
 # setting up a column description tab
@@ -691,8 +691,8 @@ ptgsEnrich$column_description = tibble(column_name = c("cluster",
                                                        "pvalues",
                                                        "count",
                                                        "locus_tag"),
-                                       description = c("Cluster identifier according to the abundance- or fold change-based analysis. Please, refer to the supplemental tables for each one of the approaches for more information.",
-                                                       "Time point for the abundance-based approach and time point contrast for the fold change-based approach.",
+                                       description = c("Cluster identifier according to the absolute abundance- or relative abundance-based analysis. Please, refer to the supplemental files for each one of the approaches for more information.",
+                                                       "Time point for the absolute abundance-based approach and time point contrast for the relative abundance-based approach.",
                                                        "Category according to COG 2020. 'All' is an arbitrary category including all the categories.",
                                                        "Significantly enriched/different features and levels (feature:level format) that could help us understand why protein and mRNA levels are incoherent for a given cluster. E.g., 'SmAP1:yes' indicates that the cluster is enriched for SmAP1 binding. E.g., 'CAI:higher:0.911:0.773' indicates that the CAI of the cluster (0.911) is significantly higher than the CAI of the backgroun genes (0.773). Different features are separated by commas.",
                                                        "P-values for the significant features and levels. E.g., 'SmAP1:6.41e-03' means that SmAP1 binding is enriched in a given cluster with a p-value of 6.41e-03. Different p-values are separated by commas.",
@@ -701,8 +701,8 @@ ptgsEnrich$column_description = tibble(column_name = c("cluster",
 
 # ordering according to panel of plots
 ptgsEnrich = ptgsEnrich[c("tab_guide_readme",
-                          "abundance_based_analysis",
-                          "foldchange_based_analysis",
+                          "absolute_abundance_based_analysis",
+                          "relative_abundance_based_analysis",
                           "column_description")]
   
 # writing table with multi sheets
@@ -801,7 +801,7 @@ DE2099$DE_analysis_2099 = res2099 %>%
                                          TRUE ~ "non-differentially_expressed")) %>% 
   arrange(desc(differentially_expressed), logFC) %>% 
   mutate(across(.cols = where(is.numeric),
-                .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "")))
+                .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "") %>% as.numeric()))
 
 DE2099$column_description =  tibble(column_name = c("representative",
                                                     "adj.P.Val",
@@ -822,6 +822,147 @@ DE2099$column_description =  tibble(column_name = c("representative",
 
 write.xlsx(DE2099,
            file = "results/supp_tables/Table_S_2099.xlsx",
+           overwrite = T)
+
+# differential expression analysis for growth curve ####
+
+# this function will convert protein ids
+# of the original de analysis to the
+# ones we anchoring in this study
+prepareLocusTag = function(dictobj = dictobj,
+                           inputDF = inputDF) {
+  
+  originalLocusTags = inputDF$name %>% unique()
+  
+  myNewDF = left_join(x = dictobj,
+                      y = inputDF,
+                      by = c("locus_tag" = "name")) %>% 
+    dplyr::filter(locus_tag %in% originalLocusTags) %>% 
+    dplyr::select(-c(product,locus_tag))
+  
+  return(myNewDF)
+}
+
+# this function will create new variables
+# for DE dataset
+createNewDEvars = function(inputDF = inputDF) {
+  
+  if("adj_pval" %in% colnames(inputDF)){
+    rna_or_protein = "protein"
+  }else if("padj" %in% colnames(inputDF)){
+    rna_or_protein = "mRNA"
+  }
+  
+  if(rna_or_protein == "mRNA"){
+    myNewDF = inputDF %>% 
+      mutate(differentially_expressed = case_when(abs(log2FoldChange) >= log2fcthreshold & padj < padjthreshold ~ "yes",
+                                                  TRUE ~ "no"),
+             direction_of_change = case_when(log2FoldChange >= log2fcthreshold & differentially_expressed == "yes" ~ "upregulated",
+                                             log2FoldChange <= log2fcthreshold & differentially_expressed == "yes" ~ "downregulated",
+                                             TRUE ~ "non-differentially_expressed")) %>% 
+      mutate(across(.cols = where(is.numeric),
+                    .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "") %>% as.numeric())) %>% 
+      dplyr::rename("representative" = target_id)
+    
+  }else if(rna_or_protein == "protein"){
+    myNewDF = inputDF %>% 
+      mutate(differentially_expressed = case_when(abs(diff) >= log2fcthreshold & adj_pval < padjthreshold ~ "yes",
+                                                  TRUE ~ "no"),
+             direction_of_change = case_when(diff >= log2fcthreshold & differentially_expressed == "yes" ~ "upregulated",
+                                             diff <= log2fcthreshold & differentially_expressed == "yes" ~ "downregulated",
+                                             TRUE ~ "non-differentially_expressed")) %>% 
+      mutate(across(.cols = where(is.numeric),
+                    .fns = ~ str_replace(format(round(.x, 3), nsmall = 3), "^ *", "") %>% as.numeric()))
+  }
+  
+  return(myNewDF)
+}
+
+DEgrowth = list()
+
+DEgrowth$tab_guide_readme = tibble(tab_name = c("mrna_TP2_vs_TP1",
+                                                "mrna_TP3_vs_TP2",
+                                                "mrna_TP4_vs_TP3",
+                                                "mrna_TP3_vs_TP1",
+                                                "mrna_TP4_vs_TP1",
+                                                "mrna_column_description",
+                                                "protein_TP2_vs_TP1",
+                                                "protein_TP3_vs_TP2",
+                                                "protein_TP4_vs_TP3",
+                                                "protein_TP3_vs_TP1",
+                                                "protein_TP4_vs_TP1",
+                                                "protein_column_description"),
+                                   description = c("mRNA differential expression analysis. Contrast TP2 vs. TP1. DESeq2::results output.",
+                                                   "mRNA differential expression analysis. Contrast TP3 vs. TP2. DESeq2::results output.",
+                                                   "mRNA differential expression analysis. Contrast TP4 vs. TP3. DESeq2::results output.",
+                                                   "mRNA differential expression analysis. Contrast TP3 vs. TP1. DESeq2::results output.",
+                                                   "mRNA differential expression analysis. Contrast TP4 vs. TP1. DESeq2::results output.",
+                                                   "Column description for mRNA differential expression analysis tabs.",
+                                                   "Protein differential expression analysis. Contrast TP2 vs. TP1. proDA::test_diff output.",
+                                                   "Protein differential expression analysis. Contrast TP3 vs. TP2. proDA::test_diff output.",
+                                                   "Protein differential expression analysis. Contrast TP4 vs. TP3. proDA::test_diff output.",
+                                                   "Protein differential expression analysis. Contrast TP3 vs. TP1. proDA::test_diff output.",
+                                                   "Protein differential expression analysis. Contrast TP4 vs. TP1. proDA::test_diff output.",
+                                                   "Column description for Protein differential expression analysis tabs."))
+
+DEgrowth$mrna_TP2_vs_TP1 = results$totrna_TP2_vs_TP1 %>% createNewDEvars()
+DEgrowth$mrna_TP3_vs_TP2 = results$totrna_TP3_vs_TP2 %>% createNewDEvars()
+DEgrowth$mrna_TP4_vs_TP3 = results$totrna_TP4_vs_TP3 %>% createNewDEvars()
+DEgrowth$mrna_TP3_vs_TP1 = results$totrna_TP3_vs_TP1 %>% createNewDEvars()
+DEgrowth$mrna_TP4_vs_TP1 = results$totrna_TP4_vs_TP1 %>% createNewDEvars()
+
+DEgrowth$mrna_column_description = tibble(column_name = c("representative",
+                                                          "baseMean",
+                                                          "log2FoldChange",
+                                                          "lfcSE",
+                                                          "stat",
+                                                          "pvalue",
+                                                          "padj",
+                                                          "differentially_expressed",
+                                                          "direction_of_change"),
+                                          description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                          "DESeq2::results output field: mean of normalized counts for all samples.",
+                                                          "DESeq2::results output field: log2 fold change (MLE).",
+                                                          "DESeq2::results output field: standard error.",
+                                                          "DESeq2::results output field: Wald statistic.",
+                                                          "DESeq2::results output field: Wald test p-value.",
+                                                          "DESeq2::results output field: BH adjusted p-values.",
+                                                          "Whether the gene is differentially expressed according to our criteria.",
+                                                          "Direction of change for differentially expressed genes (upregulated or downregulated)."))
+
+DEgrowth$protein_TP2_vs_TP1 = resultsDEProt$protein_TP2_vs_TP1$results %>% prepareLocusTag(dictobj = nrtxsep, inputDF = .) %>% createNewDEvars()
+DEgrowth$protein_TP3_vs_TP2 = resultsDEProt$protein_TP3_vs_TP2$results %>% prepareLocusTag(dictobj = nrtxsep, inputDF = .) %>% createNewDEvars()
+DEgrowth$protein_TP4_vs_TP3 = resultsDEProt$protein_TP4_vs_TP3$results %>% prepareLocusTag(dictobj = nrtxsep, inputDF = .) %>% createNewDEvars()
+DEgrowth$protein_TP3_vs_TP1 = resultsDEProt$protein_TP3_vs_TP1$results %>% prepareLocusTag(dictobj = nrtxsep, inputDF = .) %>% createNewDEvars()
+DEgrowth$protein_TP4_vs_TP1 = resultsDEProt$protein_TP4_vs_TP1$results %>% prepareLocusTag(dictobj = nrtxsep, inputDF = .) %>% createNewDEvars()
+
+DEgrowth$protein_column_description = tibble(column_name = c("representative",
+                                                             "pval",
+                                                             "adj_pval",
+                                                             "diff",
+                                                             "t_statistic",
+                                                             "se",
+                                                             "df",
+                                                             "avg_abundance",
+                                                             "n_approx",
+                                                             "n_obs",
+                                                             "differentially_expressed",
+                                                             "direction_of_change"),
+                                             description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                             "proDA::test_diff output field: the p-value of the statistical test.",
+                                                             "proDA::test_diff output field: the multiple testing adjusted p-value.",
+                                                             "proDA::test_diff output field: the difference that particular coefficient makes. In differential expression analysis this value is also called log fold change, which is equivalent to the difference on the log scale.",
+                                                             "proDA::test_diff output field: the diff divided by the standard error se",
+                                                             "proDA::test_diff output field: the standard error associated with the diff",
+                                                             "proDA::test_diff output field: the degrees of freedom, which describe the amount of available information for estimating the se. They are the sum of the number of samples the protein was observed in, the amount of information contained in the missing values, and the degrees of freedom of the variance prior.",
+                                                             "proDA::test_diff output field: the estimate of the average abundance of the protein across all samples.",
+                                                             "proDA::test_diff output field: the approximated information available for estimating the protein features, expressed as multiple of the information contained in one observed value.",
+                                                             "proDA::test_diff output field: the number of samples a protein was observed in.",
+                                                             "Whether the gene is differentially expressed according to our criteria.",
+                                                             "Direction of change for differentially expressed genes (upregulated or downregulated)."))
+
+write.xlsx(DEgrowth,
+           file = "results/supp_tables/Table_S_DEgrowth.xlsx",
            overwrite = T)
 
 # copying figures ####
@@ -851,3 +992,10 @@ destfile = paste0("results/figures/", figFiles %>% str_replace_all(" ", "_"), ex
 
 file.copy(from = orifile, to = destfile, overwrite = T)
 file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/Figure_S_heatmap_expanded.pdf", overwrite = T)
+
+# sessionInfo object
+seshInfo = list(sys_time = Sys.time(),
+                session_info = sessionInfo())
+
+save(seshInfo,
+     file = "scripts/session_info_latest_run.RData")

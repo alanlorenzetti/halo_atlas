@@ -14,6 +14,10 @@ file.copy(from = "../results/ht_with_names_for_shiny.RData",
           to = "data/",
           overwrite = T)
 
+file.copy(from = "../results/heat_legs_for_shiny.RData",
+          to = "data/",
+          overwrite = T)
+
 # copying legend img
 file.copy(from = "../plots/heatmap_legends.png",
           to = "data",
