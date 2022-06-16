@@ -196,7 +196,7 @@ atlasdata = list("tab_guide_readme" = atlasTabDesc,
                  )
 
 write.xlsx(atlasdata,
-           file = "results/supp_tables/Table_S_atlasData.xlsx",
+           file = "results/supp_tables/File_S1.xlsx",
            overwrite = T)
 
 # generating the table containing clusters extracted from fold change analysis ####
@@ -276,7 +276,7 @@ outfcclusters = outfcclusters[c("tab_guide_readme",
 
 # writing table containing multiple sheets
 write.xlsx(outfcclusters,
-           file = "results/supp_tables/Table_S_clusters.xlsx",
+           file = "results/supp_tables/File_S6.xlsx",
            overwrite = T)
 
 # generating the table containing clusters extracted from abundance analysis ####
@@ -340,7 +340,7 @@ outabundclusters = outabundclusters[c("tab_guide_readme",
 
 # writing table containing multiple sheets
 write.xlsx(outabundclusters,
-           file = "results/supp_tables/Table_S_clustersAbund.xlsx",
+           file = "results/supp_tables/File_S3.xlsx",
            overwrite = T)
 
 # # creating a table of potentially post-transcriptionally repressed genes ####
@@ -707,7 +707,7 @@ ptgsEnrich = ptgsEnrich[c("tab_guide_readme",
   
 # writing table with multi sheets
 write.xlsx(ptgsEnrich,
-           file = "results/supp_tables/Table_S_ptgsEnrich.xlsx",
+           file = "results/supp_tables/File_S4.xlsx",
            overwrite = T)
 
 # mobilization events supp ####
@@ -746,7 +746,7 @@ mobSupp$column_description = tibble(column_name = colnames(mobSupp$mobilization_
 
 # writing table with multi sheets
 write.xlsx(mobSupp,
-           file = "results/supp_tables/Table_S_mob_events.xlsx",
+           file = "results/supp_tables/File_S9.xlsx",
            overwrite = T)
   
 # membrane proteins that are likely undetected ####
@@ -787,7 +787,7 @@ transmembSupp$column_description =  tibble(column_name = c("representative",
                                                            "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
 
 write.xlsx(transmembSupp,
-           file = "results/supp_tables/Table_S_transmemb.xlsx",
+           file = "results/supp_tables/File_S7.xlsx",
            overwrite = T)
 
 # saving 2099 differential expression analysis ####
@@ -821,7 +821,7 @@ DE2099$column_description =  tibble(column_name = c("representative",
                                                     "Direction of change for differentially expressed genes (upregulated or downregulated)."))
 
 write.xlsx(DE2099,
-           file = "results/supp_tables/Table_S_2099.xlsx",
+           file = "results/supp_tables/File_S2.xlsx",
            overwrite = T)
 
 # differential expression analysis for growth curve ####
@@ -962,7 +962,7 @@ DEgrowth$protein_column_description = tibble(column_name = c("representative",
                                                              "Direction of change for differentially expressed genes (upregulated or downregulated)."))
 
 write.xlsx(DEgrowth,
-           file = "results/supp_tables/Table_S_DEgrowth.xlsx",
+           file = "results/supp_tables/File_S5.xlsx",
            overwrite = T)
 
 # copying figures ####
@@ -991,7 +991,7 @@ orifile = names(figFiles)
 destfile = paste0("results/figures/", figFiles %>% str_replace_all(" ", "_"), extensions)
 
 file.copy(from = orifile, to = destfile, overwrite = T)
-file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/Figure_S_heatmap_expanded.pdf", overwrite = T)
+file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/File_S8.pdf", overwrite = T)
 
 # sessionInfo object
 seshInfo = list(sys_time = Sys.time(),
