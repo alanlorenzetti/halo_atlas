@@ -26,8 +26,7 @@ library(InteractiveComplexHeatmap)
 load(file = "data/ht_with_names_for_shiny.RData")
 load(file = "data/heat_legs_for_shiny.RData")
 htComplete = draw(htComplete,
-                  annotation_legend_list = heatLegs,
-                  main_heatmap = "Protein")
+                  annotation_legend_list = heatLegs)
 
 # creating header
 header = dashboardHeader(title = "Halo Atlas")

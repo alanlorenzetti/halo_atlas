@@ -32,7 +32,7 @@ minor_breaks = rep(1:9, 21)*(10^rep(-10:10, each=9))
 
 # axis names
 yname = "Protein Abundance"
-xname = "mRNA Abundance (TPM)"
+xname = "mRNA Abundance (TPM+1)"
 
 # protein abundance in function of mRNA ####
 # plot function
@@ -496,7 +496,7 @@ ggsave(filename = "plots/17_ptgsFeatures_venn.png",
 cm9 = make_comb_mat(lt, mode = "distinct")
 # dictFunCat %>% dplyr::select(pfeiLocusTag, product) %>% filter(pfeiLocusTag %in% extract_comb(m = cm9, comb_name = "1111")) %>% clipr::write_clip()
 
-# checking enrichment of TPS within mechanisms
+# checking enrichment of features (eg TPS) inside other features (eg SmAP1) ####
 # of post transcriptional regulation
 
 # first question: are SmAP1-bound genes enriched for TPS? Yes
@@ -524,14 +524,14 @@ enrichAnalysis(df = hmaFuncat, subvec = c(summaryTPelements$`2099`$up,
 
 # extra questions:
 # are delta2099 differentially expressed genes
-# enriched for SmAP1? no
+# enriched for SmAP1? yes
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$up,
                testcol = "lsmSense", lev =  "yes")
 
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$down,
                testcol = "lsmSense", lev =  "yes")
 
-# enriched for asRNA? no
+# enriched for asRNA? yes
 enrichAnalysis(df = hmaFuncat, subvec = summaryTPelements$`2099`$up,
                testcol = "asRNA", lev =  "yes")
 
@@ -581,9 +581,9 @@ subvectIntersectionEnrich(list = list("asRNA" = summaryTPelements$asRNA,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
 
-# out of abund post-transcriptionally regulated genes
+# out of abund post-transcriptionally regulated genes (248)
 # how many are within the set targeted by features
-# smap1, asrna, tps, and 2099ko
+# smap1, asrna, tps
 # testing for enrichment
 myset = ptgsAbund$union$prot_bot_prot_non_mrna_top[
   ptgsAbund$union$prot_bot_prot_non_mrna_top %in%
@@ -597,6 +597,25 @@ enrichAnalysis(df = hmaFuncat, subvec = myset,
                testcol = "asRNA", lev =  "yes")
 
 enrichAnalysis(df = hmaFuncat, subvec = myset,
+               testcol = "tps", lev =  "yes")
+
+# out of all poor correlation genes (269)
+# how many are within the set targeted by features
+# smap1, asrna, tps
+# testing for enrichment
+poorCorGenes = c(ptgs$union$Q4$locus_tag, ptgsAbund$union$prot_bot_prot_non_mrna_top) %>% unique()
+myset2 = poorCorGenes[
+  poorCorGenes %in%
+    (lt %>% unlist() %>% unique())
+]
+
+enrichAnalysis(df = hmaFuncat, subvec = myset2,
+               testcol = "lsmSense", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = myset2,
+               testcol = "asRNA", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = myset2,
                testcol = "tps", lev =  "yes")
 
 # testing enrichment of functions in abundance-based ####
@@ -635,7 +654,7 @@ reds = ggthemes_data$tableau$`color-palettes`$`ordered-sequential`$Red$value[c(1
 cols = c(othercols, reds)
 names(cols) = gvp1a
 
-labs = paste0(gvp1a %>% str_replace("_", ""), " ", gvp1anames)
+labs = paste0(gvp1a, " ", gvp1anames)
 names(labs) = gvp1a
 
 # getting the locus tags
@@ -730,6 +749,19 @@ ggsave(filename = "plots/gvp_traj.svg",
        height = 4,
        units = "in",
        dpi = 600)
+
+# out of gvp1 cluster genes
+# testing for enrichment
+# smap1, asrna, tps
+enrichAnalysis(df = hmaFuncat, subvec = gvp1a,
+               testcol = "lsmSense", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = gvp1a,
+               testcol = "asRNA", lev =  "yes")
+
+enrichAnalysis(df = hmaFuncat, subvec = gvp1a,
+               testcol = "tps", lev =  "yes")
+
 
 # trajectories of SmAP1 ####
 # raw variables

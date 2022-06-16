@@ -72,9 +72,9 @@ tablePTelements = tibble(feature = c("2099 Upregulated",
 # all the atlas data as a supplemental table ####
 # description of whole halo atlas dataset columns
 atlasColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
-                structure(names = paste0("mean_abundance_protein_lysate_", paste0("TP", 1:4)), .Data = paste0("Proteome quantitative measure for ", paste0("TP", 1:4), ".")),
-                structure(names = paste0("mean_abundance_rna_total_", paste0("TP", 1:4)), .Data = paste0("Transcriptome quantitative measure for ", paste0("TP", 1:4), ".")),
-                structure(names = paste0("mean_abundance_rna_ribofraction_", paste0("TP", 1:4)), .Data = paste0("Ribo-Seq quantitative measure for ", paste0("TP", 1:4), ".")),
+                structure(names = paste0("mean_abundance_protein_lysate_", paste0("TP", 1:4)), .Data = paste0("Proteome quantitative measure (a pseudocount was imputed for missing values) for ", paste0("TP", 1:4), ".")),
+                structure(names = paste0("mean_abundance_rna_total_", paste0("TP", 1:4)), .Data = paste0("Transcriptome quantitative measure (TPM+1) for ", paste0("TP", 1:4), ".")),
+                structure(names = paste0("mean_abundance_rna_ribofraction_", paste0("TP", 1:4)), .Data = paste0("Ribo-Seq quantitative measure (TPM+1) for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("TE_", paste0("TP", 1:4)), .Data = paste0("Translational efficiency for ", paste0("TP", 1:4), ". Given by mean_abundance_protein_lysate divided by mean_abundance_rna_total for each time point sample.")),
                 structure(names = paste0("RO_", paste0("TP", 1:4)), .Data = paste0("Ribosome occupancy for ", paste0("TP", 1:4), ". Given by mean_abundance_rna_ribofraction divided by mean_abundance_rna_total for each time point sample.")),
                 "product" = "Protein product given by Pfeiffer et al. (2019).",
@@ -108,7 +108,7 @@ atlasDesc = tibble(column_name = names(atlasColDescription),
 
 
 atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
-                            "libtype" = "Measured variable. rna_total: mRNA level measured by RNA-Seq; rna_ribo: ribosome protected mRNA fragments (RPF) measured by Ribo-Seq; protein_lysate: protein abundance measured by SWATH-MS.",
+                            "libtype" = "Measured variable. rna_total: mRNA level measured by RNA-Seq (TPM+1); rna_ribo: ribosome protected mRNA fragments (RPF; TPM+1) measured by Ribo-Seq; protein_lysate: protein abundance measured by SWATH-MS.",
                             "timepoint" = "Time point for which libtype variables were measured (TP1, TP2, TP3, and TP4).",
                             "mean" = "Mean values for libtype variables. RNA-Seq: n = 3; Ribo-Seq: n = 3; SWATH-MS: n ≥ 6.",
                             "se" = "Standard error of the mean (SEM) for mean values",
@@ -672,12 +672,12 @@ ptgsFcRepTib = fcStats %>%
          locus_tag)
 
 # creating a list to store tables
-ptgsEnrich = list("absolute_abundance_based_analysis" = ptgsAbundRepTib,
-                  "relative_abundance_based_analysis" = ptgsFcRepTib)
+ptgsEnrich = list("abs_abundance_based_analysis" = ptgsAbundRepTib,
+                  "rel_abundance_based_analysis" = ptgsFcRepTib)
 
 # creating a tab guide
-ptgsEnrich$tab_guide_readme = tibble(tab_name = c("absolute_abundance_based_analysis",
-                                                  "relative_abundance_based_analysis",
+ptgsEnrich$tab_guide_readme = tibble(tab_name = c("abs_abundance_based_analysis",
+                                                  "rel_abundance_based_analysis",
                                                   "column_description"),
                                      description = c("Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the absolute abundance-based approach.",
                                                      "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the relative abundance-based approach.",
@@ -701,8 +701,8 @@ ptgsEnrich$column_description = tibble(column_name = c("cluster",
 
 # ordering according to panel of plots
 ptgsEnrich = ptgsEnrich[c("tab_guide_readme",
-                          "absolute_abundance_based_analysis",
-                          "relative_abundance_based_analysis",
+                          "abs_abundance_based_analysis",
+                          "rel_abundance_based_analysis",
                           "column_description")]
   
 # writing table with multi sheets

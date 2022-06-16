@@ -149,8 +149,8 @@ arCOGcols = c(
   "Translation, ribosomal structure and biogenesis" = "maroon" # maroon
 )
 
-# getting classes included in arCOG
-# this will be used when setting the legend for arCOG
+# getting classes included in COG
+# this will be used when setting the legend for COG
 arCOGClasses = hmaFuncat$cog_category %>% sort() %>% unique()
 arCOGcols = arCOGcols[names(arCOGcols) %in% arCOGClasses]
 
@@ -237,19 +237,19 @@ heatLegs = list(
 
 # defining annotation columns ####
 row_ha = HeatmapAnnotation(which = "row",
-                           arCOG = anno_simple(hmaFuncat$cog_category,
+                           cog_category = anno_simple(hmaFuncat$cog_category,
                                                border = T,
                                                col = heatCols$arCOGCol),
-                           chr = anno_simple(hmaFuncat$Chromosome,
+                           Chromosome = anno_simple(hmaFuncat$Chromosome,
                                              col = heatCols$chrCol,
                                              border = T),
-                           pnrc100 = anno_simple(hmaFuncat$pNRC100,
+                           pNRC100 = anno_simple(hmaFuncat$pNRC100,
                                              col = heatCols$chrCol,
                                              border = T),
-                           pnrc200 = anno_simple(hmaFuncat$pNRC200,
+                           pNRC200 = anno_simple(hmaFuncat$pNRC200,
                                              col = heatCols$chrCol,
                                              border = T),
-                           lsmSense = anno_simple(hmaFuncat$lsmSense,
+                           smap1Sense = anno_simple(hmaFuncat$lsmSense,
                                                   col = heatCols$lsmCol,
                                                   border = T),
                            asRNA = anno_simple(hmaFuncat$asRNA,
@@ -258,7 +258,7 @@ row_ha = HeatmapAnnotation(which = "row",
                            tps = anno_simple(hmaFuncat$tps,
                                              col = heatCols$tpsCol,
                                              border = T),
-                           d2099 = anno_simple(hmaFuncat$lfc2099,
+                           lfc2099 = anno_simple(hmaFuncat$lfc2099,
                                                col = heatCols$lfcCol,
                                                border = T),
                            HL = anno_simple(hmaFuncat$HL,
