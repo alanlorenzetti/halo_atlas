@@ -1129,6 +1129,30 @@ ggsave(filename = "plots/smap1_ura3_growth_curve.png",
        width = 6,
        height = 4)
 
+# Whitehead et al. 2006 pot. post-transcription regulated ####
+# getting genes from table  supplemental table 2
+# only the unshaded that should mRNA should not correlate with protein
+whitehead2006unshaded = list()
+whitehead2006unshaded$mrnaup = c("VNG0150H","VNG0152G","VNG0177G","VNG0324G","VNG0330G","VNG0557H","VNG0592G","VNG0769H",
+                                 "VNG0865C","VNG0867G","VNG0906H","VNG1084G","VNG1103G","VNG1133G","VNG1138G","VNG1143G",
+                                 "VNG1255C","VNG1291H","VNG1442G","VNG1451C","VNG1511C","VNG1538H","VNG1698G","VNG1703G",
+                                 "VNG1709G","VNG1715G","VNG1766C","VNG1775C","VNG1809H","VNG2006C","VNG2010G","VNG2043G",
+                                 "VNG2047G","VNG2048G","VNG2115H","VNG2153G","VNG2170H","VNG2196G","VNG2469G","VNG2471G",
+                                 "VNG2577C","VNG2595G","VNG2622H","VNG2648G","VNG6188H","VNG5068G","VNG5146H")
+
+whitehead2006unshaded$mrnadown = c("VNG0330G",
+                                   "VNG0574C","VNG0689G","VNG0743H","VNG0771G","VNG0775G","VNG0794G","VNG0804C","VNG0837H",
+                                   "VNG0963G","VNG0995H","VNG1009G","VNG1021C","VNG1121G","VNG1213C","VNG1332G","VNG1408G",
+                                   "VNG1467G","VNG1524C","VNG1536C","VNG1551G","VNG1558H","VNG1559H","VNG1568G","VNG1603G",
+                                   "VNG1624G","VNG1667G","VNG1676G","VNG1898C","VNG2436G","VNG2627C","VNG5033G")
+
+gammaradptgs = nrtxsep %>%
+  filter(locus_tag %in% whitehead2006unshaded$mrnaup) %>%
+  pull(representative) %>%
+  unique()
+
+gammaradptgsNewPtgs = gammaradptgs[!gammaradptgs %in% (c(ptgs$union$Q4$locus_tag, ptgsAbund$union$prot_bot_prot_non_mrna_top) %>% unique())]
+
 # plotting all genes for manual inspection: abundance #####
 # allLocusTags = abundLongFuncat$locus_tag %>%
 #   sort() %>%
