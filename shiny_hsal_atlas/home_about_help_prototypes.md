@@ -1,6 +1,6 @@
 # Home
 
-Welcome to the *H. salinarum* NRC-1 Atlas! In this web portal, you can explore a multiomics growth curve experiment for this archaeal organism. Below, you will find an interactive table with linked locus tags that will take you to a single-nucleotide resolution genome browser displaying time point-wise transcriptome profiles and miscellaneous features for a given gene and its neighbors. You can also browse the data by visualizing an interactive heat map of all genes with their transcript and proteins levels accompanied by miscellaneous features (["Atlas"](https://halodata.systemsbiology.net/heatmap) tab). For the best user experience, please, use the [Google Chrome Browser](https://www.google.com/intl/en-US/chrome/). The ["About"](https://halodata.systemsbiology.net/about) section provides a detailed description of this web portal.
+Welcome to the *H. salinarum* NRC-1 Atlas! In this web portal, you can explore a multi-omics growth curve experiment for this archaeal organism. Below, you will find an interactive table with linked locus tags that will take you to a single-nucleotide resolution genome browser displaying time point-wise transcriptome profiles and miscellaneous features for a given gene and its neighbors. You can also browse the data by visualizing an interactive heat map of all genes with their transcript and protein levels accompanied by miscellaneous features (["Atlas"](https://halodata.systemsbiology.net/heatmap) tab). For the best user experience, please, use the [Google Chrome Browser](https://www.google.com/intl/en-US/chrome/). The ["About"](https://halodata.systemsbiology.net/about) section provides a detailed description of this web portal.
 
 # About
 
@@ -10,7 +10,7 @@ Welcome to the *H. salinarum* NRC-1 Atlas! In this web portal, you can explore a
 
 ## Introduction
 
-The *H. salinarum* NRC-1 Atlas is a web resource conceived to support the discovery of potential post-transcriptional regulation mechanisms by observing multiomics data of a growth curve experiment and miscellaneous features obtained from public data. It debuted as a companion web portal for the manuscript entitled "*A genome-scale atlas reveals complex interplay of transcription and translation in an archaeon*" (Lorenzetti *et al.*, 2022). Below, we describe each section of this web portal.
+The *H. salinarum* NRC-1 Atlas is a web resource conceived to support the discovery of potential post-transcriptional regulation mechanisms by observing multi-omics data of a growth curve experiment and miscellaneous features obtained from public data. It debuted as a companion web portal for the manuscript entitled "*A genome-scale atlas reveals complex interplay of transcription and translation in an archaeon*" (Lorenzetti *et al.*, 2022). Below, we describe each section of this web portal.
 
 ## Portal description
 
@@ -24,9 +24,9 @@ The landing page for this web portal shows three searchable tables that can be a
 
 -   **IS Info:** This table brings a non-redundant set of insertion sequences (mobile genetic elements). The open reading frames (column #1) are localized within the named insertion sequences (column #2) from various families (column #3) and subgroups (column #4).
 
-Clicking on the linked locus tags will take you to a page dedicated to the selected gene. It should take about 30 seconds to load the page. There, you will get general information about the gene and a genome browser centering the region of interest and its neighbors. Notice that you cannot go far right or left, because the features will disappear after a few kilobases. That is a consequence of downsizing the data sets to avoid memory-related crashes. If you would like to browse another gene, please, go back to the "Home" section and start your search over again.
+Clicking on the linked locus tags will take you to a page dedicated to the selected gene. It should take about 30 seconds to load the page. There, you will get general information about the gene and a genome browser centering on the region of interest and its neighbors. Notice that you cannot go far right or left because the features will disappear after a few kilobases. That is a consequence of downsizing the data sets to avoid memory-related crashes. If you would like to browse another gene, please, go back to the "Home" section and start your search again.
 
-All the genes can be explored using the genome browser, but not all of them will show miscellaneous information. Below, we list a set of features that can be displayed for a selected gene.
+All the genes can be explored using the genome browser, but not all will show miscellaneous information. Below, we list a set of features that can be displayed for a selected gene.
 
 -   **Annotations:** The location following the format "replicon start end" (column #1); clusters of orthologous genes ID (column #2); possibly deprecated GenBank ID (column #3); gene symbol (column #4); **\<FROM WHERE?\>**
 
@@ -40,7 +40,7 @@ All the genes can be explored using the genome browser, but not all of them will
 
     -   **TPS (+):** Transcript processing sites (positive strand) collected from [Ibrahim *et al.* (2021)](https://pubmed.ncbi.nlm.nih.gov/34209065/);
 
-    -   **SmAP1 interaction (+):** Protein-RNA interaction inferred from a SmAP1-RNA co-immunoprecipitation assay followed by next generation sequencing (positive strand);
+    -   **SmAP1 interaction (+):** Protein-RNA interaction inferred from a SmAP1-RNA co-immunoprecipitation assay followed by next-generation sequencing (positive strand);
 
     -   **Antisense RNAs:** Antisense RNA annotation from [de Almeida *et al*. (2019)](https://pubmed.ncbi.nlm.nih.gov/30959844/);
 
@@ -48,7 +48,7 @@ All the genes can be explored using the genome browser, but not all of them will
 
     -   **IS annotation:** Insertion sequence annotation from [Pfeiffer *et al.* (2019)](https://pubmed.ncbi.nlm.nih.gov/31296677/);
 
-    -   **SmAP1 interaction (-):** Protein-RNA interaction inferred from a SmAP1-RNA co-immunoprecipitation assay followed by next generation sequencing (negative strand);
+    -   **SmAP1 interaction (-):** Protein-RNA interaction inferred from a SmAP1-RNA co-immunoprecipitation assay followed by next-generation sequencing (negative strand);
 
     -   **TPS (-):** Transcript processing sites (negative strand) collected from [Ibrahim *et al.* (2021)](https://pubmed.ncbi.nlm.nih.gov/34209065/);
 
@@ -56,7 +56,7 @@ All the genes can be explored using the genome browser, but not all of them will
 
     -   **RNA-Seq TP1-4 (-):** Normalized read depth tracks for the RNA-Seq experiment (negative strand) sampled from four consecutive time points of a growth curve **(**TP1: early exponential growth phase; TP2: mid-exponential growth phase; TP3: late exponential growth phase; TP4: stationary phase). Mean of three replicates;
 
-    -   The user can choose whether raw or log-transformed read depth are displayed by unchecking/checking the box located at the top of the genome browser window; it is also possible to customize each track by clicking on the right-hand size gear button.
+    -   The user can choose whether raw or log-transformed read depth is displayed by unchecking/checking the box located at the top of the genome browser window; it is also possible to customize each track by clicking on the right-hand size gear button.
 
 -   **COG information:** Information collected from the [clusters of orthologous genes (COG)](https://www.ncbi.nlm.nih.gov/research/cog/) database [(Galperin, et al., 2021)](https://pubmed.ncbi.nlm.nih.gov/33167031/);
 
@@ -74,7 +74,7 @@ All the genes can be explored using the genome browser, but not all of them will
 
 ### Atlas
 
-This tab displays an interactive heat map powered by [InteractiveComplexHeatmap](https://jokergoo.github.io/InteractiveComplexHeatmap/) and Shiny R packages. It should take about 40 seconds to load the tool using the Google Chrome Browser. Once the tool is loaded, the user should be able to browse a comprehensive heat map including 2,579 protein coding entries (rows) of the *H. salinarum* NRC-1 genome grouped by COG categories. On the left-hand side, we displayed several annotation columns:
+This tab displays an interactive heat map powered by [InteractiveComplexHeatmap](https://jokergoo.github.io/InteractiveComplexHeatmap/) and Shiny R packages. It should take about 40 seconds to load the tool using the Google Chrome Browser. Once the device is loaded, the user should be able to browse a comprehensive heat map, including 2,579 protein coding entries (rows) of the *H. salinarum* NRC-1 genome grouped by COG categories. On the left-hand side, we displayed several annotation columns:
 
 -   **COG:** Category according to the [clusters of orthologous genes (COG)](https://www.ncbi.nlm.nih.gov/research/cog/) database [(Galperin et al., 2021)](https://pubmed.ncbi.nlm.nih.gov/33167031/);
 
@@ -112,7 +112,7 @@ Moreover, the tool shows five heat maps side-by-side, grouped by COG categories 
 
 ### Atlas (Static)
 
-This is an static version of the same heat map displayed in the ["Atlas"](https://halodata.systemsbiology.net/heatmap) section. It should take about one minute to load the static heat map using the Google Chrome Browser. We realized that computers with old hardware and/or slow internet connections might not be able to successfully load the interactive heat map, so we built this static version. Please, see the download section below to download it as a PDF file.
+This is a static version of the same heat map displayed in the ["Atlas"](https://halodata.systemsbiology.net/heatmap) section. It should take about one minute to load the static heat map using the Google Chrome Browser. We realized that computers with old hardware and/or slow internet connections might be unable to load the interactive heat map successfully, so we built this static version. Please, see the download section below to download it as a PDF file.
 
 ## Usage examples
 
@@ -138,11 +138,11 @@ For that, we are going to use a comma-separated set of locus tags for genes comp
 
 ## Data download
 
-You can download data for the:
+You can download data for the following:
 
 -   **Genome browser:** a bundle containing all the tracks is available [here](data/igv_bundle.tar.gz);
 
--   **Atlas:** the entire table used to generate the interactive heat map is available [here](data/File_S1.xlsx) and as a supplement file in our manuscript (protein levels, RNA-Seq levels, Ribo-Seq levels, translational efficiency, and ribosome occupancy are not log transformed in this version; the column description is available inside the workbook);
+-   **Atlas:** the entire table used to generate the interactive heat map is available [here](data/File_S1.xlsx) and as a supplement file in our manuscript (protein levels, RNA-Seq levels, Ribo-Seq levels, translational efficiency, and ribosome occupancy are not log-transformed in this version; the column description is available inside the workbook);
 
 -   **Atlas (Static):** a PDF file for the static heat map is available [here](data/File_S8.pdf).
 
@@ -154,4 +154,4 @@ Lorenzetti *et al.* (2022). "A genome-scale atlas reveals complex interplay of t
 
 ## Bugs and feature requests
 
-The code for this web portal is public available at the [GitHub](https://github.com/baliga-lab/halodata). Please, leave your bug reports, suggestions, and feature requests [here](https://github.com/baliga-lab/halodata/issues).
+The code for this web portal is publicly available on [GitHub](https://github.com/baliga-lab/halodata). Please, leave your bug reports, suggestions, and feature requests [here](https://github.com/baliga-lab/halodata/issues).
