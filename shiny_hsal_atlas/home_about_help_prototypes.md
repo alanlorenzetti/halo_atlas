@@ -116,7 +116,7 @@ This is an static version of the same heat map displayed in the ["Atlas"](https:
 
 ## Usage examples
 
-### Selecting a gene to open it in the genome browser
+### Selecting a gene to open in the genome browser
 
 ![](data/01_home.gif)
 
