@@ -514,6 +514,52 @@ draw(packLegend(list = heatLegs,
 dev.off()
 
 # storing and saving subset versions
+htProt = Heatmap(log10(hmaM[,1:4]),
+                 name = "Protein",
+                 col = colors,
+                 show_heatmap_legend = T,
+                 row_names_side = "right",
+                 show_row_names = F,
+                 row_names_gp = gpar(fontsize = 6),
+                 #                 row_order = hmaFuncat %>% dplyr::arrange(GCdev) %>% select(locus_tag) %>% unlist(use.names = F),
+                 column_order = colnames(hmaM[,1:4]),
+                 column_labels = c("TP1", "TP2", "TP3", "TP4"),
+                 column_title = "Protein",
+                 left_annotation = row_ha,
+                 row_split = factor(hmaFuncat$cog_category),
+                 #row_split = factor(hmaFuncat$asRNA),
+                 #row_split = factor(hmaFuncat$lsmSense),
+                 cluster_row_slices = F,
+                 row_title = NULL,
+                 border = T,
+                 heatmap_legend_param = list(
+                   title = expression(Log[10](Abund.)),
+                   at = c(0, 3, 6),
+                   border = "black",
+                   title_position = "lefttop",
+                   direction = "horizontal")
+)
+
+htTE = Heatmap(log2(hmaTE),
+               name = "TE",
+               col = colors2,
+               show_heatmap_legend = T,
+               row_names_side = "right",
+               show_row_names = F,
+               row_names_gp = gpar(fontsize = 6),
+               column_order = colnames(hmaTE),
+               column_labels = c("TP1", "TP2", "TP3", "TP4"),
+               column_title = "TE",
+               cluster_row_slices = F,
+               row_title = NULL,
+               border = T,
+               heatmap_legend_param = list(
+                 title = expression(Log[2](Ratio)),
+                 at = c(-8, 0, 8),
+                 border = "black",
+                 title_position = "lefttop",
+                 direction = "horizontal"))
+
 htRO = Heatmap(log2(hmaRO),
                name = "RO",
                col = colors2,
@@ -521,8 +567,8 @@ htRO = Heatmap(log2(hmaRO),
                row_names_side = "right",
                row_labels = paste0(hmaFuncat$locus_tag, "; ", hmaFuncat$product),
                show_row_names = T,
-               row_names_gp = gpar(fontsize = 6),
-               row_names_max_width = unit(8, "cm"),
+               row_names_gp = gpar(fontsize = 10),
+               row_names_max_width = unit(10, "cm"),
                column_order = colnames(hmaRO),
                column_labels = c("TP1", "TP2", "TP3", "TP4"),
                column_title = "RO",
@@ -538,37 +584,76 @@ htComplete = htProt + htmRNA + htRPF + htTE + htRO
 
 # including only putatively ptgs genes
 htptgs = list()
-if(!dir.exists("plots/abundanceHeatmap_ptgs/")){dir.create("plots/abundanceHeatmap_ptgs/")}
-for(i in names(ptgs)){
-  for(j in names(ptgs[[i]])){
-    htptgs[[i]][[j]] = htComplete[hmaFuncat$locus_tag %in% ptgs[[i]][[j]]$locus_tag]
-    
-    if(length(ptgs[[i]][[j]]$locus_tag) > 0){
-      fight = 1 + length(ptgs[[i]][[j]]$locus_tag)/3
-      
-      png(file = paste0("plots/abundanceHeatmap_ptgs/", i, "_", j, ".png"),
-           width = 12,
-           height = fight,
-           units = "in",
-           res = 600)
-      draw(htptgs[[i]][[j]],
-           show_heatmap_legend = F,
-           column_title = paste(i, j))
-      dev.off()
-    }
-  }
-}
+# if(!dir.exists("plots/abundanceHeatmap_ptgs/")){dir.create("plots/abundanceHeatmap_ptgs/")}
+# for(i in names(ptgs)){
+#   for(j in names(ptgs[[i]])){
+#     htptgs[[i]][[j]] = htComplete[hmaFuncat$locus_tag %in% ptgs[[i]][[j]]$locus_tag]
+#     
+#     if(length(ptgs[[i]][[j]]$locus_tag) > 0){
+#       fight = 1 + length(ptgs[[i]][[j]]$locus_tag)/3
+#       
+#       png(file = paste0("plots/abundanceHeatmap_ptgs/", i, "_", j, ".png"),
+#            width = 12,
+#            height = fight,
+#            units = "in",
+#            res = 600)
+#       draw(htptgs[[i]][[j]],
+#            show_heatmap_legend = F,
+#            column_title = paste(i, j))
+#       dev.off()
+#     }
+#   }
+# }
+
+# saving the heatmap for TP1 vs TP2
+htptgs$TP2_vs_TP1$Q4 = htComplete[hmaFuncat$locus_tag %in% ptgs$TP2_vs_TP1$Q4$locus_tag]
+categories = hmaFuncat %>%
+  dplyr::filter(locus_tag %in% ptgs$TP2_vs_TP1$Q4$locus_tag) %>% 
+  pull(cog_category) %>% 
+  unique()
+indexes = which(names(heatCols$arCOGCol) %in% categories)
+
+heatLegsSub = heatLegs
+heatLegsSub$arCOG = Legend(title = "COG",
+                           at = names(heatCols$arCOGCol)[indexes],
+                           legend_gp  = gpar(fill = heatCols$arCOGCol %>% unname() %>% .[indexes]),
+                           border="black")
+
+png(file = paste0("plots/tp1_vs_tp2_q4_heatmap.png"),
+    width = 14,
+    height = 3.5,
+    units = "in",
+    res = 600)
+draw(htptgs$TP2_vs_TP1$Q4,
+     heatmap_legend_side = "top",
+     annotation_legend_list = heatLegsSub,
+     annotation_legend_side = "bottom")
+dev.off()
 
 # checking out gvp1 cluster (VNG_7015-7028)
 htgvp = htComplete[hmaFuncat$locus_tag %in% paste0("VNG_", 7015:7028)]
 
+categories = hmaFuncat %>%
+  dplyr::filter(locus_tag %in% paste0("VNG_", 7015:7028)) %>% 
+  pull(cog_category) %>% 
+  unique()
+indexes = which(names(heatCols$arCOGCol) %in% categories)
+
+heatLegsSub = heatLegs
+heatLegsSub$arCOG = Legend(title = "COG",
+                           at = names(heatCols$arCOGCol)[indexes],
+                           legend_gp  = gpar(fill = heatCols$arCOGCol %>% unname() %>% .[indexes]),
+                           border="black")
+
 png(file = paste0("plots/gvp_heat.png"),
-    width = 10,
-    height = 4,
+    width = 14,
+    height = 5,
     units = "in",
     res = 600)
 draw(htgvp,
-     show_heatmap_legend = F)
+     heatmap_legend_side = "top",
+     annotation_legend_list = heatLegsSub,
+     annotation_legend_side = "bottom")
 dev.off()
 
 # # arranging and saving a version ordered by GC ####

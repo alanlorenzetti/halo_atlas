@@ -386,9 +386,9 @@ for(i in names(alldfs)){
     #lmplots[[i]][[k]] = plotLM(alldfs[[i]], k, xLim, yLim)
     
     # with preset lims
-    lmplots[[i]][[k]] = plotLM(alldfs[[i]], k, c(-10,10), c(-10,10)) +
-      scale_x_continuous(limits = c(-10,10), breaks = seq(-10,10,2)) +
-      scale_y_continuous(limits = c(-10,10), breaks = seq(-10,10,2))
+    lmplots[[i]][[k]] = plotLM(alldfs[[i]], k, c(-6,10), c(-6,6)) +
+      scale_x_continuous(limits = c(-6,10), breaks = seq(-6,10,2)) +
+      scale_y_continuous(limits = c(-6,6), breaks = seq(-6,6,2))
   }
 }
 

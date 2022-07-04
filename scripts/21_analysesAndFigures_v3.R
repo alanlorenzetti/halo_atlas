@@ -475,21 +475,22 @@ lt = list("SmAP1" = summaryTPelements$SmAP1,
                     summaryTPelements$tps$tps2to5,
                     summaryTPelements$tps$tps5) %>% 
             unique(),
-          "RNase_2099C" = c(summaryTPelements$`2099`$up,
+          "RNase" = c(summaryTPelements$`2099`$up,
                             summaryTPelements$`2099`$down) %>% 
             unique())
 
 ptgsFeaturesVenn = plot(venn(combinations = lt),
                         fills = "white",
                         edges = list(lex = 2),
-                        quantities = list(cex = 1.5))
+                        quantities = list(cex = 2),
+                        labels = list(cex = 2))
 
 ggsave(filename = "plots/17_ptgsFeatures_venn.png",
        plot = ptgsFeaturesVenn,
        units = "in",
        dpi = 600,
-       width = 7.5,
-       height = 6.5)
+       width = 8.5,
+       height = 7.5)
 
 # genes being intersected by all those features
 # making the combination matrix
