@@ -140,11 +140,29 @@ For that, we are going to use a comma-separated set of locus tags for genes comp
 
 You can download data for the following:
 
--   **Genome browser:** a bundle containing all the tracks is available [here](data/igv_bundle.tar.gz);
+-   **Atlas:** The entire table used to generate the interactive heat map is available [here](data/File_S1.xlsx) and as a supplement file in our manuscript (protein levels, RNA-Seq levels, Ribo-Seq levels, translational efficiency, and ribosome occupancy are not log-transformed in this version; the column description is available inside the workbook);
 
--   **Atlas:** the entire table used to generate the interactive heat map is available [here](data/File_S1.xlsx) and as a supplement file in our manuscript (protein levels, RNA-Seq levels, Ribo-Seq levels, translational efficiency, and ribosome occupancy are not log-transformed in this version; the column description is available inside the workbook);
+-   **Atlas (Static):** A PDF file for the static heat map is available [here](data/File_S8.pdf);
 
--   **Atlas (Static):** a PDF file for the static heat map is available [here](data/File_S8.pdf).
+-   **Genome browser:** A bundle containing all the tracks is available [here](data/igv_bundle.tar.gz). We identify each file below, and you should be able to get more details each track in the genome browser description above:
+
+    -   **Hsalinarum.fa:** *Halobacterium salinarum* NRC-1 genome sequence (FASTA format);
+
+    -   **Hsalinarum.fa.fai:** FASTA index for the genome sequence file;
+
+    -   **Hsalinarum-gene-annotation-pfeiffer2019-adjusted-names.gff3:** Gene annotation file (GFF3);
+
+    -   **Hsalinarum-846asRNAs-deAlmeida2019.gff3:** Antisense RNA annotation (GFF3);
+
+    -   **Hsalinarum-pfeiffer2019-mobileElements.gff3:** Insertion sequence annotation (GFF3);
+
+    -   **mergedBRs_interaction-regions-entire-genome-[fr][we][dv].gff3:** SmAP1 interaction regions (GFF3) for the positive and negative strands (fwd and rev, respectively);
+
+    -   **TPS_gff\_[fr][we][dv].gff3:** Transcript processing sites (GFF3) for the positive and negative strands (fwd and rev, respectively);
+
+    -   **ribosomal_RNA_TP[1234]-[fr][we][dv].bedgraph:** Ribo-Seq read depth for samples obtained from consecutive time points of a growth curve (TP1-4). Positive and negative strands are represented by fwd and rev, respectively (BEDGRAPH format);
+
+    -   **total-RNA-TP[1234]-[fr][we][dv].bedgraph:** RNA-Seq read depth for samples obtained from consecutive time points of a growth curve (TP1-4). Positive and negative strands are represented by rev and fwd, respectively (BEDGRAPH format). Notice rev and fwd are inverted here, since the sequencing libraries were prepared using the TruSeq mRNA Stranded kit (Illumina).
 
 ## Citation
 
