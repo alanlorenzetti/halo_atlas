@@ -71,25 +71,25 @@ tablePTelements = tibble(feature = c("2099 Upregulated",
 
 # all the atlas data as a supplemental table ####
 # description of whole halo atlas dataset columns
-atlasColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+atlasColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                 structure(names = paste0("mean_abundance_protein_lysate_", paste0("TP", 1:4)), .Data = paste0("Proteome quantitative measure (a pseudocount was imputed for missing values) for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("mean_abundance_rna_total_", paste0("TP", 1:4)), .Data = paste0("Transcriptome quantitative measure (TPM+1) for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("mean_abundance_rna_ribofraction_", paste0("TP", 1:4)), .Data = paste0("Ribo-Seq quantitative measure (TPM+1) for ", paste0("TP", 1:4), ".")),
                 structure(names = paste0("TE_", paste0("TP", 1:4)), .Data = paste0("Translational efficiency for ", paste0("TP", 1:4), ". Given by mean_abundance_protein_lysate divided by mean_abundance_rna_total for each time point sample.")),
                 structure(names = paste0("RO_", paste0("TP", 1:4)), .Data = paste0("Ribosome occupancy for ", paste0("TP", 1:4), ". Given by mean_abundance_rna_ribofraction divided by mean_abundance_rna_total for each time point sample.")),
-                "product" = "Protein product given by Pfeiffer et al. (2019).",
-                "gene_symbol" = "Gene symbol according to COG 2020 (Galperin, et al., 2021).",
-                "cog_id" = "ID according to COG 2020 (Galperin, et al., 2021).",
-                "cog_name" = "Protein product according to COG 2020 (Galperin, et al., 2021).",
-                "cog_category" = "Category according to COG 2020 (Galperin, et al., 2021).",
-                "functional_pathway" = "Functional pathway according to COG 2020 (Galperin, et al., 2021).",
+                "product" = "Protein product given by Pfeiffer et al. (2019) (PMID: 31296677).",
+                "gene_symbol" = "Gene symbol according to COG 2020 (Galperin, et al., 2021, PMID: 33167031).",
+                "cog_id" = "ID according to COG 2020 (Galperin, et al., 2021, PMID: 33167031).",
+                "cog_name" = "Protein product according to COG 2020 (Galperin, et al., 2021, PMID: 33167031).",
+                "cog_category" = "Category according to COG 2020 (Galperin, et al., 2021, PMID: 33167031).",
+                "functional_pathway" = "Functional pathway according to COG 2020 (Galperin, et al., 2021, PMID: 33167031).",
                 "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
                 # "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
-                "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
-                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene according to Ibrahim et al. (2021).",
+                "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019) (PMID: 30959844).",
+                "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene according to Ibrahim et al. (2021) (PMID: 34209065).",
                 "GC" = "GC content for a given gene.",
                 "GCdev" = "Difference (residue) between GC content for a given gene and the mean GC content considering all the genes.",
-                "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
+                "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007) (PMID: 17644597).",
                 "cai" = "Codon adaptation index computed using the 5% most abundant proteins in this study as the reference set.",
                 # structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
                 # structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
@@ -98,7 +98,7 @@ atlasColDescription = c("locus_tag" = "Locus tag for a given instance according 
                 "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
                 "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
                 # "IRs" = "Number of inverted repeats found within a given gene.",
-                "lfc2099" = "Log2-transformed fold change of RNase_2099C knockout vs. the control strain. Data reanalysis of Wurtmann et al. (2014).",
+                "lfc2099" = "Log2-transformed fold change of RNase_2099C knockout vs. the control strain. Data reanalysis of Wurtmann et al. (2014) (PMID: 24612392).",
                 "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family."
                 # "protein_coding" = "Whether the representative instance encodes a protein."
                 )
@@ -107,24 +107,24 @@ atlasDesc = tibble(column_name = names(atlasColDescription),
                    description = atlasColDescription)
 
 
-atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                             "libtype" = "Measured variable. rna_total: mRNA level measured by RNA-Seq (TPM+1); rna_ribo: ribosome protected mRNA fragments (RPF; TPM+1) measured by Ribo-Seq; protein_lysate: protein abundance measured by SWATH-MS.",
                             "timepoint" = "Time point for which libtype variables were measured (TP1, TP2, TP3, and TP4).",
                             "mean" = "Mean values for libtype variables. RNA-Seq: n = 3; Ribo-Seq: n = 3; SWATH-MS: n ≥ 6.",
                             "se" = "Standard error of the mean (SEM) for mean values",
-                            "product" = "Protein product given by Pfeiffer et al. (2019).",
-                            "gene_symbol" = "Gene symbol according to COG 2020 (Galperin et al., 2021).",
-                            "cog_id" = "ID according to COG 2020 (Galperin et al., 2021).",
-                            "cog_name" = "Protein product according to COG 2020 (Galperin et al., 2021).",
-                            "cog_category" = "Category according to COG 2020 (Galperin et al., 2021).",
+                            "product" = "Protein product given by Pfeiffer et al. (2019) (PMID: 31296677).",
+                            "gene_symbol" = "Gene symbol according to COG 2020 (Galperin et al., 2021, PMID: 33167031).",
+                            "cog_id" = "ID according to COG 2020 (Galperin et al., 2021, PMID: 33167031).",
+                            "cog_name" = "Protein product according to COG 2020 (Galperin et al., 2021, PMID: 33167031).",
+                            "cog_category" = "Category according to COG 2020 (Galperin et al., 2021, PMID: 33167031).",
                             "functional_pathway" = "Functional pathway according to COG 2020.",
                             "smap1Sense" = "Whether there is at least one SmAP1 binding site on the same strand for a given gene.",
                             # "smap1AntiSense" = "Whether there is at least one SmAP1 binding site on the opposite strand for a given gene.",
-                            "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019).",
-                            "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene according to Ibrahim et al. (2021).",
+                            "asRNA" = "Whether there is at least one annotated antisense RNA (asRNA) according to de Almeida et al. (2019) (PMID: 30959844).",
+                            "tps" = "Whether there is at least one transcript processing site (TPS) on the same strand for a given gene according to Ibrahim et al. (2021) (PMID: 34209065).",
                             "GC" = "GC content for a given gene.",
                             "GCdev" = "Difference (residue) between GC content for a given gene and the mean GC content considering all the genes.",
-                            "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007).",
+                            "HL" = "Experimentally determined half-life of a transcript according to Hundt et al. (2007) (PMID: 17644597).",
                             "cai" = "Codon adaptation index computed using the 5% most abundant proteins in this study as the reference set.",
                             # structure(names = paste0("ChIPSeq_", paste0("Tfb", c("B", "D", "G"))), .Data = paste0("Whether there is at least one ", paste0("Tfb", c("B", "D", "G")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Seq.")),
                             # structure(names = paste0("ChIPChip_", paste0("Tbp", c("B", "C", "E", "F"))), .Data = paste0("Whether there is at least one ", paste0("Tbp", c("B", "C", "E", "F")), " binding site 150 nt upstream or downstream to the first codon of a gene. Binding sites were inferred using ChIP-Chip.")),
@@ -133,7 +133,7 @@ atlasTidyColDescription = c("locus_tag" = "Locus tag for a given instance accord
                             "pNRC100" = "The representative instance is located within the plasmid pNRC100 (NC_001869.1).",
                             "pNRC200" = "The representative instance is located within the plasmid pNRC200 (NC_002608.1).",
                             # "IRs" = "Number of inverted repeats found within a given gene.",
-                            "lfc2099" = "Log2-transformed fold change of RNase_2099C knockout vs. the control strain. Data reanalysis of Wurtmann et al. (2014).",
+                            "lfc2099" = "Log2-transformed fold change of RNase_2099C knockout vs. the control strain. Data reanalysis of Wurtmann et al. (2014) (PMID: 24612392).",
                             "ISFamily" = "If the representative instance is located within an insertion sequence, this field will display the insertion sequence family."
                             # "protein_coding" = "Whether the representative instance encodes a protein."
                             )
@@ -144,8 +144,8 @@ atlasTidyDesc = tibble(column_name = names(atlasTidyColDescription),
 nrtxDesc = tibble(column_name = c("representative",
                                   "product",
                                   "locus_tag"),
-                  description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
-                                  "Gene product given by Pfeiffer et al. (2019).",
+                  description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                  "Gene product given by Pfeiffer et al. (2019) (PMID: 31296677).",
                                   "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
 
 # creating a tab description object
@@ -263,7 +263,7 @@ outfcclusters$column_description = tibble(column_name = c("cluster",
                                                           "Color used in our figures to highlight the cluster.",
                                                           "Change status considering the transition from a physiological state to another. Take as an example the transition from TP1 to TP2: if the protein is upregulated and the mRNA is upregulate, the change status is Protein Up & mRNA Up. We use the term *Flat* to represent unchanging protein or mRNA levels.",
                                                           "Number of instances (locus tags) within a given cluster.",
-                                                          "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
+                                                          "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
 
 # ordering according to panel of plots
 outfcclusters = outfcclusters[c("tab_guide_readme",
@@ -327,7 +327,7 @@ outabundclusters$column_description = tibble(column_name = c("cluster",
                                              description = c("Cluster identifier according to the expression status of protein and mRNA. prot_bot: 20% lowest abundance proteins (bottom); prot_non: Undetected proteins; mrna_top: 20% greatest abundance mRNAs (top).",
                                                              "A more intuitive description of the cluster field.",
                                                              "Number of instances (locus tags) within a given cluster.",
-                                                             "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
+                                                             "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
 
 # ordering according to panel of plots
 outabundclusters = outabundclusters[c("tab_guide_readme",
@@ -671,15 +671,35 @@ ptgsFcRepTib = fcStats %>%
          count,
          locus_tag)
 
+figSummaryEvidence = bind_rows(ptgsAbundRepTib %>%
+                                 filter(cluster == "prot_bot_prot_non_mrna_top" & timepoint == "union" & cog_category == "All"),
+                               ptgsAbundRepTib %>%
+                                 filter(cluster == "prot_bot_prot_non_mrna_top" & timepoint == "union" & cog_category == "Mobilome: prophages, transposons"),
+                               ptgsAbundRepTib %>%
+                                 filter(cluster == "prot_bot_prot_non_mrna_top" & timepoint == "union" & cog_category == "Function unknown"),
+                               ptgsAbundRepTib %>%
+                                 filter(cluster == "prot_bot_prot_non_mrna_top" & timepoint == "union" & cog_category == "Cell motility"),
+                               ptgsFcRepTib %>% 
+                                 filter(cluster == "Q4" & timepoint == "union" & cog_category == "All")
+                               )
+
+figSummaryEvidence$entry_in_figure4 = c("A", "F", "G", "H", "I")
+
+figSummaryEvidence = figSummaryEvidence %>% 
+  relocate(entry_in_figure4)
+
 # creating a list to store tables
-ptgsEnrich = list("abs_abundance_based_analysis" = ptgsAbundRepTib,
+ptgsEnrich = list("figure_4_evidence" = figSummaryEvidence,
+                  "abs_abundance_based_analysis" = ptgsAbundRepTib,
                   "rel_abundance_based_analysis" = ptgsFcRepTib)
 
 # creating a tab guide
-ptgsEnrich$tab_guide_readme = tibble(tab_name = c("abs_abundance_based_analysis",
+ptgsEnrich$tab_guide_readme = tibble(tab_name = c("figure_4_evidence",
+                                                  "abs_abundance_based_analysis",
                                                   "rel_abundance_based_analysis",
                                                   "column_description"),
-                                     description = c("Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the absolute abundance-based approach.",
+                                     description = c("Gene lists and evidence for potential post-transcriptional regulation driving mechanisms for groups displayed in Figure 4. First column refers to panels in Figure 4. Entries A, F, G, and H follow the column description of abs_abundance_based_analysis tab. Entry I follows the column description of rel_abundance_based_analysis.",
+                                                     "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the absolute abundance-based approach.",
                                                      "Feature enrichment analysis for clusters of potentially post-transcriptionally regulated genes defined by the relative abundance-based approach.",
                                                      "Column description for the mentioned tabs."))
 
@@ -697,10 +717,11 @@ ptgsEnrich$column_description = tibble(column_name = c("cluster",
                                                        "Significantly enriched/different features and levels (feature:level format) that could help us understand why protein and mRNA levels are incoherent for a given cluster. E.g., 'SmAP1:yes' indicates that the cluster is enriched for SmAP1 binding. E.g., 'CAI:higher:0.911:0.773' indicates that the CAI of the cluster (0.911) is significantly higher than the CAI of the backgroun genes (0.773). Different features are separated by commas.",
                                                        "P-values for the significant features and levels. E.g., 'SmAP1:6.41e-03' means that SmAP1 binding is enriched in a given cluster with a p-value of 6.41e-03. Different p-values are separated by commas.",
                                                        "Number of instances (locus tags) within a given cluster.",
-                                                       "Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
+                                                       "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
 
 # ordering according to panel of plots
 ptgsEnrich = ptgsEnrich[c("tab_guide_readme",
+                          "figure_4_evidence",
                           "abs_abundance_based_analysis",
                           "rel_abundance_based_analysis",
                           "column_description")]
@@ -750,20 +771,20 @@ write.xlsx(mobSupp,
            overwrite = T)
   
 # membrane proteins that are likely undetected ####
-# checking the proteins
-undetectedRemovDF = nrtx %>%
-  filter(representative %in%
-           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
-                                               c(membProtsFinal, topsconMemb$two)])
-
-# updating our final dataframe
-# removing proteins 
-# that are likely transmembrane
-undetectedRemovDF = undetectedRemovDF %>% 
-  filter(!representative %in% membFP)
+# and other proteins that were not included in the 
+# SWATH search
 
 # due to their transmembrane nature
 transmembSupp = list()
+
+transmembSupp$tab_guide_readme = tibble(tab_name = c("unrepresented_in_assay_lib",
+                                                     "unrep_column_description",
+                                                     "transmembrane_proteins",
+                                                     "transmemb_column_description"),
+                                        description = c("Proteins undetected because they were not represented in the SWATH-MS assay library due to various reasons (lack of tryptic peptides of ideal size, hydrophobicity, transmembrane nature, etc.) (Kusebauch et al., in preparation).",
+                                                        "Column description for the unrep_column_description tab.",
+                                                        "Proteins likely undetected because of their transmembrane nature.",
+                                                        "Column description for the transmembrane_proteins tab."))
 
 transmembSupp$transmembrane_proteins = undetectedRemovDF %>% 
   left_join(x = .,
@@ -774,21 +795,38 @@ transmembSupp$transmembrane_proteins = undetectedRemovDF %>%
                                            TRUE ~ "no")) %>% 
   relocate(locus_tag,
            .after = experimental_evidence)
-  
-transmembSupp$column_description =  tibble(column_name = c("representative",
-                                                           "product",
-                                                           "numTM",
-                                                           "experimental_evidence",
-                                                           "locus_tag"),
-                                           description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
-                                                           "Gene product given by Pfeiffer et al. (2019).",
-                                                           "Number of transmembrane domains predicted by TOPCONS webserver.",
-                                                           "Whether there is proteome experimental evidence for membrane samples in Goo et al. (2003) or Klein et al. (2005).",
-                                                           "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
 
-write.xlsx(transmembSupp,
+transmembSupp$transmemb_column_description = tibble(column_name = c("representative",
+                                                                    "product",
+                                                                    "numTM",
+                                                                    "experimental_evidence",
+                                                                    "locus_tag"),
+                                                    description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                                    "Gene product given by Pfeiffer et al. (2019) (PMID: 31296677).",
+                                                                    "Number of transmembrane domains predicted by TOPCONS webserver.",
+                                                                    "Whether there is proteome experimental evidence for membrane samples in Goo et al. (2003) (PMID: 12872007) or Klein et al. (2005) (PMID: 15619294).",
+                                                                    "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
+
+transmembSupp$unrepresented_in_assay_lib = unrepresentedSWATH %>% 
+  filter(representative %in% ptgsAbund$union$prot_non_mrna_top)
+
+transmembSupp$unrep_column_description = tibble(column_name = c("representative",
+                                                                  "product",
+                                                                  "locus_tag"),
+                                                  description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                                  "Gene product given by Pfeiffer et al. (2019) (PMID: 31296677).",
+                                                                  "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
+
+write.xlsx(transmembSupp[c("tab_guide_readme",
+                           "unrepresented_in_assay_lib",
+                           "unrep_column_description",
+                           "transmembrane_proteins",
+                           "transmemb_column_description")],
            file = "results/supp_tables/File_S7.xlsx",
            overwrite = T)
+
+# c(transmembSupp$transmembrane_proteins$representative, transmembSupp$unrepresented_in_assay_lib$representative) %>% unique()
+# mobilome %in% c(transmembSupp$transmembrane_proteins$representative, transmembSupp$unrepresented_in_assay_lib$representative)
 
 # saving 2099 differential expression analysis ####
 DE2099 = list()
@@ -811,7 +849,7 @@ DE2099$column_description =  tibble(column_name = c("representative",
                                                     "logFC",
                                                     "differentially_expressed",
                                                     "direction_of_change"),
-                                    description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                    description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                                                     "limma::topTable output field: adjusted p-value or q-value (Benjamini-Hochberg procedure). ",
                                                     "limma::topTable output field: raw p-value.",
                                                     "limma::topTable output field: moderated t-statistic.",
@@ -920,7 +958,7 @@ DEgrowth$mrna_column_description = tibble(column_name = c("representative",
                                                           "padj",
                                                           "differentially_expressed",
                                                           "direction_of_change"),
-                                          description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                          description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                                                           "DESeq2::results output field: mean of normalized counts for all samples.",
                                                           "DESeq2::results output field: log2 fold change (MLE).",
                                                           "DESeq2::results output field: standard error.",
@@ -948,7 +986,7 @@ DEgrowth$protein_column_description = tibble(column_name = c("representative",
                                                              "n_obs",
                                                              "differentially_expressed",
                                                              "direction_of_change"),
-                                             description = c("Locus tag for a given instance according to Pfeiffer et al. (2019). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                             description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
                                                              "proDA::test_diff output field: the p-value of the statistical test.",
                                                              "proDA::test_diff output field: the multiple testing adjusted p-value.",
                                                              "proDA::test_diff output field: the difference that particular coefficient makes. In differential expression analysis this value is also called log fold change, which is equivalent to the difference on the log scale.",

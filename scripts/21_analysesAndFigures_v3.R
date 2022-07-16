@@ -1130,9 +1130,20 @@ ggsave(filename = "plots/smap1_ura3_growth_curve.png",
        width = 6,
        height = 4)
 
+# false positives ptgs prot_non_mrna_top ####
+fpmembranes = nrtx %>%
+  filter(representative %in%
+           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
+                                               c(membProtsFinal, topsconMemb$two)]) %>% 
+  filter(!representative %in% membFP) %>% 
+  pull(representative)
+
+fpunrep = unrepresentedSWATH %>% 
+  pull(representative)
+
 # Whitehead et al. 2006 pot. post-transcription regulated ####
 # getting genes from table  supplemental table 2
-# only the unshaded that should mRNA should not correlate with protein
+# only the unshaded that mRNA should not correlate with protein
 whitehead2006unshaded = list()
 whitehead2006unshaded$mrnaup = c("VNG0150H","VNG0152G","VNG0177G","VNG0324G","VNG0330G","VNG0557H","VNG0592G","VNG0769H",
                                  "VNG0865C","VNG0867G","VNG0906H","VNG1084G","VNG1103G","VNG1133G","VNG1138G","VNG1143G",
@@ -1153,6 +1164,7 @@ gammaradptgs = nrtxsep %>%
   unique()
 
 gammaradptgsNewPtgs = gammaradptgs[!gammaradptgs %in% (c(ptgs$union$Q4$locus_tag, ptgsAbund$union$prot_bot_prot_non_mrna_top) %>% unique())]
+
 
 # plotting all genes for manual inspection: abundance #####
 # allLocusTags = abundLongFuncat$locus_tag %>%

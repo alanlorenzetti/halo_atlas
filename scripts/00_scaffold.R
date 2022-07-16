@@ -19,7 +19,7 @@ source("scripts/05_parseAntisenseRNAs.R")
 source("scripts/06_parseLocation.R")
 source("scripts/07_parseTPS.R")
 source("scripts/08_parseAndProcess2099.R")
-source("scripts/09_parseMembraneProteins.R")
+source("scripts/09_parseMembraneAndOtherProteins.R")
 source("scripts/10_getAndParseMiscFeatures.R")
 source("scripts/11_combineAndWrangleFunCat.R")
 
