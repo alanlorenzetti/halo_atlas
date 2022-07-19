@@ -39,13 +39,6 @@ membProtsFinal = nrtxsep %>%
   pull(representative) %>% 
   unique()
 
-# checking the proteins
-# nrtx %>%
-#   filter(representative %in%
-#            ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
-#                                                membProtsFinal]) %>% 
-#   pull(representative)
-
 # loading topcons output
 topsconRes = read_tsv(file = "data/pfei_2019_cds_topcons_finished_seqs.txt",
                       col_names = c("No.",
@@ -89,16 +82,8 @@ membFP = c("VNG_0551G",
            "VNG_1653H",
            "VNG_2089H")
 
-undetectedRemovDF = nrtx %>%
-  filter(representative %in%
-           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
-                                               c(membProtsFinal, topsconMemb$two)])
-
-# updating our final dataframe
-# removing proteins 
-# that are likely transmembrane
-undetectedRemovDF = undetectedRemovDF %>% 
-  filter(!representative %in% membFP)
+memb_to_remove = c(membProtsFinal, topsconMemb$two)
+memb_to_remove = memb_to_remove[!memb_to_remove %in% membFP]
 
 # proteins not detectable by SWATH ####
 # we need to check what was included
@@ -108,12 +93,12 @@ undetectedRemovDF = undetectedRemovDF %>%
 # by the time of SWATH-MS procedure
 
 # reading protein search db for swath
-swath_search_db = readAAStringSet(filepath = "data/Halobacterium-20080205_VNG_cRAP_TargDecoy_plusRT.fasta")
-swath_search_db_names = names(swath_search_db)
-swath_search_db_names = swath_search_db_names %>% 
-  str_detect(pattern = "^VNG") %>% 
-  swath_search_db_names[.] %>% 
-  str_replace(pattern = "^(.*?) .*$", "\\1")
+# swath_search_db = readAAStringSet(filepath = "data/Halobacterium-20080205_VNG_cRAP_TargDecoy_plusRT.fasta")
+# swath_search_db_names = names(swath_search_db)
+# swath_search_db_names = swath_search_db_names %>% 
+#   str_detect(pattern = "^VNG") %>% 
+#   swath_search_db_names[.] %>% 
+#   str_replace(pattern = "^(.*?) .*$", "\\1")
 
 # these 83 proteins were not represented
 # in the SWATH assay library so
@@ -139,12 +124,6 @@ unrepresentedTib = tibble(locus_tag = c("VNG0076H","VNG0205H","VNG0261H","VNG032
                                          "VNG6159H","VNG6209H","VNG6276H","VNG6286H",
                                          "VNG6330H","VNG6446H","VNG6456H","VNG6474H"))
 
-# checking what is in nrtx but not in SWATH
-nrtx_not_in_swath_assay = nrtx %>%
-  filter(representative %in% hmaFuncat$locus_tag) %>% 
-  filter(!str_detect(string = locus_tag, pattern = "VNG[0-9]{4}[A-Z]{1,2}")) %>% 
-  pull(representative)
-
 unrepresented = left_join(x = unrepresentedTib,
                           y = nrtxsep,
                           by = "locus_tag") %>% 
@@ -153,8 +132,14 @@ unrepresented = left_join(x = unrepresentedTib,
   summarise(locus_tag = paste0(locus_tag, collapse = ","),
             product = paste0(product, collapse = ","))
 
-unrepresentedSWATH = nrtx %>% 
-  filter(representative %in% c(unrepresented$representative, nrtx_not_in_swath_assay))
+# checking what is in nrtx but not in SWATH
+nrtx_not_in_swath_assay = nrtx %>%
+  filter(str_detect(string = representative, pattern = "^VNG_[0-9]{4}")) %>% 
+  filter(!str_detect(string = locus_tag, pattern = "VNG[0-9]{4}[A-Z]{1,2}")) %>% 
+  pull(representative)
+
+nrtx_not_in_swath_assayTib = nrtx %>% 
+  filter(representative %in% c(nrtx_not_in_swath_assay))
 
 # finding proteins not producing peptides
 # >= 7 aa and <= 30 aa
@@ -179,7 +164,8 @@ rpg_not_valid_prots = nrtx %>%
 
 # unifying all proteins that we can't know if are
 # really undetected due to many reasons
-unrepresentedFP = c(undetectedRemovDF$representative,
-                    unrepresentedSWATH$representative,
+unrepresentedFP = c(memb_to_remove,
+                    unrepresented$representative,
+                    nrtx_not_in_swath_assayTib$representative,
                     rpg_not_valid_prots) %>% 
   unique()

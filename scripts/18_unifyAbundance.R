@@ -139,6 +139,7 @@ abundNormDerLong = abundNormDer %>%
 # top mRNA stratum and bottom portein stratum
 # for each time point
 ptgsAbund = list()
+ptgsAbund_alt = list()
 
 # setting up timepoints
 tp = c("TP1", "TP2", "TP3", "TP4")
@@ -156,6 +157,7 @@ for(i in tp){
   mrnatopthr = abund[, mrnacolname] %>% quantile(probs = upperthr, na.rm = T)
   mrnabotthr = abund[, mrnacolname] %>% quantile(probs = bottomthr, na.rm = T)
   
+  # original version
   ptgsAbund[[i]][["prot_top"]] = abund %>%
     filter(abund[, protcolname] >= prottopthr) %>% 
     pull(locus_tag)
@@ -179,26 +181,63 @@ for(i in tp){
     filter(abundAlt[, protcolname] == 1) %>% 
     pull(locus_tag)
   
+  # removing proteins that are undetected
+  # likely to techinical reasons
+  ptgsAbund[[i]][["prot_non"]] = ptgsAbund[[i]][["prot_non"]][!ptgsAbund[[i]][["prot_non"]] %in% unrepresentedFP]
+  
   ptgsAbund[[i]][["prot_bot_mrna_top"]] = base::intersect(ptgsAbund[[i]][["prot_bot"]], ptgsAbund[[i]][["mrna_top"]])
   ptgsAbund[[i]][["prot_top_mrna_bot"]] = base::intersect(ptgsAbund[[i]][["prot_top"]], ptgsAbund[[i]][["mrna_bot"]])
   ptgsAbund[[i]][["prot_non_mrna_top"]] = base::intersect(ptgsAbund[[i]][["prot_non"]], ptgsAbund[[i]][["mrna_top"]])
   ptgsAbund[[i]][["prot_bot_prot_non_mrna_top"]] = c(ptgsAbund[[i]][["prot_bot_mrna_top"]],
                                                      ptgsAbund[[i]][["prot_non_mrna_top"]]) %>% 
     unique()
+  
+  # alternative version
+  # original version
+  ptgsAbund_alt[[i]][["prot_top"]] = abund %>%
+    filter(abund[, protcolname] >= prottopthr) %>% 
+    pull(locus_tag)
+  
+  ptgsAbund_alt[[i]][["prot_bot"]] = abund %>%
+    filter(abund[, protcolname] < protbotthr) %>% 
+    pull(locus_tag)
+  
+  ptgsAbund_alt[[i]][["mrna_top"]] = abund %>%
+    filter(abund[, mrnacolname] >= mrnatopthr) %>% 
+    pull(locus_tag)
+  
+  ptgsAbund_alt[[i]][["mrna_bot"]] = abund %>%
+    filter(abund[, mrnacolname] < mrnabotthr) %>% 
+    pull(locus_tag)
+  
+  # using an alternative version of abund
+  # to get info about non observed proteins
+  # that have mRNAs in the upper stratum
+  ptgsAbund_alt[[i]][["prot_non"]] = abundAlt %>%
+    filter(abundAlt[, protcolname] == 1) %>% 
+    pull(locus_tag)
+  
+  ptgsAbund_alt[[i]][["prot_bot_mrna_top"]] = base::intersect(ptgsAbund_alt[[i]][["prot_bot"]], ptgsAbund_alt[[i]][["mrna_top"]])
+  ptgsAbund_alt[[i]][["prot_top_mrna_bot"]] = base::intersect(ptgsAbund_alt[[i]][["prot_top"]], ptgsAbund_alt[[i]][["mrna_bot"]])
+  ptgsAbund_alt[[i]][["prot_non_mrna_top"]] = base::intersect(ptgsAbund_alt[[i]][["prot_non"]], ptgsAbund_alt[[i]][["mrna_top"]])
+  ptgsAbund_alt[[i]][["prot_bot_prot_non_mrna_top"]] = c(ptgsAbund_alt[[i]][["prot_bot_mrna_top"]],
+                                                     ptgsAbund_alt[[i]][["prot_non_mrna_top"]]) %>% 
+    unique()
 }
 
+# original version
 # getting the union of prot_bot_mrna_top
 ptgsAbund$union$prot_bot_mrna_top = c(ptgsAbund$TP1$prot_bot_mrna_top,
-                                                 ptgsAbund$TP2$prot_bot_mrna_top,
-                                                 ptgsAbund$TP3$prot_bot_mrna_top,
-                                                 ptgsAbund$TP4$prot_bot_mrna_top) %>%
+                                      ptgsAbund$TP2$prot_bot_mrna_top,
+                                      ptgsAbund$TP3$prot_bot_mrna_top,
+                                      ptgsAbund$TP4$prot_bot_mrna_top) %>%
   unique()
 
 # getting the union of prot_non_mrna_top
 ptgsAbund$union$prot_non_mrna_top = c(ptgsAbund$TP1$prot_non_mrna_top,
-                                                 ptgsAbund$TP2$prot_non_mrna_top,
-                                                 ptgsAbund$TP3$prot_non_mrna_top,
-                                                 ptgsAbund$TP4$prot_non_mrna_top) %>%
+                                      ptgsAbund$TP2$prot_non_mrna_top,
+                                      ptgsAbund$TP3$prot_non_mrna_top,
+                                      ptgsAbund$TP4$prot_non_mrna_top) %>%
   unique()
 
 # getting the union of prot_bot_prot_non_mrna_top
@@ -206,8 +245,29 @@ ptgsAbund$union$prot_bot_prot_non_mrna_top = c(ptgsAbund$union$prot_bot_mrna_top
                                                ptgsAbund$union$prot_non_mrna_top) %>% 
   unique()
 
+# alternative version
+ptgsAbund_alt$union$prot_bot_mrna_top = c(ptgsAbund_alt$TP1$prot_bot_mrna_top,
+                                      ptgsAbund_alt$TP2$prot_bot_mrna_top,
+                                      ptgsAbund_alt$TP3$prot_bot_mrna_top,
+                                      ptgsAbund_alt$TP4$prot_bot_mrna_top) %>%
+  unique()
+
+# getting the union of prot_non_mrna_top
+ptgsAbund_alt$union$prot_non_mrna_top = c(ptgsAbund_alt$TP1$prot_non_mrna_top,
+                                      ptgsAbund_alt$TP2$prot_non_mrna_top,
+                                      ptgsAbund_alt$TP3$prot_non_mrna_top,
+                                      ptgsAbund_alt$TP4$prot_non_mrna_top) %>%
+  unique()
+
+# getting the union of prot_bot_prot_non_mrna_top
+ptgsAbund_alt$union$prot_bot_prot_non_mrna_top = c(ptgsAbund_alt$union$prot_bot_mrna_top,
+                                               ptgsAbund_alt$union$prot_non_mrna_top) %>% 
+  unique()
+
+
 # getting the union of abundance and fold change approaches
 # for putative post-transcriptionally repressed transcripts
 ptgsAbundFcQ4 = c(ptgsAbund$union$prot_bot_prot_non_mrna_top,
                   ptgs$union$Q4$short_and_long_transition_locus_tag) %>% 
   unique()
+

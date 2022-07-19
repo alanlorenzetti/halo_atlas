@@ -454,7 +454,7 @@ htComplete = htProt + htmRNA + htRPF + htTE + htRO
 
 pdf(file = "plots/abundanceHeatmap_expanded_en.pdf",
     width = 15,
-    height = 175)
+    height = 180)
 draw(htComplete,
      annotation_legend_list = heatLegs,
      main_heatmap = "Protein")
@@ -462,15 +462,15 @@ dev.off()
 
 # saving the expanded version for 269 putative
 # post-transcriptionally regulated genes
-pdf(file = "plots/abundanceHeatmap_expanded_269_genes_en.pdf",
-    width = 15,
-    height = 40)
-draw(htComplete[hmaFuncat$locus_tag %in%
-                  unique(c(ptgs$union$Q4$locus_tag,
-                           ptgsAbund$union$prot_bot_prot_non_mrna_top))],
-     annotation_legend_list = heatLegs,
-     main_heatmap = "Protein")
-dev.off()
+# pdf(file = "plots/abundanceHeatmap_expanded_269_genes_en.pdf",
+#     width = 15,
+#     height = 40)
+# draw(htComplete[hmaFuncat$locus_tag %in%
+#                   unique(c(ptgs$union$Q4$locus_tag,
+#                            ptgsAbund$union$prot_bot_prot_non_mrna_top))],
+#      annotation_legend_list = heatLegs,
+#      main_heatmap = "Protein")
+# dev.off()
 
 # preparing a version for interactive heatmap
 htRO = Heatmap(log2(hmaRO),

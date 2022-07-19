@@ -157,7 +157,7 @@ atlasTabDesc = tibble(tab_name = c("non_redundant_tx_dictionary",
                                    "atlas_column_description_tidy"),
                       description = c("The non-redundant transcriptome dictionary generated for this study. Source code and further info at: https://github.com/alanlorenzetti/halo_nr_tx .",
                                       "Column description for the non_redundant_tx_dictionary tab.",
-                                      "Wide data table used to generate the interactive heat maps for this study.",
+                                      "Wide data table used to generate the interactive heatmaps for this study.",
                                       "Column description for the atlas_normalized_wide_data tab.",
                                       "A tidy data table used to generate atlas_normalized_wide_data. This table contains the most essential (non-normalized) data for this study.",
                                       "Column description for the atlas_non_normalized_tidy_data tab."))
@@ -260,7 +260,7 @@ outfcclusters$column_description = tibble(column_name = c("cluster",
                                                           "count",
                                                           "locus_tag"),
                                           description = c("Cluster identifier according to the quadrant nomenclature convention using the Cartesian coordinate system. E.g., Q1: quadrant I; BL14: Border line between quadrant I and quadrant IV.",
-                                                          "Color used in our figures to highlight the cluster.",
+                                                          "Color used in Figure 2H-L to highlight the clusters.",
                                                           "Change status considering the transition from a physiological state to another. Take as an example the transition from TP1 to TP2: if the protein is upregulated and the mRNA is upregulate, the change status is Protein Up & mRNA Up. We use the term *Flat* to represent unchanging protein or mRNA levels.",
                                                           "Number of instances (locus tags) within a given cluster.",
                                                           "Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome."))
@@ -757,7 +757,7 @@ mobSupp$column_description = tibble(column_name = colnames(mobSupp$mobilization_
                                                    "ISName" = "Name of the insertion sequence matching the the structural variant cluster.",
                                                    "ISFamily" = "Insertion sequence family for a given insertion sequence.",
                                                    "meanStart" = "Position of the detected cluster. Mean is applied if a cluster is supported by many mobilization events. The position is relative to the coordinates of a modified reference genome that excludes long duplications. See methods for details.",
-                                                   "sdStart" = "Uncertainty of position of the detected cluster. Standad deviation is applied if a cluster is supported by many mobilization events. The position is relative to the coordinates of a modified reference genome that excludes long duplications. See methods for details.",
+                                                   "sdStart" = "Uncertainty of position of the detected cluster. Standard deviation is applied if a cluster is supported by many mobilization events. The position is relative to the coordinates of a modified reference genome that excludes long duplications. See methods for details.",
                                                    "meanLength" = "Length of the detected cluster. Mean is applied if a cluster is supported by many mobilization events.",
                                                    "sdLength" = "Length of the detected cluster. Standard deviation is applied if a cluster is supported by many mobilization events.",
                                                    "count" = "Number of reads supporting the mobilization cluster, that is, number of mobilization events observed within a cluster.",
@@ -767,30 +767,61 @@ mobSupp$column_description = tibble(column_name = colnames(mobSupp$mobilization_
 
 # writing table with multi sheets
 write.xlsx(mobSupp,
-           file = "results/supp_tables/File_S9.xlsx",
+           file = "results/supp_tables/File_S8.xlsx",
            overwrite = T)
   
-# membrane proteins that are likely undetected ####
-# and other proteins that were not included in the 
-# SWATH search
+# undetected proteins due to technical limitations ####
+undetectedRemovDF = nrtx %>%
+  filter(representative %in%
+           ptgsAbund_alt$union$prot_non_mrna_top[ptgsAbund_alt$union$prot_non_mrna_top %in%
+                                               unrepresentedFP])
 
-# due to their transmembrane nature
+# creating dataframes for each
+# reason for not being detected
+FPreasons = list()
+
+FPreasons$not_in_assay_lib = undetectedRemovDF %>% 
+  filter(representative %in% unrepresented$representative) %>% 
+  mutate(technical_limitation = "Unrepresented in SWATH-MS assay library due to hydrophobicity, peptide size, etc. (Kusebauch et al., in preparation).")
+         
+FPreasons$peptide_size = undetectedRemovDF %>% 
+  filter(representative %in% rpg_not_valid_prots) %>% 
+  mutate(technical_limitation = "In silico trypsin protein digestion using Rapid Peptides Generator (Maillet, 2020; PMID: 33575558) did not result in peptides with >= 7 and <= 30 amino acids.")
+         
+FPreasons$unmatched_annotation_version = undetectedRemovDF %>% 
+  filter(representative %in% nrtx_not_in_swath_assayTib$representative) %>% 
+  mutate(technical_limitation = "Unrepresented in SWATH-MS assay library due to annotation incompatibility. The annotation version used in this study was not available at the time of SWATH-MS assay library preparation.")
+
+FPreasons$transmemb = undetectedRemovDF %>% 
+  filter(representative %in% memb_to_remove) %>% 
+  mutate(technical_limitation = "Likely missed because of its transmembrane nature.")
+  
+FPreasons_all = bind_rows(FPreasons) %>% 
+  arrange(representative)
+# 
+# # updating our final dataframe
+# # removing proteins 
+# # that are likely transmembrane
+# undetectedRemovDF = undetectedRemovDF %>% 
+#   filter(!representative %in% membFP)
+
+# building the supp file
 transmembSupp = list()
 
-transmembSupp$tab_guide_readme = tibble(tab_name = c("unrepresented_in_assay_lib",
-                                                     "unrep_column_description",
+transmembSupp$tab_guide_readme = tibble(tab_name = c("missed_due_to_tech",
+                                                     "miss_column_description",
                                                      "transmembrane_proteins",
                                                      "transmemb_column_description"),
-                                        description = c("Proteins undetected because they were not represented in the SWATH-MS assay library due to various reasons (lack of tryptic peptides of ideal size, hydrophobicity, transmembrane nature, etc.) (Kusebauch et al., in preparation).",
-                                                        "Column description for the unrep_column_description tab.",
+                                        description = c("Genes identified as putative post-transcriptionally regulated that are likely false positives. Their proteins were not detected likely due to technical limitations.",
+                                                        "Column description for the missed_due_to_tech tab.",
                                                         "Proteins likely undetected because of their transmembrane nature.",
                                                         "Column description for the transmembrane_proteins tab."))
 
-transmembSupp$transmembrane_proteins = undetectedRemovDF %>% 
+transmembSupp$transmembrane_proteins = FPreasons$transmemb %>% 
   left_join(x = .,
             y = topsconRes,
             by = c("representative" = "locus_tag")) %>% 
-  select(-c(Length, SignalPeptide)) %>% 
+  select(-c(Length, SignalPeptide, technical_limitation)) %>% 
   mutate(experimental_evidence = case_when(representative %in% membProtsFinal ~ "yes",
                                            TRUE ~ "no")) %>% 
   relocate(locus_tag,
@@ -807,22 +838,23 @@ transmembSupp$transmemb_column_description = tibble(column_name = c("representat
                                                                     "Whether there is proteome experimental evidence for membrane samples in Goo et al. (2003) (PMID: 12872007) or Klein et al. (2005) (PMID: 15619294).",
                                                                     "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
 
-transmembSupp$unrepresented_in_assay_lib = unrepresentedSWATH %>% 
-  filter(representative %in% ptgsAbund$union$prot_non_mrna_top)
+transmembSupp$missed_due_to_tech = FPreasons_all
 
-transmembSupp$unrep_column_description = tibble(column_name = c("representative",
-                                                                  "product",
-                                                                  "locus_tag"),
-                                                  description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
-                                                                  "Gene product given by Pfeiffer et al. (2019) (PMID: 31296677).",
-                                                                  "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach."))
+transmembSupp$miss_column_description = tibble(column_name = c("representative",
+                                                                 "product",
+                                                                 "locus_tag",
+                                                                "technical_limitation"),
+                                                 description = c("Locus tag for a given instance according to Pfeiffer et al. (2019) (PMID: 31296677). This locus tag may be a representative of many others if they were collapsed in our non-redundant transcriptome.",
+                                                                 "Gene product given by Pfeiffer et al. (2019) (PMID: 31296677).",
+                                                                 "Locus tags represented by the representative field. Might be a synonym or a locus tag for an almost identical gene that was collapsed by our non-redundant transcriptome approach.",
+                                                                 "Technical reason that could explain why the protein was not detected."))
 
 write.xlsx(transmembSupp[c("tab_guide_readme",
-                           "unrepresented_in_assay_lib",
-                           "unrep_column_description",
+                           "missed_due_to_tech",
+                           "miss_column_description",
                            "transmembrane_proteins",
                            "transmemb_column_description")],
-           file = "results/supp_tables/File_S7.xlsx",
+           file = "results/supp_tables/File_S9.xlsx",
            overwrite = T)
 
 # c(transmembSupp$transmembrane_proteins$representative, transmembSupp$unrepresented_in_assay_lib$representative) %>% unique()
@@ -941,7 +973,7 @@ DEgrowth$tab_guide_readme = tibble(tab_name = c("mrna_TP2_vs_TP1",
                                                    "Protein differential expression analysis. Contrast TP4 vs. TP3. proDA::test_diff output.",
                                                    "Protein differential expression analysis. Contrast TP3 vs. TP1. proDA::test_diff output.",
                                                    "Protein differential expression analysis. Contrast TP4 vs. TP1. proDA::test_diff output.",
-                                                   "Column description for Protein differential expression analysis tabs."))
+                                                   "Column description for protein differential expression analysis tabs."))
 
 DEgrowth$mrna_TP2_vs_TP1 = results$totrna_TP2_vs_TP1 %>% createNewDEvars()
 DEgrowth$mrna_TP3_vs_TP2 = results$totrna_TP3_vs_TP2 %>% createNewDEvars()
@@ -990,8 +1022,8 @@ DEgrowth$protein_column_description = tibble(column_name = c("representative",
                                                              "proDA::test_diff output field: the p-value of the statistical test.",
                                                              "proDA::test_diff output field: the multiple testing adjusted p-value.",
                                                              "proDA::test_diff output field: the difference that particular coefficient makes. In differential expression analysis this value is also called log fold change, which is equivalent to the difference on the log scale.",
-                                                             "proDA::test_diff output field: the diff divided by the standard error se",
-                                                             "proDA::test_diff output field: the standard error associated with the diff",
+                                                             "proDA::test_diff output field: the diff divided by the standard error se.",
+                                                             "proDA::test_diff output field: the standard error associated with the diff.",
                                                              "proDA::test_diff output field: the degrees of freedom, which describe the amount of available information for estimating the se. They are the sum of the number of samples the protein was observed in, the amount of information contained in the missing values, and the degrees of freedom of the variance prior.",
                                                              "proDA::test_diff output field: the estimate of the average abundance of the protein across all samples.",
                                                              "proDA::test_diff output field: the approximated information available for estimating the protein features, expressed as multiple of the information contained in one observed value.",
@@ -1029,7 +1061,7 @@ orifile = names(figFiles)
 destfile = paste0("results/figures/", figFiles %>% str_replace_all(" ", "_"), extensions)
 
 file.copy(from = orifile, to = destfile, overwrite = T)
-file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/File_S8.pdf", overwrite = T)
+file.copy(from = "plots/abundanceHeatmap_expanded_en.pdf", to = "results/supp_tables/File_S7.pdf", overwrite = T)
 
 # sessionInfo object
 seshInfo = list(sys_time = Sys.time(),

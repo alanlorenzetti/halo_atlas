@@ -476,7 +476,7 @@ lt = list("SmAP1" = summaryTPelements$SmAP1,
                     summaryTPelements$tps$tps5) %>% 
             unique(),
           "RNase" = c(summaryTPelements$`2099`$up,
-                            summaryTPelements$`2099`$down) %>% 
+                      summaryTPelements$`2099`$down) %>% 
             unique())
 
 ptgsFeaturesVenn = plot(venn(combinations = lt),
@@ -582,12 +582,16 @@ subvectIntersectionEnrich(list = list("asRNA" = summaryTPelements$asRNA,
                                                   summaryTPelements$`2099`$down) %>% 
                                         unique()))
 
-# out of abund post-transcriptionally regulated genes (248)
+# out of abund post-transcriptionally regulated genes (188)
 # how many are within the set targeted by features
 # smap1, asrna, tps
 # testing for enrichment
-myset = ptgsAbund$union$prot_bot_prot_non_mrna_top[
-  ptgsAbund$union$prot_bot_prot_non_mrna_top %in%
+all_ptgs_abs_rel = c(ptgsAbund$union$prot_bot_prot_non_mrna_top, 
+                     ptgs$union$Q4$locus_tag) %>%
+  unique()
+
+myset = all_ptgs_abs_rel[
+  all_ptgs_abs_rel %in%
     (lt %>% unlist() %>% unique())
   ]
 
@@ -772,9 +776,21 @@ cols = c("protein_lysate" = "#E15759",
 breaks = 10^(-10:10)
 minor_breaks = rep(1:9, 21)*(10^rep(-10:10, each=9))
 
+medianTrajectory = abundLongFuncat %>% 
+  filter(libtype == "protein_lysate") %>% 
+  mutate(libtype = str_replace(libtype, "protein_lysate", "protein_lysate_median")) %>% 
+  select(locus_tag, libtype, timepoint, mean) %>% 
+  group_by(libtype, timepoint) %>% 
+  summarise(mean = median(mean, na.rm = T),
+            se = 0) %>% 
+  mutate(locus_tag = "VNG_1496G") %>% 
+  relocate(locus_tag)
+  
 smap1Traj = abundLongFuncat %>%
   filter(locus_tag %in% "VNG_1496G") %>%
   filter(libtype != "protein_ribo" & libtype != "rna_occupancy" & libtype != "rna_psiTE") %>%
+  select(locus_tag, libtype, timepoint, mean, se) %>% 
+  # bind_rows(., medianTrajectory) %>%
   ggplot(aes(x = timepoint,
              y = mean,
              color = libtype,
@@ -1131,15 +1147,15 @@ ggsave(filename = "plots/smap1_ura3_growth_curve.png",
        height = 4)
 
 # false positives ptgs prot_non_mrna_top ####
-fpmembranes = nrtx %>%
-  filter(representative %in%
-           ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
-                                               c(membProtsFinal, topsconMemb$two)]) %>% 
-  filter(!representative %in% membFP) %>% 
-  pull(representative)
-
-fpunrep = unrepresentedSWATH %>% 
-  pull(representative)
+# fpmembranes = nrtx %>%
+#   filter(representative %in%
+#            ptgsAbund$union$prot_non_mrna_top[ptgsAbund$union$prot_non_mrna_top %in%
+#                                                c(membProtsFinal, topsconMemb$two)]) %>% 
+#   filter(!representative %in% membFP) %>% 
+#   pull(representative)
+# 
+# fpunrep = unrepresentedSWATH %>% 
+#   pull(representative)
 
 # Whitehead et al. 2006 pot. post-transcription regulated ####
 # getting genes from table  supplemental table 2
@@ -1164,7 +1180,6 @@ gammaradptgs = nrtxsep %>%
   unique()
 
 gammaradptgsNewPtgs = gammaradptgs[!gammaradptgs %in% (c(ptgs$union$Q4$locus_tag, ptgsAbund$union$prot_bot_prot_non_mrna_top) %>% unique())]
-
 
 # plotting all genes for manual inspection: abundance #####
 # allLocusTags = abundLongFuncat$locus_tag %>%
